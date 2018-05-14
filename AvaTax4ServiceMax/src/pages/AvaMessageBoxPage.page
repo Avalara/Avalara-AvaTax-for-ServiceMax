@@ -1,0 +1,16 @@
+<apex:page controller="AvaMessageBox">
+    <apex:pageBlock title="{!m_oUserMessage.MsgBoxTitle__c}">
+        <apex:form >
+           
+            <table border="0" width="100%" cellpadding="5">
+                <col width="5%"/><col width="90%"/><col width="5%"/>
+                <tr><td /><td><apex:outputField value="{!m_oUserMessage.Message_Col1__c}"/></td><td /></tr>
+            </table>
+           
+            <br />
+            <hr />
+            <br />
+            <apex:commandButton action="{!DismissPage}" value="  OK  " />
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>

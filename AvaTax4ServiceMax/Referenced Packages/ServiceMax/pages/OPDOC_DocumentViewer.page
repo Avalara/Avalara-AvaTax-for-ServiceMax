@@ -1,0 +1,22 @@
+<apex:page showHeader="false" sidebar="false" controller="SVMXC.OPDOC_DocumentViewer">
+    <title>{!TAG002}</title>
+    <apex:form >
+        <apex:pageBlock >
+            <!--<apex:pageBlockButtons location="Top">
+                <apex:commandButton image="{!URLFOR($Resource.SVMXC__SVMX_resources, 'SVMXC_resources/images/trash.png')}" value="Trash" action="{!deleteAttachment}"/>                
+            </apex:pageBlockButtons>-->
+            <apex:pageBlockSection >
+                <apex:panelGrid columns="3">
+                <apex:outputText value="{!TAG001}" style="font-size: 18px;"/>  
+                <apex:outputLink value="{!strRecordURL}" style="font-size: 18px;">{!strRecordName}</apex:outputLink> 
+                <apex:outputpanel style="padding-left: 13px;" >
+                    <apex:commandButton image="{!URLFOR($Resource.SVMXC__SVMX_resources, 'SVMXC_resources/images/trash.png')}" value="Trash" title="{!TAG003}" action="{!deleteAttachment}"/>             
+                </apex:outputpanel>
+                </apex:panelGrid>   
+            </apex:pageBlockSection>   
+            <apex:pageBlockSection columns="1">             
+                <iframe src="{!DocumentURL}" width="100%" height="600px"></iframe>               
+            </apex:pageBlockSection>                
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

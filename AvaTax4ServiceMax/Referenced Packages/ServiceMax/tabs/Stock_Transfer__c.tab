@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customObject>true</customObject>
+    <description>Stock Transfer is a document to capture transfer of inventory between two locations through hand-pick/delivery. This is used when Field engineers drop by at a warehouse for picking up inventory or when parts are moved between a warehouse and a repair facility both located in the same building.</description>
+    <mobileReady>false</mobileReady>
+    <motif>Custom73: Highway Sign</motif>
+</CustomTab>

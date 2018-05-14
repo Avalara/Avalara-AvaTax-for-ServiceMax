@@ -1,0 +1,221 @@
+<apex:page title="Check Entitlement" standardStylesheets="true" showHeader="true" sidebar="true" controller="SVMXC.EVER_WOEntitlement">
+    <script>
+      var __SVMX_LOAD_VERSION__  = "debug";
+      var __SVMX_CLIENT_LIB_PATH__ = "{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib')}";  
+    </script>
+  
+    <script>
+        function processResourceURL(url) {    
+            var ret = url, index;
+            if((index = url.indexOf("?")) != -1){
+                ret = url.substring(0, index);
+            }
+            return ret;
+        }  
+      
+        var svmx_display_tags = {
+            ENTITLEMENT: {
+                "TAG000"         : "{!$Label.EVER005_HLPURL}", // Help URL 
+                "TAG001"         : "{!HTMLENCODE($Label.EVER005_TAG001)}", // Error message while loading page
+                "TAG002"         : "{!HTMLENCODE($Label.EVER005_TAG002)}", // Account
+                "TAG003"         : "{!HTMLENCODE($Label.EVER005_TAG003)}", // Product
+                "TAG004"         : "{!HTMLENCODE($Label.EVER005_TAG004)}", // Product Information
+                "TAG005"         : "{!HTMLENCODE($Label.EVER005_TAG005)}", // Entitlement Settings
+                "TAG006"         : "{!HTMLENCODE($Label.EVER005_TAG006)}", // Options 
+                "TAG007"         : "{!HTMLENCODE($Label.EVER005_TAG007)}", // Check Entitlement
+                "TAG008"         : "{!HTMLENCODE($Label.EVER005_TAG008)}", // Save Entitlement
+                "TAG009"         : "{!HTMLENCODE($Label.EVER005_TAG009)}", // Contact
+                "TAG010"         : "{!HTMLENCODE($Label.EVER005_TAG010)}", // Account
+                "TAG011"         : "{!HTMLENCODE($Label.EVER005_TAG011)}", // Installed Product
+                "TAG012"         : "{!HTMLENCODE($Label.EVER005_TAG012)}", // Part
+                "TAG013"         : "{!HTMLENCODE($Label.EVER005_TAG013)}", // Product Family
+                "TAG014"         : "{!HTMLENCODE($Label.EVER005_TAG014)}", // Product line
+                "TAG015"         : "{!HTMLENCODE($Label.EVER005_TAG020)}", // Entitlement Check Help
+                "TAG016"         : "{!HTMLENCODE($Label.EVER005_TAG021)}", // Warranties
+                "TAG017"         : "{!HTMLENCODE($Label.EVER005_TAG022)}", // Entitlement History
+                "TAG018"         : "{!HTMLENCODE($Label.EVER005_TAG039)}", // Entitlement Verification
+                "TAG019"         : "{!HTMLENCODE($Label.EVER005_TAG040)}", // check Entitlement covering
+                "TAG020"         : "{!HTMLENCODE($Label.EVER005_TAG045)}", // Entitle Using
+                "TAG021"         : "{!HTMLENCODE($Label.EVER005_TAG046)}", // select
+                "TAG022"         : "{!HTMLENCODE($Label.EVER005_TAG047)}", // Please select a warranty or service contract from the list.
+                "TAG023"         : "{!HTMLENCODE($Label.EVER005_TAG048)}", // Please select only 1 record
+                "TAG024"         : "{!HTMLENCODE($Label.EVER005_TAG050)}", // Service Contracts
+                "TAG025"         : "{!HTMLENCODE($Label.EVER005_TAG051)}", // Covered By
+                "TAG026"         : "{!HTMLENCODE($Label.EVER005_TAG052)}", // Back to Work Order
+                "TAG027"         : "{!HTMLENCODE($Label.EVER005_TAG053)}", // Account is not available.
+                "TAG028"         : "{!HTMLENCODE($Label.EVER005_TAG054)}", // Contact is not available.
+                "TAG029"         : "{!HTMLENCODE($Label.EVER005_TAG055)}", // Product is not available.
+                "TAG030"         : "{!HTMLENCODE($Label.EVER005_TAG056)}", // Part Number is not available.
+                "TAG031"         : "{!HTMLENCODE($Label.EVER005_TAG057)}", // Processing...
+                "TAG032"         : "{!HTMLENCODE($Label.EVER005_TAG058)}", // Show Future Entitlements
+                "TAG033"         : "{!HTMLENCODE($Label.EVER005_TAG059)}", // Parent Product
+                "TAG034"         : "{!HTMLENCODE($Label.EVER005_TAG060)}", // Show Expired Entitlements
+                "TAG035"         : "{!HTMLENCODE($Label.EVER005_TAG061)}", // Top-Level Product
+                "TAG036"         : "{!HTMLENCODE($Label.EVER005_TAG062)}", // Match Accounts
+                "TAG037"         : "{!HTMLENCODE($Label.EVER005_TAG063)}", // Child Product
+                "TAG038"         : "{!HTMLENCODE($Label.EVER005_TAG064)}", // Match Contact
+                "TAG039"         : "{!HTMLENCODE($Label.EVER005_TAG065)}", // Part Number
+                "TAG040"         : "{!HTMLENCODE($Label.EVER005_TAG066)}", // Entitle Using
+                "TAG041"         : "{!HTMLENCODE($Label.EVER005_TAG067)}", // Product Family
+                "TAG042"         : "{!HTMLENCODE($Label.EVER005_TAG068)}", // Product Line
+                "TAG043"         : "{!HTMLENCODE($Label.EVER005_TAG069)}", // Settings
+                "TAG044"         : "{!HTMLENCODE($Label.EVER005_TAG070)}", // Entitlement
+                "TAG045"         : "{!HTMLENCODE($Label.EVER005_TAG071)}", // Warranties/Service Contracts
+                "TAG046"         : "{!HTMLENCODE($Label.EVER005_TAG072)}", // Work Order Number
+                "TAG047"         : "{!HTMLENCODE($Label.EVER005_TAG073)}", // Component Name
+                "TAG048"         : "{!HTMLENCODE($Label.EVER005_TAG074)}", // Account Name
+                "TAG049"         : "{!HTMLENCODE($Label.EVER005_TAG075)}", // Component SN
+                "TAG050"         : "{!HTMLENCODE($Label.EVER005_TAG076)}", // Contact Name
+                "TAG051"         : "{!HTMLENCODE($Label.EVER005_TAG077)}", // Entitlement Notes
+                "TAG052"         : "{!HTMLENCODE($Label.EVER005_TAG079)}", // Start Date
+                "TAG053"         : "{!HTMLENCODE($Label.EVER005_TAG080)}", // End Date
+                "TAG054"         : "{!HTMLENCODE($Label.EVER005_TAG081)}", // Covered Service
+                "TAG055"         : "{!HTMLENCODE($Label.EVER005_TAG082)}", // SLA Terms
+                "TAG056"         : "{!HTMLENCODE($Label.EVER005_TAG083)}", // Contract Name/Number
+                "TAG057"         : "{!HTMLENCODE($Label.EVER005_TAG084)}", // Warranty Name
+                "TAG058"         : "{!HTMLENCODE($Label.EVER005_TAG085)}", // Installed Product
+                "TAG059"         : "{!HTMLENCODE($Label.EVER005_TAG086)}", // Warranty Terms
+                "TAG060"         : "{!HTMLENCODE($Label.EVER005_TAG088)}", // Check Entitlement : Work Order
+                "TAG061"         : "{!HTMLENCODE($Label.EVER005_TAG089)}", // Enter Product Name or SN#
+                "TAG062"         : "{!HTMLENCODE($Label.EVER005_TAG090)}", // Show All
+                "TAG063"         : "{!HTMLENCODE($Label.EVER005_TAG091)}", // Cancel
+                "TAG064"         : "{!HTMLENCODE($Label.EVER005_TAG092)}", // Time
+                "TAG065"         : "{!HTMLENCODE($Label.EVER005_TAG093)}", // Product Attributes
+                "TAG066"         : "{!HTMLENCODE($Label.EVER005_TAG094)}", // Apply
+                "TAG067"         : "{!HTMLENCODE($Label.EVER005_TAG095)}", // Entitlement Selection
+                "TAG068"         : "{!HTMLENCODE($Label.EVER005_TAG096)}", // Not Covered
+                "TAG069"         : "{!HTMLENCODE($Label.EVER005_TAG097)}", // Details
+                "TAG070"         : "{!HTMLENCODE($Label.EVER005_TAG098)}", // No Service Contract available
+                "TAG071"         : "{!HTMLENCODE($Label.EVER005_TAG099)}", // No warranty available
+                "TAG072"         : "{!HTMLENCODE($Label.EVER005_TAG100)}", // Choose Entitlement
+                "TAG073"         : "{!HTMLENCODE($Label.EVER005_TAG101)}", // Product Name
+                "TAG074"         : "{!HTMLENCODE($Label.EVER005_TAG102)}", // Product SN
+                "TAG075"         : "{!HTMLENCODE($Label.EVER005_TAG103)}", // Description
+                "TAG076"         : "{!HTMLENCODE($Label.COMM001_TAG098)}", // Match Location
+                "TAG077"         : "{!HTMLENCODE($Label.EVER005_TAG104)}", // All Products Serviced have been entitled
+                "TAG078"         : "{!HTMLENCODE($Label.EVER005_TAG108)}", // Matching
+                "TAG079"         : "{!HTMLENCODE($Label.EVER005_TAG109)}", // Page
+                "TAG080"         : "{!HTMLENCODE($Label.EVER005_TAG110)}", // No.
+                "TAG081"         : "{!HTMLENCODE($Label.EVER005_TAG111)}", // Select for Contract/Warranty options
+                "TAG082"         : "{!HTMLENCODE($Label.COMM001_TAG118)}", // Included Service
+                "TAG083"         : "{!HTMLENCODE($Label.COMM001_TAG121)}", // Service Name
+                "TAG084"         : "{!HTMLENCODE($Label.COMM001_TAG122)}", // Allowed Units
+                "TAG085"         : "{!HTMLENCODE($Label.COMM001_TAG123)}", // Consumed Units
+                "TAG086"         : "{!HTMLENCODE($Label.COMM001_TAG124)}", // Tracked? 
+                "TAG087"         : "{!HTMLENCODE($Label.COMM001_TAG116)}",//Available Units
+                "TAG088"         : "{!HTMLENCODE($Label.COMM001_TAG065)}",//Close
+                "TAG089"         : "{!HTMLENCODE($Label.COMM001_TAG035)}",//None
+            } 
+        };
+
+      
+        var SVMXJsr = {
+            JsrGetENTITLEMENTSETTINGS: function(request, callback, context) {            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.EVER_WOEntitlement.getWOEntitlementSettings}', 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrGetWorkOrderDetailInfo: function(request, callback, context) {            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.EVER_WOEntitlement.getWorkOrderDetails}', requestStr,
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrCheckEntitlment: function(request, callback, context) {            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.EVER_WOEntitlement.checkEntitlement}', requestStr,
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrSaveEntitlement: function(request, callback, context) {            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.EVER_WOEntitlement.saveEntitlement}', requestStr,
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            processResult : function(result, event, callback, context) {     
+                var ret = {success : false};
+                if(event.status == true) {
+                    ret = SVMX.toObject(result);
+                }
+                callback.call(context, ret, event);
+            },
+        };    
+    </script>
+    
+    <script type='text/javascript' src="{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib/src/bootstrap.js')}"/>
+    
+    <script>
+    jQuery(document).ready(function() {
+    
+        var client_runtime                = "{!URLFOR($Resource.com_servicemax_client_runtime, '')}";
+        var client_mvc                    = "{!URLFOR($Resource.com_servicemax_client_mvc, '')}";
+        var client_components             = "{!URLFOR($Resource.com_servicemax_client_ui_components, '')}";
+        var client_sfmconsole             = "{!URLFOR($Resource.com_servicemax_client_sfmconsole, '')}";
+        var ui_components_bubble          = "{!URLFOR($Resource.com_servicemax_client_ui_components_bubble, '')}";
+        var client_themes                 = "{!URLFOR($Resource.com_servicemax_client_ui_themes, '')}";
+        var client_themes2                = "{!URLFOR($Resource.com_servicemax_client_ui_themes2, '')}";
+       
+        var client_sal                    = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal, '')}");
+        var client_sal_model              = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_model, '')}");
+        var client_sal_sfmconsole_model   = "{!URLFOR($Resource.com_servicemax_client_sal_sfmconsole_model, '')}";
+        var sfmconsole_ui_web             = "{!URLFOR($Resource.com_servicemax_client_sfmconsole_ui_web, '')}";
+        
+        var ui_themes_orange              = "{!URLFOR($Resource.com_servicemax_client_ui_desktop_themes_orange, '')}";
+        
+        var client_ent                    = "{!URLFOR($Resource.com_servicemax_client_entitlement, '')}";
+        var client_ent_model              = "{!URLFOR($Resource.com_servicemax_client_sal_entitlement_model, '')}";
+        var client_ent_desktop            = "{!URLFOR($Resource.com_servicemax_client_entitlement_ui_desktop, '')}";  
+        
+        var config = {title:"Check Entitlement", version:"1.0.0",
+            modules:[
+                { id : "com.servicemax.client.runtime",                 version : "1.0.0",  codebase : client_runtime},
+                { id : "com.servicemax.client.mvc",                     version : "1.0.0" , codebase : client_mvc },
+                { id : "com.servicemax.client.ui.components",           version : "1.0.0" , codebase : client_components },
+                { id : "com.servicemax.client.sfmconsole",              version : "1.0.0" , codebase : client_sfmconsole},
+               
+                { id : "com.servicemax.client.sal",                     version : "1.0.0" , codebase : client_sal },
+             
+                { id : "com.servicemax.client.sal.sfmconsole.model",    version : "1.0.0" , codebase : client_sal_sfmconsole_model},
+                { id : "com.servicemax.client.ui.components.bubble",    version : "1.0.0" , codebase : ui_components_bubble },
+                { id : "com.servicemax.client.ui.themes",               version : "1.0.0" , codebase : client_themes },
+                { id : "com.servicemax.client.ui.themes2",              version : "1.0.0" , codebase : client_themes2 },
+                { id : "com.servicemax.client.sfmconsole.ui.web",       version : "1.0.0" , codebase : sfmconsole_ui_web },
+    
+                { id : "com.servicemax.client.sal.entitlement.model",   version : "1.0.0" , codebase : client_ent_model },
+                { id : "com.servicemax.client.entitlement",             version : "1.0.0" , codebase : client_ent },
+                { id : "com.servicemax.client.entitlement.ui.desktop",  version : "1.0.0" , codebase : client_ent_desktop },
+                { id : "com.servicemax.client.ui.desktop.themes.orange",version : "1.0.0" , codebase : ui_themes_orange }
+            ],
+            
+            "app-config" : {
+                "application-id" : "console",
+                "theme" : "ORANGE",
+                "sal-service-runtime-mode" : "VISUAL_FORCE",
+                "org-name-space": "SVMXC",
+                "enable-cache"      : true,
+                "enable-log"        : true,
+                "svmx-sfm-sal-model-use-jsr" : true
+            },
+            
+            "platform-config" : {}
+        }
+        
+        var client = new com.servicemax.client.lib.core.Client();
+    
+        client.addApplicationParameter("session-id", "{!GETSESSIONID()}");
+        client.addApplicationParameter("workOrderId", "{!$CurrentPage.parameters.id}");
+        client.run({configType : "local", data : config, loadVersion : __SVMX_LOAD_VERSION__ });
+    });
+    </script>
+    
+    <body>
+        <div id="client_display_root"></div>
+    </body>
+
+</apex:page>

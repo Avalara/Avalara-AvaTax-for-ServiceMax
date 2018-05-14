@@ -1,0 +1,94 @@
+<apex:page controller="SVMXC.CONF_ManagePushNotifications">
+    <apex:form >
+        <style type="text/css">
+            .activeTab {
+                background-color: #8E9DBE;
+                color:white;
+                background-image:none;
+                font-size:14Px;
+            } 
+            .inactiveTab {
+                background-color: lightGrey;
+                color:black;
+                background-image:none
+            }
+        </style>
+        <apex:pageMessages rendered="true"/>
+        <apex:tabPanel tabClass="activeTab" inactiveTabClass="inactiveTab" id="Notifications" selectedTab="FirstTab">
+            <apex:tab label="Alert List" style="font-Size:12px" id="ListOfNotificationTab" name="FirstTab" >
+                <apex:pageBlock id="pgBlock1">
+                    <apex:pageBlockButtons location="top">
+                        <apex:commandButton value="{!TAG013}" action="{!SVMXNew}"/>
+                        <apex:commandButton value="{!TAG014}" action="{!SVMXEdit}" Disabled="{!if(lstNotificationConfigs == 0,true,false)}"/>
+                        <apex:commandButton value="{!TAG015}" action="{!SVMXDelete}" Disabled="{!if(lstNotificationConfigs == 0,true,false)}"/>
+                        <apex:commandButton value="{!TAG012}" action="{!BackToSetupHome}"/>
+                    </apex:pageBlockButtons>
+                    <apex:pageBlockSection columns="1" collapsible="false">
+                        <apex:pageBlockTable border="5" columns="5" value="{!lstNotificationConfigs}"  var="notify">
+                        <apex:column >
+                            <apex:facet name="header">{!Tag003}</apex:facet>
+                            <apex:inputField value="{!notify.SVMXC__Select__c}"/> 
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header"> {!Tag004} </apex:facet>
+                            <apex:outputField value="{!notify.SVMXC__Profile_Name__c}"/> 
+                        </apex:column> 
+                        <apex:column >
+                            <apex:facet name="header"> {!Tag005} </apex:facet>
+                            <apex:outputText value="{!mapObjAPINameToLabel[notify.SVMXC__Object_Name__c]}"/> 
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!Tag006}</apex:facet>
+                            {!If(notify.SVMXC__Active__c, $Label.svmxc__CONF040_TAG017, $Label.svmxc__CONF040_TAG018)}
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!Tag007}</apex:facet>
+                            <apex:outputText value="{!notify.LastModifiedBy.Name}  {!notify.LastModifiedDate}"/>
+                        </apex:column>
+                        </apex:pageBlockTable> 
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+            </apex:tab>
+            
+            <!--2nd Tab for the Logs-->
+            <apex:tab label="Alert Logs" style="font-Size:12px" id="ListOfNotificationLogsTab" name="SecondTab" >
+                <apex:pageBlock id="pgBlock2">
+                    <apex:pageBlockSection columns="1" collapsible="false">
+                        <apex:pageBlockTable border="5" columns="6" value="{!lstNotificationLogs}"  var="logs">
+                        <apex:column >
+                            <apex:facet name="header"> {!Tag004} </apex:facet>
+                            <apex:outputField value="{!logs.SVMXC__Event_Name__c}"/> 
+                        </apex:column> 
+                        <apex:column >
+                            <apex:facet name="header"> {!Tag005} </apex:facet>
+                            <apex:outputText value="{!mapObjAPINameToLabel[logs.SVMXC__Event_Type__c]}"/> 
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!Tag007}</apex:facet>
+                            <apex:outputText value="{!logs.LastModifiedBy.Name}  {!logs.LastModifiedDate}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!Tag022}</apex:facet>
+                            <apex:outputText value="{0,number}">
+                                <apex:param value="{!logs.SVMXC__Log_level__c}" />
+                            </apex:outputText>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!Tag020}</apex:facet>
+                            <apex:outputText value="{0,number}">
+                                <apex:param value="{!logs.SVMXC__Log_level__c}" />
+                            </apex:outputText>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!Tag021}</apex:facet>
+                            <apex:outputText value="{0,number}">
+                                <apex:param value="{!logs.SVMXC__Apex_CPU_Time__c}" />
+                            </apex:outputText>
+                        </apex:column>
+                        </apex:pageBlockTable> 
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+            </apex:tab>
+        </apex:tabPanel>
+    </apex:form>
+</apex:page>

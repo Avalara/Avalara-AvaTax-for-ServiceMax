@@ -1,0 +1,3 @@
+<apex:page standardController="SVMXC__PM_Offering__c" sidebar="false">
+   <c:SFM_Wizard recordId="{!SVMXC__PM_Offering__c.Id}" />
+</apex:page>

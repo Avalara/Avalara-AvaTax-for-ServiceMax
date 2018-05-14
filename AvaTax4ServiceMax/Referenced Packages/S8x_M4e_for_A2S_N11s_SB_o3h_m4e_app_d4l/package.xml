@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>S8x_M4e_for_A2S_N11s_SB_o3h_m4e_app_d4l</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <modules>
+        <module>
+            <label>S8x_M4e_for_A2S_N11s_SB_o3h_m4e_app_d4l</label>
+            <moduleType>mobile_app_detail</moduleType>
+            <name>S8x_M4e_for_A2S_N11s_SB_o3h_m4e_app_d4l</name>
+            <types>
+                <members>S8x_M4e_for_A2S_N11s_SB_o3h_m4e_app_d4lMobileApplicationDetail</members>
+                <name>MobileApplicationDetail</name>
+            </types>
+            <types>
+                <members>SVMXC__S8x_M4e_for_A2S_N11s_SB_o3h_m4e_app_d4l</members>
+                <name>Module</name>
+            </types>
+            <version>82.0</version>
+        </module>
+    </modules>
+    <namespacePrefix>SVMXC</namespacePrefix>
+    <version>31.0</version>
+</Package>

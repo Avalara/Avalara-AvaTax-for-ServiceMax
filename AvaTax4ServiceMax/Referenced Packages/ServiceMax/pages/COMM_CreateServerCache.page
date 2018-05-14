@@ -1,0 +1,562 @@
+<apex:page id="page" controller="SVMXC.COMM_CreateServerCache">
+<apex:form id="form1">
+<apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/APL/js/jquery-1.6.2.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/APL/js/jquery.checkbox.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/APL/js/jquery.dataTables.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/APL/js/jquery.inherit-1.3.2.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/APL/js/SVMX_Ajax.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/APL/js/SVMX_UIParser.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/APL/js/SVMX_Utils.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/Tooltip/jquery.tipTip.minified.js')}"/>
+<style>
+.disableTab {
+    background-color : #DCDCDC ;
+    color:LightGrey;
+    background-image:none;
+    font-size:1.2em;
+}
+</style>
+<script type="text/JavaScript">
+    // block code community fix start
+    var strCommnutniyName = '';
+    try{
+    var strCommunityPrefix = '{!$Site.Prefix}';
+    if(strCommunityPrefix != null)
+        strCommnutniyName = strCommunityPrefix;
+    }catch(e)
+    {
+        strCommnutniyName = '';
+    }
+    // block code community fix end
+    var disableCacheBtn;
+    var disablHomeBtn;
+    var sessionID =  '{!GETSESSIONID()}'
+    var describeObjectResult = {};
+    var result;
+    var resultOfLayoutDescibe; 
+    var objectDefination = new Array();
+    var strInput;
+    var saveObjectDescriptionRequest = new Object();
+    var count = 0;
+    var now = 0;
+    var successMessage = "{!$Label.CONF038_TAG005}";
+    var errorMessage = "{!$Label.COMM001_TAG077}";
+    var processingText = "{!$Label.svmxc__COMM001_TAG041}";
+    var processbar = processingText.split('.');
+    var sr = new SOAPRequest({orgNameSpace: "SVMXC", sessionId : sessionID, endPointName: "COMM_Webservices", communityPrefix : strCommnutniyName});
+    var d = new Date();
+    function replacer(key, value) {
+        if (typeof value === 'number' && !isFinite(value)) {
+            return String(value);
+        }
+        return value;
+    }
+    function updateSpecialCharacter(keyword)
+    {
+        keyword = keyword.replace(/&/g, '&amp;'); 
+        keyword = keyword.replace(/\'/g,'&apos;');
+        keyword = keyword.replace(/</g,'&lt;');
+        keyword = keyword.replace(/>/g,'&gt;');
+        return keyword;
+    }
+    function buildDependentPicklist(objDef){
+        
+        document.getElementById('progressBar').innerHTML = processbar[0] +' '+objDef.objectLabel+'...';
+        
+        var picklistFields = new Array();
+        picklistFields = objDef.picklistFields;
+        if(! (picklistFields instanceof Array ))
+            picklistFields = [picklistFields]; 
+        
+        saveObjectDescriptionRequest = new Object();
+        saveObjectDescriptionRequest.lstFields = new Array();
+           
+       //Loop all fields and if field type is picklist or multipicklist then create array if the fields
+        
+        for(var i=0;i<describeObjectResult.fields.length;i++)
+        {
+            if(describeObjectResult.fields[i].type == "picklist" || describeObjectResult.fields[i].type == "multipicklist" )
+            {
+                 var properties = new Object();
+                 properties.name = describeObjectResult.fields[i].name;
+                 properties.picklistValues = new Array();
+                 properties.picklistValues = describeObjectResult.fields[i].picklistValues;
+                 properties.dependentPicklist = describeObjectResult.fields[i].dependentPicklist;
+                 properties.controllerName = describeObjectResult.fields[i].controllerName
+                 saveObjectDescriptionRequest.lstFields.push(properties);
+                
+            }
+            else if(describeObjectResult.fields[i].type == "boolean"){
+                var properties = new Object();
+                properties.name = describeObjectResult.fields[i].name;
+                properties.picklistValues = new Array();
+                var obj = {};
+                obj.active = true;
+                obj.defaultValue = false
+                obj.label = 'false'
+                obj.value = 'false'
+                properties.picklistValues.push(obj);
+                var obj = {};
+                obj.active = true;
+                obj.defaultValue = false
+                obj.label = 'true'
+                obj.value = 'true'
+                properties.picklistValues.push(obj);
+                //properties.type = describeObjectResult.fields[i].type;
+                properties.dependentPicklist = describeObjectResult.fields[i].dependentPicklist;
+                properties.controllerName = describeObjectResult.fields[i].controllerName
+                saveObjectDescriptionRequest.lstFields.push(properties);
+            }
+        }
+        for(var i=0;i<describeObjectResult.fields.length;i++)
+        {
+            if(describeObjectResult.fields[i].dependentPicklist)
+            { 
+                for(var j = 0;j<saveObjectDescriptionRequest.lstFields.length;j++)
+                {
+                    if(describeObjectResult.fields[i].controllerName == saveObjectDescriptionRequest.lstFields[j].name)
+                    {
+                        
+                        var dependendPicklisValues = describeObjectResult.fields[i].picklistValues; 
+                        for(var k = 0;k<saveObjectDescriptionRequest.lstFields[j].picklistValues.length;k++){
+                            for(l = 0;l<dependendPicklisValues.length;l++){
+                                var result = isValidFor(dependendPicklisValues[l].validFor,k);
+                                if(result){
+                                    var sourceDependentPicklistCollection = saveObjectDescriptionRequest.lstFields[j].picklistValues[k].dependendPicklist;
+                                    if(!sourceDependentPicklistCollection){
+                                        sourceDependentPicklistCollection = [];
+                                        saveObjectDescriptionRequest.lstFields[j].picklistValues[k].dependendPicklist = sourceDependentPicklistCollection;
+                                    }
+
+                                    var targetDependentValues = null;
+                                    for(var m = 0; m < sourceDependentPicklistCollection.length; m++){
+                                        if(sourceDependentPicklistCollection[m].fieldAPIName == describeObjectResult.fields[i].name){
+                                            targetDependentValues = sourceDependentPicklistCollection[m];
+                                            break;
+                                        }
+                                    }
+
+                                    if(!targetDependentValues){
+                                        targetDependentValues = {fieldAPIName : describeObjectResult.fields[i].name, value : "" + l};
+                                        sourceDependentPicklistCollection.push(targetDependentValues);
+                                    }else{
+                                        targetDependentValues.value += ";" + l;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if( ! (saveObjectDescriptionRequest.lstFields instanceof Array)){
+            saveObjectDescriptionRequest.lstFields = [saveObjectDescriptionRequest.lstFields];
+        }
+        for(var i = 0;i<saveObjectDescriptionRequest.lstFields.length;i++){
+            if(! (saveObjectDescriptionRequest.lstFields[i].picklistValues instanceof Array)){
+                saveObjectDescriptionRequest.lstFields[i].picklistValues = [saveObjectDescriptionRequest.lstFields[i].picklistValues];
+            }
+            for(var j = 0 ;j<saveObjectDescriptionRequest.lstFields[i].picklistValues.length;j++){
+                if(saveObjectDescriptionRequest.lstFields[i].picklistValues[j].dependendPicklist !== undefined &&  !( saveObjectDescriptionRequest.lstFields[i].picklistValues[j].dependendPicklist instanceof Array)){
+                    saveObjectDescriptionRequest.lstFields[i].picklistValues[j].dependendPicklist = [saveObjectDescriptionRequest.lstFields[i].picklistValues[j].dependendPicklist];
+                }
+            }
+            
+        }
+        var res = JSON.stringify(saveObjectDescriptionRequest,replacer)
+        res = updateSpecialCharacter(res);
+        saveObjectDescribe(objDef,res) 
+    }
+    function describeObject2(objDef){
+        
+        var url = '/services/Soap/u/15.0/', method = "POST", 
+        responseType = "xml", data = buildPayloadForObjectDescribe(objDef.objectName), contentType = "text/xml";
+        $.ajax({type: method, contentType : contentType, dataType: responseType,
+        data: data, url: url, context: this, async: true, headers : {SOAPAction : "describeSObject"},
+        success: function(data, status, jqXhr) {
+        var resultOfObjectDescibe = processSoapXml(data);
+        describeObjectResult = {};
+        describeObjectResult = resultOfObjectDescibe.Envelope.Body.describeSObjectResponse.result;
+        buildDependentPicklist(objDef)
+        },
+        error : function(jqXhr, status, e){this._callAsyncError(jqXhr, status, e);}}); 
+    }
+    function describeObject(objDef){
+        
+        var url = '/services/Soap/u/15.0/', method = "POST", 
+        responseType = "xml", data = buildPayloadForObjectDescribe(objDef.objectName), contentType = "text/xml";
+        $.ajax({type: method, contentType : contentType, dataType: responseType,
+        data: data, url: url, context: this, async: true, headers : {SOAPAction : "describeSObject"},
+        success: function(data, status, jqXhr) {
+        var resultOfObjectDescibe = processSoapXml(data);
+        describeObjectResult = {};
+        describeObjectResult = resultOfObjectDescibe.Envelope.Body.describeSObjectResponse.result;
+        getLayoutDescribe(objDef);
+        },
+        error : function(jqXhr, status, e){this._callAsyncError(jqXhr, status, e);}}); 
+    }
+    
+    function getLayoutDescribe(objDef){
+        
+        var lstFieldProperty = [];
+        for(var i=0;i<describeObjectResult.fields.length;i++){
+            if(describeObjectResult.fields[i].type == "picklist" || describeObjectResult.fields[i].type == "multipicklist" ){
+                 
+                var properties = new Object();
+                properties.fieldAPIName = describeObjectResult.fields[i].name;
+                properties.picklistValues = new Array();
+                properties.picklistValues = describeObjectResult.fields[i].picklistValues;
+                lstFieldProperty.push(properties);
+            }
+        }     
+        
+        document.getElementById('progressBar').innerHTML = processbar[0] +' '+objDef.objectLabel+'...';
+        var url = '/services/Soap/u/15.0/', method = "POST", 
+                responseType = "xml", data = buildPayloadForLayoutDescribe(objDef.objectName,objDef.recordTypeId), contentType = "text/xml";
+        $.ajax({type: method, contentType : contentType, dataType: responseType,
+        data: data, url: url, context: this, async: true, headers : {SOAPAction : "describeLayout"},
+        success: function(data, status, jqXhr) {
+            result = processSoapXml(data, {convertBoolean : true});
+            
+            // convert single objects which are actually Array types
+            resultOfLayoutDescibe = result.Envelope.Body.describeLayoutResponse.result.recordTypeMappings;
+            if(! (resultOfLayoutDescibe instanceof Array)){
+                resultOfLayoutDescibe = [resultOfLayoutDescibe]; 
+            }
+            for(var i = 0;i<resultOfLayoutDescibe.length;i++){
+                if( resultOfLayoutDescibe[i].picklistsForRecordType !== undefined &&  !(resultOfLayoutDescibe[i].picklistsForRecordType instanceof Array)){
+                    resultOfLayoutDescibe[i].picklistsForRecordType = [resultOfLayoutDescibe[i].picklistsForRecordType];
+                    for(var j = 0;j<resultOfLayoutDescibe[i].picklistsForRecordType.length;j++){
+                        if( resultOfLayoutDescibe[i].picklistsForRecordType[j].picklistValues !== undefined && !(resultOfLayoutDescibe[i].picklistsForRecordType[j].picklistValues instanceof Array) ){
+                            resultOfLayoutDescibe[i].picklistsForRecordType[j].picklistValues = [resultOfLayoutDescibe[i].picklistsForRecordType[j].picklistValues];
+                        }
+                    }
+                }
+                else if(resultOfLayoutDescibe[i].picklistsForRecordType instanceof Array)
+                {
+                    
+                    for(var k = 0;k<resultOfLayoutDescibe[i].picklistsForRecordType.length;k++){
+                        if( resultOfLayoutDescibe[i].picklistsForRecordType[k].picklistValues !== undefined && !(resultOfLayoutDescibe[i].picklistsForRecordType[k].picklistValues instanceof Array) ){
+                            resultOfLayoutDescibe[i].picklistsForRecordType[k].picklistValues = [resultOfLayoutDescibe[i].picklistsForRecordType[k].picklistValues];
+                        }
+                    }
+                }
+                for(var j = 0;j<resultOfLayoutDescibe[i].picklistsForRecordType.length;j++){
+                    var picklistFields = resultOfLayoutDescibe[i].picklistsForRecordType[j];
+                    picklistFields = [picklistFields];
+                    for(var k = 0;k<picklistFields.length;k++){
+                        for(var l = 0;l<lstFieldProperty.length;l++){
+                            if(picklistFields[k].picklistName === lstFieldProperty[l].fieldAPIName){
+                                var objectPicklistValues = lstFieldProperty[l].picklistValues
+                                var layoutPicklistValues = picklistFields[k].picklistValues
+                                for(var m = 0;m<objectPicklistValues.length;m++){
+                                    for(var n = 0;n<layoutPicklistValues.length;n++){
+                                        if(objectPicklistValues[m].value === layoutPicklistValues[n].value){
+                                            layoutPicklistValues[n].index = m;
+                                        }
+                                    }
+                                }
+                                picklistFields[k].picklistValues = layoutPicklistValues;
+                            }
+                        }
+                    }
+                    resultOfLayoutDescibe[i].picklistsForRecordType[j] = picklistFields[0];
+                }
+                    
+            }
+            var res = JSON.stringify(resultOfLayoutDescibe,replacer)
+            res = updateSpecialCharacter(res);
+            saveLayoutDescribe(objDef,res);
+        }, 
+        error : function(jqXhr, status, e){}}); 
+    }
+    
+    
+
+   
+    
+    function saveLayoutDescribe(objDef,resultOfLayoutDescibe){
+        var url = '/services/Soap/class/SVMXC/COMM_Webservices?t='+d.getMilliseconds(), method = "POST", 
+                responseType = "xml", data = buildPayloadForSaveDescribeLayoutCache(objDef.objectName,resultOfLayoutDescibe), contentType = "text/xml";
+        $.ajax({type: method, contentType : contentType, dataType: responseType,
+        data: data, url: url, context: this, async: true, headers : {SOAPAction : "saveDescribeLayoutCache_WS"},
+        success: function(data, status, jqXhr) {
+            if(objDef.picklistFields != null)
+            {
+                 buildDependentPicklist(objDef);
+            }
+            
+        }, 
+        error : function(jqXhr, status, e){
+            document.getElementById('progressBar').innerHTML = ""; 
+            $(disableCacheBtn).prop('disabled', false);
+            $(disablHomeBtn).prop('disabled', false);
+            alert(errorMessage);}}); 
+    }
+    function saveObjectDescribe(objDef,resultOfObjectLayout){
+        var url = '/services/Soap/class/SVMXC/COMM_Webservices?t='+d.getMilliseconds(), method = "POST", 
+                responseType = "xml", data = buildPayloadForSaveDescribeObjectCache(objDef.objectName,resultOfObjectLayout), contentType = "text/xml";
+        $.ajax({type: method, contentType : contentType, dataType: responseType,
+        data: data, url: url, context: this, async: true, headers : {SOAPAction : "saveDescribeObjectCache_WS"},
+        success: function(data, status, jqXhr) {
+            now = ++count;
+            if(now == objectDefination.length)
+            {
+                document.getElementById('progressBar').innerHTML = ""
+                $(disableCacheBtn).prop('disabled', false);
+                $(disablHomeBtn).prop('disabled', false);
+                alert(successMessage);
+            }
+            else
+            {
+                syncCall(objectDefination[now]);
+            }
+            
+        }, 
+        error : function(jqXhr, status, e){
+            document.getElementById('progressBar').innerHTML = ""
+            $(disableCacheBtn).prop('disabled', false);
+            $(disablHomeBtn).prop('disabled', false);
+            alert(errorMessage);
+            }}); 
+    }
+    
+    
+    function getDefinition()
+    {
+        var url = '/services/Soap/class/SVMXC/COMM_Webservices?t='+d.getMilliseconds(), method = "POST", 
+                responseType = "xml", data = buildPayloadForObjectDefination(), contentType = "text/xml";
+        $.ajax({type: method, contentType : contentType, dataType: responseType,
+        data: data, url: url, context: this, async: true, headers : {SOAPAction : "getObjectDefination_WS"},
+        success: function(data, status, jqXhr) {
+            var data = processSoapXml(data)
+            objectDefination = data.Envelope.Body.getObjectDefination_WSResponse.result;
+            if(! (objectDefination instanceof Array ) )
+                objectDefination = [objectDefination]
+            syncCall(objectDefination[count]);
+        }, 
+        error : function(jqXhr, status, e){}}); 
+    }
+    function syncCall(objectDefination)
+    {
+        var objDef = objectDefination
+        debugger;
+        if( typeof objDef.recordTypeId !== undefined && objDef.recordTypeId !== null && objDef.recordTypeId.length > 0)
+        {
+            describeObject(objDef);
+        }
+        else if(typeof objDef.picklistFields !== undefined && objDef.picklistFields != null && objDef.picklistFields.length > 0)
+        {
+            describeObject2(objDef);
+        }
+        else 
+        {
+            var now = count++;
+            if(now == objectDefination.length)
+            {
+                document.getElementById('progressBar').innerHTML = ""
+                $(disableCacheBtn).prop('disabled', false);
+                $(disablHomeBtn).prop('disabled', false);
+                alert(successMessage);
+            }
+            syncCall(objectDefination[now]);
+        }
+    }
+     
+    function buildPayloadForObjectDescribe(objName){
+        return '<se:Envelope xmlns:se="http://schemas.xmlsoap.org/soap/envelope/"><se:Header xmlns:sfns="urn:partner.soap.sforce.com"><sfns:SessionHeader><sessionId>'+sessionID+'</sessionId></sfns:SessionHeader><sfns:LoginScopeHeader><organizationId>00D700000009JVpEAM</organizationId></sfns:LoginScopeHeader></se:Header><se:Body><describeSObject xmlns="urn:partner.soap.sforce.com" xmlns:ns1="sobject.partner.soap.sforce.com"><sObjectType>'+objName+'</sObjectType></describeSObject></se:Body></se:Envelope>'
+    }
+    
+    function buildPayloadForLayoutDescribe(objName,recordTypeId){
+        
+        var describeRequest = '<sObjectType>'+objName+'</sObjectType>';
+        if(!( recordTypeId instanceof Array)){
+            recordTypeId = [recordTypeId]; 
+        }       
+        if(recordTypeId != null){
+            for(var i = 0;i<recordTypeId.length;i++){
+                describeRequest += '<recordTypeIds>'+recordTypeId[i]+'</recordTypeIds>';
+            }
+        }
+        return '<se:Envelope xmlns:se="http://schemas.xmlsoap.org/soap/envelope/"><se:Header xmlns:sfns="urn:partner.soap.sforce.com"><sfns:SessionHeader><sessionId>'+sessionID+'</sessionId></sfns:SessionHeader><sfns:LoginScopeHeader><organizationId>00D700000009JVpEAM</organizationId></sfns:LoginScopeHeader></se:Header><se:Body><describeLayout xmlns="urn:partner.soap.sforce.com" xmlns:ns1="sobject.partner.soap.sforce.com">'+describeRequest+'</describeLayout></se:Body></se:Envelope>'
+        
+    }
+    
+    function buildPayloadForObjectDefination(){
+        return '<se:Envelope xmlns:se="http://schemas.xmlsoap.org/soap/envelope/"><se:Header xmlns:sfns="urn:partner.soap.sforce.com"><sfns:SessionHeader><sessionId>'+sessionID+'</sessionId></sfns:SessionHeader><sfns:LoginScopeHeader><organizationId></organizationId></sfns:LoginScopeHeader></se:Header><se:Body><getObjectDefination_WS xmlns= "http://soap.sforce.com/schemas/package/SVMXC/COMM_Webservices"></getObjectDefination_WS></se:Body></se:Envelope>'
+    }
+    
+    function buildPayloadForSaveDescribeLayoutCache(objName,resultOfLayoutDescibe) {
+        return ' <se:Envelope xmlns:se="http://schemas.xmlsoap.org/soap/envelope/"><se:Header xmlns:sfns="urn:partner.soap.sforce.com"><sfns:SessionHeader><sessionId>'+sessionID+'</sessionId></sfns:SessionHeader><sfns:LoginScopeHeader><organizationId></organizationId></sfns:LoginScopeHeader></se:Header><se:Body><saveDescribeLayoutCache_WS xmlns= "http://soap.sforce.com/schemas/package/SVMXC/COMM_Webservices"> <recordTypePicklist>'+resultOfLayoutDescibe+'</recordTypePicklist><strObjectName>'+objName+'</strObjectName></saveDescribeLayoutCache_WS></se:Body></se:Envelope>'
+    }
+    function buildPayloadForSaveDescribeObjectCache(objName,resultOfObjectLayout) {
+        return ' <se:Envelope xmlns:se="http://schemas.xmlsoap.org/soap/envelope/"><se:Header xmlns:sfns="urn:partner.soap.sforce.com"><sfns:SessionHeader><sessionId>'+sessionID+'</sessionId></sfns:SessionHeader><sfns:LoginScopeHeader><organizationId></organizationId></sfns:LoginScopeHeader></se:Header><se:Body><saveDescribeObjectCache_WS xmlns= "http://soap.sforce.com/schemas/package/SVMXC/COMM_Webservices"><dependendPicklist>'+resultOfObjectLayout+'</dependendPicklist><strObjectName>'+objName+'</strObjectName></saveDescribeObjectCache_WS></se:Body></se:Envelope>'
+    }
+    
+    function isValidFor(validForBytes, parentIndex){
+        /*
+        * References:
+        * http://en.wikipedia.org/wiki/Base64
+        * http://blog.teamlazerbeez.com/2009/08/10/salesforcecom-soap-api-gotchas-part-3/
+        */
+        var numBits = validForBytes.length * 6, bitArray = [], i, bitIndexInByte, byteIndex, b, bValue;
+        var base64IndexTable = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    
+        for (i = 0; i < numBits; i++) {
+       
+            // the byte to pull the bit from
+            var remainder = i % 6;
+            var quotient = (i - remainder) / 6;
+       
+            if (quotient >= 0)
+                byteIndex = Math.floor(quotient);
+            else  // negative
+                byteIndex = Math.ceil(quotient);
+
+            bitIndexInByte = 5 - (i % 6);
+            b = validForBytes[byteIndex], bValue = base64IndexTable.indexOf( b );
+            bitArray.push( ((bValue >> bitIndexInByte) & 1) );
+        }
+   
+        return bitArray[parentIndex] == 1;
+    }
+    
+
+    function processSoapXml (data, options){
+        function xmlToJson(xml) {
+            var attr, child, attrs = xml.attributes, children = xml.childNodes, key = xml.nodeType, obj = {}, i = -1;
+    
+            if (key == 1 && attrs.length) {
+                i = -1;
+            } else if (key == 3) {
+                obj = xml.nodeValue;
+                if(obj && typeof(obj) === 'string'){
+                    if(obj == "true"){
+                        obj = true;
+                    }else if(obj == "false"){
+                        obj = false;
+                    }
+                }
+            }
+            while (child = children.item(++i)) {
+                key = child.nodeName;
+                key  = key.indexOf(":") != -1 ? key.split(":")[1] : key;
+                
+                if (obj.hasOwnProperty(key)) {
+                    if (obj.toString.call(obj[key]) != '[object Array]') {
+                        obj[key] = [obj[key]];
+                    }
+                    obj[key].push(xmlToJson(child));
+                }else {
+                    obj[key] = xmlToJson(child);
+                }
+            }
+            return obj;
+        }
+        function correctObject(obj){
+            for(var name in obj){
+                var objItem = obj[name];
+                if(objItem && typeof(objItem) == 'object'){
+                    if(objItem.hasOwnProperty("#text")){
+                        obj[name] = objItem["#text"];
+                    }else if(name == "value1" && typeof(objItem) == 'object'){
+                        obj[name] = null;
+                    }else if(name == "value" && typeof(objItem) == 'object'){
+                        obj[name] = null;
+                    }else if(name == "key" && typeof(objItem) == 'object'){
+                        obj[name] = null;
+                    }else{
+                        correctObject(objItem);
+                    }
+                }
+            }
+            return obj;
+        }
+        var ret = correctObject(xmlToJson(data));
+        return ret;
+    }
+    function customSelectChecked( form,type,value) {  
+        var i = 0;
+        for (i = 0; i < form.elements.length; i++) {
+            if (form.elements[i].name.search(type) > 0 && form.elements[i].disabled == false) {
+                form.elements[i].checked = value;
+            }
+        }
+    }  
+    function customSelectAllOrNoneByCheckbox(form,type,control){  
+        customSelectChecked( form,type,control.checked); 
+    }   
+    function checkSelectAll(form,type) {
+        var isChecked = false;
+        for (i = 1; i < form.elements.length; i++) {
+                if (form.elements[i].name.search(type) > 0 && form.elements[i].checked == true) {
+                    isChecked = true;
+                }
+            }
+            if(isChecked == true)
+            return true;
+            else
+            return false;
+    }
+
+</script>
+
+<apex:pageBlock title="{!$Label.svmxc__CONF038_TAG001}" id="block1" helptitle="{!$Label.svmxc__COMM001_TAG064}" helpurl="{!HLPURL}"> 
+<apex:pageMessages />
+<apex:outputPanel id="jspanel"> 
+
+<script>  
+function createCache(){
+    
+    debugger;
+    count = 0;
+    strInput = eval('{!JSENCODE(strReturn)}');
+    objectDefination = strInput;
+    if(objectDefination !== undefined){
+        document.getElementById('progressBar').innerHTML = processingText
+        disableCacheBtn = document.getElementById("page:form1:block1:button:RefreshCacheBtn");
+        disablHomeBtn = disableCacheBtn = document.getElementById("page:form1:block1:button:BackToHomeBtn");
+        $(disableCacheBtn).prop('disabled', true);
+        $(disablHomeBtn).prop('disabled', true); 
+         if(! (objectDefination instanceof Array ) )
+             objectDefination = [objectDefination];
+         syncCall(objectDefination[count]);
+    }
+ }
+</script>
+</apex:outputPanel>
+<apex:actionstatus id="status" startText="{!$Label.svmxc__COMM001_TAG041}"/>
+<div id="progressBar" />
+<apex:pageBlockButtons id="button" >
+        <apex:commandbutton id="RefreshCacheBtn" disabled="false" value="{!$Label.svmxc__CONF038_TAG002}" onClick="{if(!confirm('{!TAG001}')){return false}}" oncomplete="createCache();" action="{!getDefination}" reRender="block1" status="status"/> 
+        <apex:commandButton id="BackToHomeBtn" disabled="false" value="{!$Label.svmxc__COMM001_TAG046}" action="{!Stdbacktosetuphme}" status="status"/>
+    </apex:pageBlockButtons>
+    <apex:pageBlockSection columns="1">
+        <apex:outputtext value="{!$Label.svmxc__CONF038_TAG004}" style="font-weight: bold; font-Size:12px"/>
+    </apex:pageBlockSection>
+    <apex:pageBlockSection title="" collapsible="false"/>
+    <apex:pageBlockSection columns="1" id="block1section1">
+        <!--<apex:panelGrid cellspacing="0" cellpadding="0" width="65%" columns="1" border="0" >
+        <center><apex:toolbar id="theToolbarPP" styleClass="disableTab" width="45%">
+            <apex:toolbarGroup location="left" id="toolbarGroupPP">
+                <apex:outputText value="{!$Label.svmxc__CONF038_TAG004}"/>                
+            </apex:toolbarGroup>
+        </apex:toolbar></center>
+        </apex:panelGrid>-->
+        <apex:pageblockTable value="{!lstDataset}" var="val" id="dataTable">
+            <apex:column >
+                <apex:facet name="header">
+                    <apex:inputCheckbox value="{!CheckAllObj}" onclick="javascript:customSelectAllOrNoneByCheckbox(document.forms['page:form1'],'selected',this);"/> 
+                </apex:facet>               
+                <apex:inputCheckbox id="selected" value="{!val.isSelected}"/>
+            </apex:column> 
+            <apex:column > 
+                <apex:facet name="header">{!$Label.svmxc__COMM001_TAG100}</apex:facet>   
+                <apex:outputtext id="objname" value="{!val.strObjectLabel}"/>
+            </apex:column>
+        </apex:pageblockTable>
+   </apex:pageBlockSection>
+  
+</apex:pageBlock>
+</apex:form>
+</apex:page>

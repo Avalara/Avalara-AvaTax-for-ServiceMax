@@ -1,0 +1,87 @@
+<apex:page standardController="Avalara__c" extensions="AVA_OriginAddressValidation" action="{!ValidateAddress}" sidebar="false" standardStylesheets="false">
+    <!-- <apex:pageBlock title="Verify Replacement For Origin Address" sidebar="false" standardStylesheets="false"> -->
+    <apex:includeLightning />
+    
+    <apex:stylesheet value="{!$Resource.LightningCSS}"/>
+    
+    <apex:form >
+        <div class="slds">
+        <div class="slds-page-header s1FixedFullWidth s1FixedTop forceHighlightsStencilDesktop" data-aura-rendered-by="135:957;a" data-aura-class="forceHighlightsStencilDesktop" >
+        <div class="slds-grid primaryFieldRow" data-aura-rendered-by="136:957;a"><div class="slds-grid slds-col slds-has-flexi-truncate slds-media--center" data-aura-rendered-by="137:957;a">
+        <div class="slds-media__body" data-aura-rendered-by="142:957;a">
+        <p class="slds-text-heading--label slds-line-height--reset" data-aura-rendered-by="143:957;a" style="opacity: 1;">Avalara</p>
+        <h1 class="slds-page-header__title slds-m-right--small slds-truncate slds-align-middle" data-aura-rendered-by="145:957;a"><span data-aura-rendered-by="6:957;a" class="uiOutputText" data-aura-class="uiOutputText">Verify Origin Address</span></h1>
+        </div></div></div></div> 
+    
+            <div>&nbsp;</div>
+            <h2><strong>CURRENT ADDRESS</strong></h2><br/>
+            <div class="slds-notify slds-theme--alert-texture">
+                 <div class="divLeft"><font color="#54698d">Line 1</font></div>
+                 <div>&nbsp;<apex:outputText value="{!Original.Line1}" /></div>
+                 
+                 <div class="divLeft"><font color="#54698d">Line 2</font></div>
+                 <div>&nbsp;<apex:outputText value="{!Original.Line2}" /></div>
+                 
+                 <div class="divLeft"><font color="#54698d">Line 3</font></div>
+                 <div>&nbsp;<apex:outputText value="{!Original.Line3}" /></div>
+                 
+                 <div class="divLeft"><font color="#54698d">City, State, Zip</font></div>
+                 <div>&nbsp;<apex:outputText value="{!Original.City}, {!Original.Region} {!Original.PostalCode}" /></div>
+                 
+                 <div class="divLeft"><font color="#54698d">Country</font></div>
+                 <div>&nbsp;<apex:outputText value="{!Original.Country}" /></div>
+                 <p>&nbsp;</p>
+            </div>
+             <br/>    
+             <h2><strong>VALIDATED ADDRESS</strong></h2>
+            <div class="slds-notify slds-theme--alert-texture">
+                                 
+                 <div class="divLeft"><font color="#54698d">Line 1</font></div>
+                 <div>&nbsp;<apex:outputText value="{!Validated.Line1}" /></div>
+                 
+                 <div class="divLeft"><font color="#54698d">Line 2</font></div>
+                 <div>&nbsp;<apex:outputText value="{!Validated.Line2}" /></div>
+                 
+                 <div class="divLeft"><font color="#54698d">Line 3</font></div>
+                 <div>&nbsp;<apex:outputText value="{!Validated.Line3}" /></div>
+                 
+                 <div class="divLeft"><font color="#54698d">City, State, Zip</font></div>
+                 <div>&nbsp;<apex:outputText value="{!Validated.City}, {!Validated.Region} {!Validated.PostalCode}" /></div>
+                 
+                 <div class="divLeft"><font color="#54698d">Country</font></div>
+                 <div>&nbsp;<apex:outputText value="{!Validated.Country}" /></div>
+                 
+                 <div><hr/></div>
+
+
+                 <apex:variable value="{!CONTAINS($CurrentPage.URL, 'lightning.force.com')}" var="isLightningMode"/>
+                    <!-- $CurrentPage.URL = {!$CurrentPage.URL} <br/>
+                    isLightningMode = {!isLightningMode} <br/> -->
+                    <apex:outputpanel layout="none" rendered="{!isLightningMode = false}">
+                        <!-- Classic UI - Code to display ui in Classic UI mode -->
+                        <!-- this is classic ui -->
+                
+                 <div class="divLeft"><apex:commandButton action="{!RedirectPage}" value="Keep Address As Entered" /></div>
+                 
+                 <div><apex:commandButton action="{!UpdateAddress}" value="Replace With Validated Address" /></div>
+            </apex:outputpanel>
+
+            <apex:outputpanel layout="none" rendered="{!isLightningMode = true}">
+            <!-- Lightning mode  - Code to display ui in Lightning mode -->
+            <!-- this is lighting mode -->
+
+                 <div class="divLeft"><apex:commandButton action="{!RedirectPage}" value="Keep Address As Entered" 
+                 styleClass="slds-button slds-button--neutral uiButton--brand uiButton" /></div>
+                 
+                 <div><apex:commandButton action="{!UpdateAddress}" value="Replace With Validated Address" styleClass="slds-button slds-button--neutral uiButton--brand uiButton"  /></div>
+
+            </apex:outputpanel> 
+
+                 <p>&nbsp;</p>
+
+            </div>
+
+        </div>
+    </apex:form>
+    <!-- </apex:pageBlock> -->
+</apex:page>

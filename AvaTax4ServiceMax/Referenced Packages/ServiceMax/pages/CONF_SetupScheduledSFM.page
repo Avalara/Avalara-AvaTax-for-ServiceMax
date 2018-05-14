@@ -1,0 +1,447 @@
+<apex:page controller="SVMXC.CONF_SetupScheduledSFM" id="setupSFMScheduledProcess">
+    <script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+    <apex:form id="Form1">
+        <style>
+            .activeTab{
+                background-color: #8599B1;
+                color:white;
+                background-image:none;
+                font-size:14Px
+            }
+            .inactiveTab{
+                background-color: #B0BFD2;
+                color:black;
+                background-image:none;
+            }
+            .disableTab{
+                background-color:Lightgrey;
+                color:LightGrey;
+                background-image:none;
+                font-size:1.2em;
+            }
+        </style>
+        <script>
+            function drawOption(allSFMProcess, ProcessElement, strSearch){
+                if(strSearch == "{!HTMLENCODE($Label.svmxc__COMM002_TAG042)}")
+                    strSearch='';
+                var lengthOption =ProcessElement.length;
+                for( i = 0 ; i < lengthOption ; i++)
+                    ProcessElement.remove(0);
+                if(allSFMProcess != null){
+                    if(!allSFMProcess.length){
+                        if(allSFMProcess.SVMXC__Name__c != null && allSFMProcess.SVMXC__ProcessID__c != null ){ 
+                            var strName = allSFMProcess.SVMXC__Name__c.toUpperCase();
+                            strSearch = strSearch.toUpperCase();
+                            var countSplit = strName.split(strSearch);
+                            if(countSplit.length > 1){
+                                var optionElemnt = document.createElement("option");
+                                optionElemnt.value = allSFMProcess.Id;
+                                optionElemnt.title = allSFMProcess.SVMXC__Name__c;
+                                optionElemnt.innerHTML = allSFMProcess.SVMXC__Name__c;
+                                ProcessElement.appendChild(optionElemnt);
+                            }
+                        }
+                    }
+                    else{
+                        for( i = 0 ; i < allSFMProcess.length ; i++){
+                            if(allSFMProcess[i].SVMXC__Name__c != null && allSFMProcess[i].SVMXC__ProcessID__c != null ){
+                                var strName = allSFMProcess[i].SVMXC__Name__c.toUpperCase();
+                                strSearch = strSearch.toUpperCase();
+                                var countSplit = strName.split(strSearch);
+                                if(countSplit.length > 1){
+                                    var optionElemnt = window.top.document.createElement("option");
+                                    optionElemnt.value = allSFMProcess[i].Id;
+                                    optionElemnt.title = allSFMProcess[i].SVMXC__Name__c;
+                                    optionElemnt.innerHTML = allSFMProcess[i].SVMXC__Name__c;
+                                    ProcessElement.appendChild(optionElemnt);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            function goSelectedElement(HTMLelement){
+                var mySelectIds = new Array();
+                var selectedOption = HTMLelement.options;
+                for (var i = 0; i<selectedOption.length ; i++){
+                    if(selectedOption[i].selected)
+                        mySelectIds.push(selectedOption[i].value);
+                }
+                document.getElementById('{!$Component.inputSelected}').value = mySelectIds;
+            }
+            function goRemoveElement(HTMLelement){
+                var mySelectIds = new Array();
+                var selectedOption = HTMLelement.options;
+                for (var i = 0; i<selectedOption.length ; i++){
+                    if(selectedOption[i].selected)
+                        mySelectIds.push(selectedOption[i].value);
+                }
+                document.getElementById('{!$Component.inputremoved}').value = mySelectIds;
+            }
+            function searchOption(HTMLelement, ElementDraw, allSFMProcess, evt){
+                var charCode = evt.keyCode;
+                if((charCode >= 48 && charCode <= 57) || (charCode >= 65 && charCode <= 90) || (charCode >= 96 && charCode <= 105) || (charCode >= 186 && charCode <= 192) || (charCode >= 219 && charCode <= 222) || charCode == 8 || charCode == 13){
+                    drawOption(allSFMProcess, ElementDraw, HTMLelement.value);
+                }
+            }
+            
+            var defaultText = "{!HTMLENCODE($Label.svmxc__COMM002_TAG042)}";
+            function WaterMark(txt, evt){
+                if(txt.value.length == 0 && evt.type == "blur"){
+                    txt.style.color = "gray";
+                    txt.value = defaultText;
+                }
+                if(txt.value == defaultText && evt.type == "focus"){
+                    txt.style.color = "black";
+                    txt.value="";
+                }
+            }
+        </script>
+        <apex:inputHidden id="inputSelected" value="{!strSelectedIds}" /> 
+        <apex:inputHidden id="inputremoved" value="{!strRemoverIds}" /> 
+        <apex:pageBlock title="{!$Label.svmxc__CONF039_TAG006}" id="pageBlock1" helptitle="{!$Label.svmxc__COMM001_TAG064}" helpurl="{!$Label.svmxc__CONF039_HLPURL}">
+            <!---------------------------------------------------------- Buttons -------------------------------------------------->
+            <apex:pageBlockButtons location="TOP">
+                <apex:commandButton id="QuickSave" value="{!$Label.svmxc__COMM001_TAG053}" action="{!quickSave}" reRender="pageMessage1" status="ProcessingStatus" />
+                <apex:commandButton id="SaveAndClose" value="{!$Label.svmxc__COMM001_TAG054}" action="{!saveClose}" reRender="pageBlock1" status="ProcessingStatus"/>
+                <apex:commandButton id="Cancel" value="{!$Label.svmxc__COMM001_TAG040}" action="{!cancel}" status="ProcessingStatus"/>
+            </apex:pageBlockButtons>
+            <apex:outputPanel style="padding-left: 12px;" layout="block">
+                <apex:actionStatus id="ProcessingStatus" startText="{!$Label.svmxc__COMM001_TAG041}"/>
+                <apex:pageMessages id="pageMessage1"/>
+            </apex:outputPanel>
+            <apex:pageBlockSection columns="1">
+                <apex:tabPanel id="TabPanel1" switchType="client" tabClass="activeTab" inactiveTabClass="inactiveTab" value="{!strSelectedTab}">
+                    <!------------------------------------------ Tab-1 Starts Here ------------------------------------------------>
+                    <apex:tab id="TAB1" name="TAB1" label="{!$Label.svmxc__COMM001_TAG072}">
+                        <apex:pageBlock mode="edit" id="tab1pageblock1">
+                            <apex:pageBlockSection columns="1" collapsible="false" dir="LTR" id="tab1sec1">
+                                <apex:pageBlockSectionItem dataStyle="text-align:left;">
+                                    <apex:pageBlockSection columns="1">
+                                        <apex:outputtext value="{!$Label.svmxc__COMM001_TAG055}" style="font-Size:12px;" />
+                                    </apex:pageBlockSection>
+                                    <apex:outputPanel >
+                                        <apex:pageBlockSection columns="1">
+                                            <apex:outputPanel layout="block" styleClass="requiredInput">
+                                                <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                                                <apex:inputField id="SFMScheduledProcessName" value="{!SFMScheduledProcess.SVMXC__Name__c}" style="width:50%;" />
+                                            </apex:outputPanel>
+                                        </apex:pageBlockSection>
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection columns="1" collapsible="false" dir="LTR" id="tab1sec2">
+                                <apex:pageBlockSectionItem dataStyle="text-align:left;">
+                                    <apex:pageBlockSection columns="1">
+                                        <apex:outputtext value="{!$Label.svmxc__COMM001_TAG056}" style="font-Size:12px;" />
+                                    </apex:pageBlockSection>
+                                    <apex:outputPanel >
+                                        <apex:pageBlockSection columns="1">
+                                            <apex:outputPanel layout="block" styleClass="requiredInput">
+                                                <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                                                <apex:inputField id="SFMScheduledProcessId" value="{!SFMScheduledProcess.SVMXC__ProcessID__c}" style="width:50%;" />
+                                            </apex:outputPanel>
+                                        </apex:pageBlockSection>
+                                    </apex:outputPanel>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection columns="1" collapsible="false" dir="LTR" id="tab1sec3">
+                                <apex:pageBlockSectionItem dataStyle="text-align:left;">
+                                    <apex:pageBlockSection columns="1">
+                                        <apex:outputtext value="{!$Label.svmxc__COMM001_TAG017}" style="font-Size:12px;" />
+                                    </apex:pageBlockSection>
+                                    <apex:pageBlockSection columns="1">
+                                        <apex:outputPanel layout="block">
+                                            <apex:inputTextArea value="{!SFMScheduledProcess.SVMXC__Description__c}" style="width:50%;font-size: 13px;"/>
+                                        </apex:outputPanel>
+                                    </apex:pageBlockSection>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection columns="1">
+                                <apex:pageBlockSectionItem dataStyle="text-align:left;">
+                                    <apex:pageBlockSection columns="1">
+                                        <apex:outputtext value="{!$Label.svmxc__COMM001_TAG016}" style="font-Size:12px;" />
+                                    </apex:pageBlockSection>
+                                    <apex:pageBlockSection columns="1">                                    
+                                        <apex:inputCheckbox value="{!SFMScheduledProcess.SVMXC__Active__c}" label=""/>
+                                    </apex:pageBlockSection>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            <br></br>
+                            <apex:outputPanel >
+                                <center style="border:1px solid #C0C0C0; background:LightGrey">
+                                    <apex:toolbar id="tab1theToolbar1" styleClass="disableTab" width="5%">          
+                                        <apex:toolbarGroup location="left" id="tab1theToolbar1toolbarGroup1">
+                                            <apex:outputText value=" " style=" background-color:LightGrey;"/>
+                                        </apex:toolbarGroup>
+                                        <apex:toolbarGroup location="left" id="tab1theToolbar1toolbarGroup2">
+                                            <apex:outputText value="{!$Label.svmxc__CONF039_TAG011}"  style="background-color: LightGrey; font-size: 13px; padding: 3px 75px; margin-left: -32px; margin-right: -12px;"/>
+                                        </apex:toolbarGroup>
+                                    </apex:toolbar>
+                                </center>
+                            </apex:outputPanel>
+                            <apex:outputPanel id="panelId">
+                            <div id="mainDiv">
+                                <table width="100%">
+                                    <tr>
+                                        <td width="40%" valign="top">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td align="right" style="padding-left: 20%; padding-right: 4px;">
+                                                        <apex:toolbar id="tab1theToolbar111" styleClass="disableTab" style="width: 100%;">
+                                                            <apex:toolbarGroup location="left" id="tab1theToolbar1toolbarGroup222">
+                                                                <apex:outputText value="{!$Label.svmxc__CONF039_TAG036}"  style="font-size: 13px;"/>
+                                                            </apex:toolbarGroup>
+                                                        </apex:toolbar>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right" style="padding-right: 4px; padding-left: 2px;">
+                                                    <apex:inputText id="textForSearchAvail" style="width: 80%; padding:0; margin:0" onkeyup="searchOption(this, document.getElementById('avilablePrcess'), {!lstSFMProcessAvilable}, event)" onblur="WaterMark(this, event);" onfocus="WaterMark(this, event);"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="right">
+                                                    <select id="avilablePrcess" size="10" multiple="true" style="width: 80%;"/>
+                                                    </td>
+                                                </tr>
+                                            </table> 
+                                        </td>
+                                        <td width="10%" valign="top" align="center" style="padding: 8% 0 0;">
+                                            <table width="100%" style="margin:0 auto; text-align: center">
+                                                <tr>
+                                                    <td>
+                                                        <apex:commandButton action="{!moveToSelected}" status="ProcessingStatus"  reRender="panelId" title="{!$Label.svmxc__CONF039_TAG009}" style="width:18px;height:18px;background:white;" image="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/images/Arrow_Right_Bttn.JPG')}" onClick="goSelectedElement(document.getElementById('avilablePrcess'))" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <apex:commandButton action="{!moveToAvailable}" reRender="panelId" title="{!$Label.svmxc__CONF039_TAG010}"  status="ProcessingStatus" style="width:18px;height:18px;background:white" image="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/images/Arrow_Left_Bttn.JPG')}" onClick="goRemoveElement(document.getElementById('selectedPrcess'))" />
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td width="40%" valign="top">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td align="left" style="padding-left: 3px; padding-right: 20%;">
+                                                        <apex:toolbar id="tab1theToolbar11111" styleClass="disableTab" style="width: 100%;">
+                                                            <apex:toolbarGroup location="left" id="tab1theToolbar1toolbarGroup2222">
+                                                                <apex:outputText value="{!$Label.svmxc__CONF039_TAG037}"  style="font-size: 13px;"/>
+                                                            </apex:toolbarGroup>
+                                                        </apex:toolbar>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="left" style="padding-right: 4px;">
+                                                    <apex:inputText id="textForSearchSelected" style="width: 80%; padding:0; margin:0" onkeyup="searchOption(this, document.getElementById('selectedPrcess'), {!lstSFMProcessSelected}, event)"  onblur="WaterMark(this, event);" onfocus="WaterMark(this, event);"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td align="left">
+                                                    <select id="selectedPrcess" size="10" multiple="true" style="width: 80%;"/>
+                                                    </td>
+                                                </tr>
+                                            </table> 
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <script>
+                                var allSFMProcess = JSON.parse('{!JSENCODE(lstSFMProcessAvilable)}');
+                                var selectedSFMProcess = JSON.parse('{!JSENCODE(lstSFMProcessSelected)}');
+                                var AvilabelProcessElement = document.getElementById("avilablePrcess");
+                                drawOption(allSFMProcess, AvilabelProcessElement, document.getElementById('{!$Component.textForSearchAvail}').value);
+                                var selectedPrcessElement = document.getElementById("selectedPrcess");
+                                drawOption(selectedSFMProcess, selectedPrcessElement, document.getElementById('{!$Component.textForSearchSelected}').value);    
+                                if(document.getElementById('{!$Component.textForSearchAvail}').value == '' && document.getElementById('{!$Component.textForSearchSelected}').value == ''){
+                                    document.getElementById('{!$Component.textForSearchAvail}').value = "{!HTMLENCODE($Label.COMM002_TAG042)}";
+                                    document.getElementById('{!$Component.textForSearchAvail}').style.color = "gray";
+                                    document.getElementById('{!$Component.textForSearchSelected}').value = "{!HTMLENCODE($Label.COMM002_TAG042)}";
+                                    document.getElementById('{!$Component.textForSearchSelected}').style.color = "gray";
+                                }
+                                if(document.getElementById('{!$Component.textForSearchAvail}').value == "{!HTMLENCODE($Label.COMM002_TAG042)}")
+                                    document.getElementById('{!$Component.textForSearchAvail}').style.color = "gray";
+                                if(document.getElementById('{!$Component.textForSearchSelected}').value == "{!HTMLENCODE($Label.COMM002_TAG042)}")
+                                    document.getElementById('{!$Component.textForSearchSelected}').style.color = "gray";
+                            </script>
+                            </apex:outputPanel>    
+                            <br></br>
+                            <apex:outputPanel >
+                                <center style="border:1px solid #C0C0C0; background:LightGrey">
+                                    <apex:toolbar id="tab1ServicesToolBar" styleClass="disableTab" width="5%">          
+                                        <apex:toolbarGroup location="left" id="tab1theServicesToolbar1toolbarGroup1"> 
+                                            <apex:outputText value=" " style=" background-color:LightGrey;"/>
+                                        </apex:toolbarGroup>
+                                        <apex:toolbarGroup location="left" id="tab1theServicesToolbar1toolbarGroup2">
+                                            <apex:outputText value="{!$Label.svmxc__CONF039_TAG041}"  style="background-color: LightGrey; font-size: 13px; padding: 3px 75px; margin-left: -32px; margin-right: -12px;"/>
+                                        </apex:toolbarGroup>
+                                    </apex:toolbar> 
+                                </center>
+                            </apex:outputPanel>
+                            <apex:pageBlockSection columns="1" id="scheduleServicesTab">
+                                <apex:actionStatus id="scheduleServiceStatus" startText="{!$Label.svmxc__COMM001_TAG041}" style="font-Size:13px;Font-weight:bold;"/>
+                                <apex:pageblockTable value="{!listScheduleServices}" var="scheduleServiceRec"> 
+                                    <apex:column style="font-Size:12px;width:5%;text-align:left;">
+                                        <apex:outputText value="{!Round(scheduleServiceRec.scheduleService.SVMXC__Sequence__c, 0)}"/>
+                                    </apex:column>
+                                    <apex:column >
+                                        <apex:facet name="header">{!$Label.svmxc__CONF039_TAG052}</apex:facet>   
+                                        <apex:outputPanel layout="block" styleClass="requiredInput"> 
+                                            <apex:outputPanel layout="block" styleClass="requiredBlock"/> 
+                                            <apex:SelectList value="{!scheduleServiceRec.scheduleService.SVMXC__Object_Name__c}" size="1" multiselect="false">
+                                                <apex:selectOptions value="{!LstObjects}"/> 
+                                                <apex:actionSupport event="onchange" action="{!listObjectSFMExpression}" reRender="scheduleServicesTab" status="scheduleServiceStatus" >
+                                                    <apex:param name="" value="{!Round(scheduleServiceRec.scheduleService.SVMXC__Sequence__c, 0)}" assignTo="{!selectedServiceObject}"/>
+                                                </apex:actionSupport>
+                                            </apex:SelectList>
+                                        </apex:outputPanel> 
+                                    </apex:column>
+                                    <apex:column >
+                                        <apex:facet name="header">{!$Label.svmxc__CONF039_TAG053}</apex:facet>   
+                                        <apex:outputPanel id="scheduleServicesTab1">
+                                        <apex:outputPanel layout="block" styleClass="requiredInput" >
+                                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                                            <apex:SelectList value="{!scheduleServiceRec.selectedExpression}" size="1" multiselect="false" style="max-width:250px">
+                                                 <apex:selectOptions value="{!scheduleServiceRec.listSFMExpression}"/>
+                                            </apex:SelectList> 
+                                        </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </apex:column>
+                                    <apex:column >
+                                        <apex:facet name="header">{!$Label.svmxc__CONF039_TAG054}</apex:facet>  
+                                        <apex:outputPanel layout="block" styleClass="requiredInput">
+                                            <apex:outputPanel layout="block" styleClass="requiredBlock"/> 
+                                            <!--<apex:SelectList value="{!scheduleServiceRec.scheduleService.SVMXC__Class_Name__c}" size="1" multiselect="false" style="max-width:240px">
+                                                <apex:selectOptions value="{!LstClasses}"/> 
+                                            </apex:SelectList>-->
+                                            <apex:inputField value="{!scheduleServiceRec.scheduleService.SVMXC__Class_Name__c}"/>
+                                        </apex:outputPanel>
+                                    </apex:column> 
+                                    <apex:column >
+                                        <apex:facet name="header">{!$Label.svmxc__CONF039_TAG055}</apex:facet>   
+                                        <apex:outputPanel layout="block" >
+                                            <apex:inputField value="{!scheduleServiceRec.scheduleService.SVMXC__Batch_Size__c}" style="width:50px;"/>
+                                        </apex:outputPanel>
+                                    </apex:column> 
+                                    <apex:column style="font-Size:12px;width:20%;text-align:left;">
+                                        <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/delete_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue;" value="servicesDeleteRow" action="{!lstScheduleServices_DelRow}" status="scheduleServiceStatus" rerender="scheduleServicesTab" title="{!$Label.svmxc__COMM002_TAG033}" >
+                                            <apex:param name="selectedServicesrow2" value="{!Round(scheduleServiceRec.scheduleService.SVMXC__Sequence__c, 0)}" assignTo="{!strServicesSelectedRow}"/>
+                                        </apex:commandButton>
+                                        <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/add_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue" value="servicesAddRow" action="{!lstScheduleService_AddRow}" rerender="scheduleServicesTab" status="scheduleServiceStatus" rendered="{!if((lstScheduleServices_HighSeqNum == Round(scheduleServiceRec.scheduleService.SVMXC__Sequence__c, 0)) ,true,false)}" title="{!$Label.svmxc__COMM002_TAG032}" />
+                                    </apex:column>
+                                </apex:pageblockTable>
+                                <apex:pageBlockSectionItem >
+                                    <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/add_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue" value="servicesAddRow" action="{!lstScheduleService_AddRow}" rerender="scheduleServicesTab" status="scheduleServiceStatus" rendered="{!if((lstScheduleServices_HighSeqNum == 0) ,true,false)}" id="scheduleServicesMainAddBtn" title="{!$Label.svmxc__COMM002_TAG032}" />
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            
+                            <apex:pageBlockSection columns="1" title="" collapsible="false" id="tab1sec6">
+                                <apex:pageBlockSectionItem dataStyle="text-align:right">
+                                    <apex:commandButton status="ProcessingStatus" value="{!$Label.svmxc__COMM001_TAG075} >>" rerender="TabPanel1" action="{!Schedules}"/>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageblockSection>
+                        </apex:pageBlock>
+                    </apex:tab>
+                    <!------------------------------------------ Tab-2 Starts Here ------------------------------------------------>
+                    <apex:tab id="TAB2" name="TAB2" label="{!$Label.svmxc__COMM001_TAG075}">
+                        <apex:pageBlock mode="edit" id="tab4pageblock1">
+                        <apex:actionFunction action="{!changeRunType}" name="changeRunType"  id="changeRunType" reRender="tab3pageblock1,tab3pblock1sec1,schedulefrequenciestable" status="tab4status2">
+                                <apex:param name="Confobj" assignTo="{!intSeqVal}" value="" />
+                            </apex:actionFunction>
+                            <center style="border:1px solid #C0C0C0; background:LightGrey">
+                                <apex:toolbar id="tab4theToolbar1" styleClass="disableTab" width="5%">          
+                                    <apex:toolbarGroup location="left" id="tab4theToolbar1toolbarGroup1">
+                                        <apex:outputText value=" " style=" background-color:LightGrey;"/>
+                                    </apex:toolbarGroup>
+                                    <apex:toolbarGroup location="left" id="tab4theToolbar1toolbarGroup2">
+                                        <apex:outputText value="{!$Label.svmxc__CONF039_TAG015}" style="background-color: LightGrey; font-size: 13px; padding: 3px 75px; margin-left: -32px; margin-right: -12px;"/>
+                                    </apex:toolbarGroup>
+                                </apex:toolbar>
+                            </center>
+                            <apex:actionStatus id="tab4status2" startText="{!$Label.svmxc__COMM001_TAG041}" style="font-Size:13px;Font-weight:bold;"/>
+                            <apex:pageBlockSection columns="1" id="tab4pblock1sec1">
+                                <apex:pageBlockSectionItem dataStyle="text-align:center;">
+                                    <apex:pageBlockTable id="schedulefrequenciestable" value="{!lstSchedules}" var="item" style="width:80%;margin-left:10%;margin-right:10%;font-size:12px;" rowClasses="rowcls">
+                                            <apex:column style="font-Size:12px;width:5%;text-align:left;">
+                                                <apex:outputText value="{!Round(item.SVMXC__Sequence__c, 0)}"/>
+                                            </apex:column>
+                                            <apex:column style="font-Size:12px;width:15%;text-align:left;">
+                                                <apex:facet name="header">
+                                                    <apex:outputtext style="font-Size:12px;font-weight:bold;">{!$Label.svmxc__COMM001_TAG078}</apex:outputtext>
+                                                </apex:facet>
+                                                <apex:inputField value="{!item.SVMXC__Run_At__c}"/>
+                                            </apex:column>
+                                             <apex:column style="font-Size:12px;width:25%;text-align:left;">
+                                            <apex:facet name="header">{!$Label.svmxc__COMM001_TAG079} </apex:facet>
+                                            <apex:inputField value="{!item.SVMXC__Run_Type__c}" onchange="changeRunType({!item.SVMXC__Sequence__c})"/>
+                                        </apex:column>
+                                        <apex:column style="font-Size:12px;width:30%;text-align:left;"  >
+                                            <apex:inputField value="{!item.SVMXC__Schedule_Days__c}" rendered="{!if((item.SVMXC__Run_Type__c == 'Day of Week') ,true,false)}"/>
+                                            <apex:inputField value="{!item.SVMXC__Day_to_Run__c}" rendered="{!if((item.SVMXC__Run_Type__c == 'Date of Month') ,true,false)}"/>
+                                        </apex:column>
+                                        <apex:column style="font-Size:12px;width:10%;text-align:left;">
+                                            <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/delete_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue;" value="schedulefrequenciestableDeleteRow" action="{!lstSchedules_DelRow}" status="tab4status2" rerender="tab4pblock1sec1" title="{!$Label.svmxc__COMM002_TAG033}" >
+                                                <apex:param name="selectedrow2" value="{!Round(item.SVMXC__Sequence__c, 0)}" assignTo="{!strSelectedRow}"/>
+                                            </apex:commandButton>
+                                            <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/add_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue" value="schedulefrequenciestableAddRow" action="{!lstSchedules_AddRow}" rerender="tab4pblock1sec1" status="tab4status2" rendered="{!if((lstSchedules_HighSeqNum == Round(item.SVMXC__Sequence__c, 0)) ,true,false)}" title="{!$Label.svmxc__COMM002_TAG032}" />
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/add_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue" value="schedulefrequenciestableAddRow" action="{!lstSchedules_AddRow}" rerender="tab4pblock1sec1" status="tab4status2" rendered="{!if((lstSchedules_HighSeqNum == 0) ,true,false)}" id="schedulefrequenciesMainAddBtn" title="{!$Label.svmxc__COMM002_TAG032}" />
+                                </apex:pageBlockSectionItem>
+                                <apex:pageBlockSectionItem >
+                                    <apex:pageBlockSection columns="2">
+                                        <apex:outputLabel value="{!$Label.svmxc__COMM001_TAG103}" style="font-weight:bold;font-size:13px;padding: 3px 100px;"/>
+                                         <apex:selectList id="timezone" value="{!SFMScheduledProcess.SVMXC__Dispatch_Timezone__c}" size="1" label="">
+                                            <apex:SelectOptions value="{!lstTimeZones}"/>
+                                        </apex:selectList>
+                                    </apex:pageBlockSection>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            <center style="border:1px solid #C0C0C0; background:LightGrey">
+                                    <apex:toolbar id="tab4theToolbar2" styleClass="disableTab" width="5%">          
+                                        <apex:toolbarGroup location="left" id="tab4theToolbar2toolbarGroup1">
+                                            <apex:outputText value=" " style=" background-color:LightGrey;"/>
+                                        </apex:toolbarGroup>
+                                        <apex:toolbarGroup location="left" id="tab4theToolbar2toolbarGroup2">
+                                            <apex:outputText value="{!$Label.svmxc__CONF039_TAG030}"  style="background-color: LightGrey; font-size: 13px; padding: 3px 75px; margin-left: -32px; margin-right: -12px;"/>
+                                        </apex:toolbarGroup>
+                                    </apex:toolbar>
+                                </center>
+                            <apex:pageBlockSection columns="1">
+                                <apex:pageBlockSectionItem dataStyle="text-align:left;">
+                                    <apex:pageBlockSection columns="1">
+                                        <apex:outputtext value="{!$Label.svmxc__CONF039_TAG040}" style="font-Size:12px;" />
+                                    </apex:pageBlockSection>
+                                    <apex:pageBlockSection columns="1">
+                                        <apex:inputCheckbox value="{!SFMScheduledProcess.SVMXC__Capture_Log__c}" label=""/>
+                                    </apex:pageBlockSection>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection columns="1">
+                                <apex:pageBlockSectionItem dataStyle="text-align:left;">
+                                    <apex:pageBlockSection columns="1">
+                                        <apex:outputtext value="{!$Label.svmxc__CONF039_TAG035}" style="font-Size:12px;" />
+                                    </apex:pageBlockSection>
+                                    <apex:pageBlockSection columns="1">
+                                        <apex:outputPanel layout="block" styleClass="requiredInput">
+                                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                                            <apex:inputField id="userField" value="{!SFMScheduledProcess.SVMXC__Assign_To_Dispatcher__c}" label=""/>
+                                        </apex:outputPanel>
+                                    </apex:pageBlockSection>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection columns="1" title="" collapsible="false" id="tab4sec7">
+                                <apex:pageBlockSectionItem dataStyle="text-align:left">
+                                    <apex:commandButton status="ProcessingStatus" value="<< {!$Label.svmxc__COMM001_TAG072}" rerender="TabPanel1" action="{!GeneralInfo}"/>
+                                </apex:pageBlockSectionItem>
+                            </apex:pageblockSection>
+                        </apex:pageBlock>
+                    </apex:tab>
+                </apex:tabPanel>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,671 @@
+<apex:page id="page1" Controller="SVMXC.CONF_SetupMapHover">
+    
+    <style>
+        .boldText {color: black; font-weight: bold; font-size:12px;}
+        .disableTab 
+        {
+            background-color : Lightgrey ;
+            color:LightGrey;
+            background-image:none;
+            font-size:1.2em;
+        }
+    </style>    
+    <apex:form id="form1">  
+    <apex:pageBlock id="block1" title="{!TAG001}"  helpTitle="{!TAG019}"  helpUrl="{!HLPURL}">
+    <apex:pageMessages id="hdrmsg" rendered="{!isHdrMsg}"/>
+    <apex:actionStatus id="status" startText="{!TAG018}"/>  
+        <apex:pageBlockButtons >
+            <apex:commandButton value="{!$Label.svmxc__COMM001_TAG039}" Action="{!SVMX_Save}" reRender="form1" status="status"/>
+            <apex:commandButton value="{!$Label.svmxc__COMM001_TAG046}" action="{!SVMX_BackToSetupHome}"/>
+        </apex:pageBlockButtons>
+        <!--  Work Order Section -->
+        <center>
+            <apex:toolbar styleClass="disableTab" width="35%">          
+                <apex:toolbarGroup location="left" >
+                    <apex:outputText value=" "/>
+                </apex:toolbarGroup>
+                <apex:toolbarGroup location="left">
+                    <apex:outputText value="{!TAG002}" style="font-weight: bold;font-Size:13px"/>               
+                </apex:toolbarGroup>
+            </apex:toolbar>
+        </center>
+        <apex:pageBlockSection columns="2" collapsible="true">
+            <apex:pageBlockSection dir="LTR" columns="2" collapsible="false">    
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG003}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="WODisplayField1" multiselect="false" size="1" value="{!strWODisplayField1}">
+                        <apex:selectOptions value="{!lstWorkOrderUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG004}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="WODisplayField2" multiselect="false" size="1" value="{!strWODisplayField2}">
+                        <apex:selectOptions value="{!lstWorkOrderUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG005}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="WODisplayField3" multiselect="false" size="1" value="{!strWODisplayField3}">
+                        <apex:selectOptions value="{!lstWorkOrderUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG006}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="WODisplayField4" multiselect="false" size="1" value="{!strWODisplayField4}">
+                        <apex:selectOptions value="{!lstWorkOrderUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG007}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="WODisplayField5" multiselect="false" size="1" value="{!strWODisplayField5}">
+                        <apex:selectOptions value="{!lstWorkOrderUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+            <apex:pageBlockSection dir="LTR" columns="2" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG008}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="WODisplayField6" multiselect="false" size="1" value="{!strWODisplayField6}">
+                        <apex:selectOptions value="{!lstWorkOrderUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG009}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="WODisplayField7" multiselect="false" size="1" value="{!strWODisplayField7}">
+                        <apex:selectOptions value="{!lstWorkOrderUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG010}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="WODisplayField8" multiselect="false" size="1" value="{!strWODisplayField8}">
+                        <apex:selectOptions value="{!lstWorkOrderUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG011}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem > 
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="WODisplayField9" multiselect="false" size="1" value="{!strWODisplayField9}">
+                        <apex:selectOptions value="{!lstWorkOrderUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG012}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="WODisplayField10" multiselect="false" size="1" value="{!strWODisplayField10}">
+                        <apex:selectOptions value="{!lstWorkOrderUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+        </apex:pageBlockSection>
+        <apex:pageblocksection title="" collapsible="false"/>
+        <!--  Location Section -->
+        <br></br>
+        <center>
+            <apex:toolbar styleClass="disableTab" width="35%">          
+                <apex:toolbarGroup location="left" >
+                    <apex:outputText value=" "/>
+                </apex:toolbarGroup>
+                <apex:toolbarGroup location="left">
+                    <apex:outputText value="{!TAG014}" style="font-weight: bold;font-Size:13px"/>               
+                </apex:toolbarGroup>
+            </apex:toolbar>
+        </center>
+        <apex:pageBlockSection columns="2" collapsible="true">
+            <apex:pageBlockSection dir="LTR" columns="2" collapsible="false">    
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG003}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="LocDisplayField1" multiselect="false" size="1" value="{!strLocDisplayField1}">
+                        <apex:selectOptions value="{!lstLocationUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG004}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="LocDisplayField2" multiselect="false" size="1" value="{!strLocDisplayField2}">
+                        <apex:selectOptions value="{!lstLocationUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG005}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="LocDisplayField3" multiselect="false" size="1" value="{!strLocDisplayField3}">
+                        <apex:selectOptions value="{!lstLocationUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG006}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="LocDisplayField4" multiselect="false" size="1" value="{!strLocDisplayField4}">
+                        <apex:selectOptions value="{!lstLocationUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG007}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="LocDisplayField5" multiselect="false" size="1" value="{!strLocDisplayField5}">
+                        <apex:selectOptions value="{!lstLocationUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+            <apex:pageBlockSection dir="LTR" columns="2" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG008}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="LocDisplayField6" multiselect="false" size="1" value="{!strLocDisplayField6}">
+                        <apex:selectOptions value="{!lstLocationUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG009}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="LocDisplayField7" multiselect="false" size="1" value="{!strLocDisplayField7}">
+                        <apex:selectOptions value="{!lstLocationUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG010}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="LocDisplayField8" multiselect="false" size="1" value="{!strLocDisplayField8}">
+                        <apex:selectOptions value="{!lstLocationUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG011}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem > 
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="LocDisplayField9" multiselect="false" size="1" value="{!strLocDisplayField9}">
+                        <apex:selectOptions value="{!lstLocationUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG012}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="LocDisplayField10" multiselect="false" size="1" value="{!strLocDisplayField10}">
+                        <apex:selectOptions value="{!lstLocationUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+        </apex:pageBlockSection>  
+        <apex:pageblocksection title="" collapsible="false"/>
+        <!--  Account Section -->
+        <br></br>
+        <center>
+            <apex:toolbar styleClass="disableTab" width="35%">          
+                <apex:toolbarGroup location="left" >
+                    <apex:outputText value=" "/>
+                </apex:toolbarGroup>
+                <apex:toolbarGroup location="left" >
+                    <apex:outputText value="{!TAG015}" style="font-weight: bold;font-Size:13px"/>               
+                </apex:toolbarGroup>
+            </apex:toolbar>
+        </center>
+        <apex:pageBlockSection columns="2" collapsible="true">
+            <apex:pageBlockSection dir="LTR" columns="2" collapsible="false">    
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG003}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="AccDisplayField1" multiselect="false" size="1" value="{!strAccDisplayField1}">
+                        <apex:selectOptions value="{!lstAccountUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG004}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="AccDisplayField2" multiselect="false" size="1" value="{!strAccDisplayField2}">
+                        <apex:selectOptions value="{!lstAccountUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG005}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="AccDisplayField3" multiselect="false" size="1" value="{!strAccDisplayField3}">
+                        <apex:selectOptions value="{!lstAccountUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG006}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="AccDisplayField4" multiselect="false" size="1" value="{!strAccDisplayField4}">
+                        <apex:selectOptions value="{!lstAccountUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG007}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="AccDisplayField5" multiselect="false" size="1" value="{!strAccDisplayField5}">
+                        <apex:selectOptions value="{!lstAccountUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+            <apex:pageBlockSection dir="LTR" columns="2" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG008}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="AccDisplayField6" multiselect="false" size="1" value="{!strAccDisplayField6}">
+                        <apex:selectOptions value="{!lstAccountUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG009}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="AccDisplayField7" multiselect="false" size="1" value="{!strAccDisplayField7}">
+                        <apex:selectOptions value="{!lstAccountUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG010}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="AccDisplayField8" multiselect="false" size="1" value="{!strAccDisplayField8}">
+                        <apex:selectOptions value="{!lstAccountUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG011}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem > 
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="AccDisplayField9" multiselect="false" size="1" value="{!strAccDisplayField9}">
+                        <apex:selectOptions value="{!lstAccountUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG012}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="AccDisplayField10" multiselect="false" size="1" value="{!strAccDisplayField10}">
+                        <apex:selectOptions value="{!lstAccountUpdatableFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+        </apex:pageBlockSection>
+        <apex:pageblocksection title="" collapsible="false"/>
+          
+        <!--  Team Section -->
+        <!--
+        <br></br>
+        <center>
+            <apex:toolbar styleClass="disableTab" width="35%">          
+                <apex:toolbarGroup location="left" >
+                    <apex:outputText value=" "/>
+                </apex:toolbarGroup>
+                <apex:toolbarGroup location="left" >
+                    <apex:outputText value="{!TAG020}" style="font-weight: bold;font-Size:13px"/>               
+                </apex:toolbarGroup>
+            </apex:toolbar>
+        </center>
+        <apex:pageBlockSection columns="2" collapsible="true">
+            <apex:pageBlockSection dir="LTR" columns="2" collapsible="false">    
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG003}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TeamDisplayField1" multiselect="false" size="1" value="{!strTeamDisplayField1}">
+                        <apex:selectOptions value="{!lstTeamHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG004}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TeamDisplayField2" multiselect="false" size="1" value="{!strTeamDisplayField2}">
+                        <apex:selectOptions value="{!lstTeamHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG005}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TeamDisplayField3" multiselect="false" size="1" value="{!strTeamDisplayField3}">
+                        <apex:selectOptions value="{!lstTeamHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG006}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TeamDisplayField4" multiselect="false" size="1" value="{!strTeamDisplayField4}">
+                        <apex:selectOptions value="{!lstTeamHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG007}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TeamDisplayField5" multiselect="false" size="1" value="{!strTeamDisplayField5}">
+                        <apex:selectOptions value="{!lstTeamHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+            <apex:pageBlockSection dir="LTR" columns="2" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG008}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TeamDisplayField6" multiselect="false" size="1" value="{!strTeamDisplayField6}">
+                        <apex:selectOptions value="{!lstTeamHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG009}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TeamDisplayField7" multiselect="false" size="1" value="{!strTeamDisplayField7}">
+                        <apex:selectOptions value="{!lstTeamHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG010}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TeamDisplayField8" multiselect="false" size="1" value="{!strTeamDisplayField8}">
+                        <apex:selectOptions value="{!lstTeamHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG011}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem > 
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TeamDisplayField9" multiselect="false" size="1" value="{!strTeamDisplayField9}">
+                        <apex:selectOptions value="{!lstTeamHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG012}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TeamDisplayField10" multiselect="false" size="1" value="{!strTeamDisplayField10}">
+                        <apex:selectOptions value="{!lstTeamHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+        </apex:pageBlockSection>
+        
+         <apex:pageblocksection title="" collapsible="false"/> -->
+
+<!--  Technician Section -->
+    <!--    <br></br>
+        <center>
+            <apex:toolbar styleClass="disableTab" width="35%">          
+                <apex:toolbarGroup location="left" >
+                    <apex:outputText value=" "/>
+                </apex:toolbarGroup>
+                <apex:toolbarGroup location="left" >
+                    <apex:outputText value="{!TAG016}" style="font-weight: bold;font-Size:13px"/>               
+                </apex:toolbarGroup>
+            </apex:toolbar>
+        </center>
+        <apex:pageBlockSection columns="2" collapsible="true">
+            <apex:pageBlockSection dir="LTR" columns="2" collapsible="false">    
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG003}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TechDisplayField1" multiselect="false" size="1" value="{!strTechDisplayField1}">
+                        <apex:selectOptions value="{!lstTechnicianHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG004}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TechDisplayField2" multiselect="false" size="1" value="{!strTechDisplayField2}">
+                        <apex:selectOptions value="{!lstTechnicianHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG005}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TechDisplayField3" multiselect="false" size="1" value="{!strTechDisplayField3}">
+                        <apex:selectOptions value="{!lstTechnicianHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG006}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TechDisplayField4" multiselect="false" size="1" value="{!strTechDisplayField4}">
+                        <apex:selectOptions value="{!lstTechnicianHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG007}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TechDisplayField5" multiselect="false" size="1" value="{!strTechDisplayField5}">
+                        <apex:selectOptions value="{!lstTechnicianHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+            <apex:pageBlockSection dir="LTR" columns="2" collapsible="false">
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG008}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TechDisplayField6" multiselect="false" size="1" value="{!strTechDisplayField6}">
+                        <apex:selectOptions value="{!lstTechnicianHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG009}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TechDisplayField7" multiselect="false" size="1" value="{!strTechDisplayField7}">
+                        <apex:selectOptions value="{!lstTechnicianHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG010}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TechDisplayField8" multiselect="false" size="1" value="{!strTechDisplayField8}">
+                        <apex:selectOptions value="{!lstTechnicianHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG011}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem > 
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TechDisplayField9" multiselect="false" size="1" value="{!strTechDisplayField9}">
+                       <apex:selectOptions value="{!lstTechnicianHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="{!TAG012}"/>
+                 </apex:pageBlockSectionItem>
+                 <apex:pageBlockSectionItem >
+                    <apex:outputPanel layout="block">
+                    <apex:outputPanel layout="block" rendered="true"/>
+                    <apex:selectList id="TechDisplayField10" multiselect="false" size="1" value="{!strTechDisplayField10}">
+                        <apex:selectOptions value="{!lstTechnicianHoverFields}"/>
+                    </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+            </apex:pageBlockSection>
+        </apex:pageBlockSection>
+    -->
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

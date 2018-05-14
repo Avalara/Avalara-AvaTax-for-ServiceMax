@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPageWebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <availability>online</availability>
+    <description>Launch Dispatch Console wherein the dispatcher can assign a work order to a technician.</description>
+    <displayType>link</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>Dispatch Console</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url>var urlString = &apos;/apex/SVMXC__Dcon_DispatchConsole_JS?isdtp=mn&apos;;
+try
+{
+	var strCommnutniyName = &apos;&apos;;
+	strCommnutniyName = &quot;{!$Site.Prefix}&quot;;
+	if(strCommnutniyName.length != 0)
+		urlString = strCommnutniyName+urlString;
+	window.open(urlString, &apos;&apos;, &apos;resizable=1,status=0,toolbar=0,menubar=0,scrollbars=1&apos;);
+}
+catch(err)
+{
+	window.open(urlString, &apos;&apos;, &apos;resizable=1,status=0,toolbar=0,menubar=0,scrollbars=1&apos;);
+}</url>
+</CustomPageWebLink>

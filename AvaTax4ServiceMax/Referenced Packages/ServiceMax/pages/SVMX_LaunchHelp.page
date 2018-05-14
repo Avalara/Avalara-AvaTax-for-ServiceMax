@@ -1,0 +1,3 @@
+<apex:page controller="SVMXC.SVMX_LaunchHelp" action="{!GetHelpURL}">
+     
+</apex:page>

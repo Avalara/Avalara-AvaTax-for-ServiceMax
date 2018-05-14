@@ -1,0 +1,235 @@
+<apex:page Controller="SVMXC.COMM_StockLookup" sidebar="false" showHeader="false">
+    <script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3&sensor=false&client=gme-servicemaxinc" type="text/javascript"/>
+    <apex:includeScript value="{!URLFOR($Resource.SVMXC__COMM_Resources2, '/SVMXC_resources/js/SVMX_StockLookupJSLibrary.js')}"/>
+    <style>
+        .content {
+            color: #fff;
+            display: inline;
+            float: left;
+            width: 40.0%;
+            vertical-align: middle;
+            position: relative;
+            padding-left: 42px;
+        }
+        .pageTitleIcon{
+            position: absolute;
+            left: 5px;
+            width: 32px;
+        }
+        .pageDescription{
+            font-size: 109%;
+            color: #fff;
+            font-weight: bold;
+        }
+        .ptBody{
+            padding-top: 5px;
+            width: 100%;
+            overflow: hidden;
+            background-color: #966;
+            border-color: #966;
+        }
+    </style>
+    <apex:form id="form1"> 
+        <div class="ptBody">
+            <div style="text-align: center; width: 100%;" class="content"><img src="/s.gif" alt="Service Order" class="pageTitleIcon"/>
+                <div style="font-size: 125%; text-align: left; width: 100%;" class="pageDescription" id="ProdName" name="ProdName">{!$Label.SLKPSC1_MSG006} {!ProdName}</div><br/>
+                <div style="font-size: 125%; text-align: left; width: 100%;" class="pageDescription" id="ReqQty" name="ReqQty">{!$Label.SLKPSC1_MSG007} {!ReqQty}</div><br/>
+            </div>
+        </div>
+        <apex:actionFunction name="RequestStockAF" action="{!RequestStock}" status="requestStatus" reRender="strErrorMesssage,isUpdateSuccessfully"/>  
+        <apex:inputHidden id="requestStockId" value="{!requestStockId}"/>
+        <apex:inputHidden id="strErrorMesssage" value="{!strErrorMesssage}"/>
+        <apex:inputHidden id="isUpdateSuccessfully" value="{!isUpdateSuccessfully}"/>
+        <apex:pageBlock id="pageBlock1">
+            <apex:actionStatus id="requestStatus" startText="{!$Label.svmxc__COMM001_TAG041}" onstop="showMessage()"/>
+            <apex:actionStatus id="stockStatus" startText="{!$Label.svmxc__COMM001_TAG041}" onstop="SVMXC_FindStock()"/>
+            <apex:pageBlockButtons location="top" >
+                <apex:commandButton value="{!$Label.svmxc__SLKPSC1_LAB001}" onclick="toggleOptions();" reRender="none"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection id="options" columns="2">
+                <apex:pageBlockSectionItem >
+                    <b>{!$Label.svmxc__SLKPSC1_LAB002}</b> <br/>
+                    {!Location.SVMXC__Street__c}<br/>
+                    {!Location.SVMXC__Zip__c}<br/>
+                    {!Location.SVMXC__Country__c}
+                </apex:pageBlockSectionItem>  
+                <apex:pageBlockSection id="selectLists" columns="2">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="{!$Label.svmxc__SLKPSC1_LAB022}" for="RadiusTextBox"/>
+                        <apex:inputText id="RadiusTextBox" value="{!Radius}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="list1">
+                        <apex:selectList id="unit" size="1">
+                            <apex:selectOptions value="{!lstUnit}"/>
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>   
+                    <apex:pageBlockSectionItem id="list2">
+                        <apex:outputLabel value="{!$Label.svmxc__SLKPSC1_LAB003}" for="option"/>
+                        <apex:selectList id="option" size="1">
+                            <apex:selectOptions value="{!lstOption}"/>
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>   
+                </apex:pageBlockSection>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" id="grid">
+                <script>
+                    // block code community fix start
+                    var strCommnutniyName = '';
+                    try{
+                    var strCommunityPrefix = '{!$Site.Prefix}';
+                    if(strCommunityPrefix != null)
+                        strCommnutniyName = strCommunityPrefix;
+                    }catch(e)
+                    {
+                        strCommnutniyName = '';
+                    }
+                    // block code community fix end
+                    var list1 = document.getElementById('{!$Component.pageBlock1.options.selectLists.list1.unit}');
+                    var list2 = document.getElementById('{!$Component.pageBlock1.options.selectLists.list2.option}');
+                    var requestStockId = document.getElementById('{!$Component.requestStockId}');
+                    //var map = document.getElementById('{!$Component.pageBlock2.map}');
+                    var grid = document.getElementById('{!$Component.pageBlock1.grid}');
+                    var table = document.getElementById('{!$Component.pageBlock1.grid.table}');
+                    
+                    function SVMXC_FindStock(){
+                        grid.style.display = 'none';
+                        var unit = list1.options[list1.selectedIndex].value;
+                        var opt = list2.options[list2.selectedIndex].value;
+                        
+                        var keyVal = SVMXC_ShowPointsOnMap('{!strJSONLstProdStock}','{!JSENCODE(radius)}',unit);
+                        //Checking browser is firefox or not
+                        var isFirefox = typeof InstallTrigger !== 'undefined';
+                        if(isFirefox){
+                            for(var i=1;i<table.rows.length;i++){
+                                if(keyVal[table.rows[i].cells[0].textContent])
+                                    table.rows[i].cells[8].textContent = keyVal[table.rows[i].cells[0].textContent];
+                                else{
+                                    table.deleteRow(i); 
+                                    i--;
+                                }
+                            }
+                        }
+                        else{
+                            for(var i=1;i<table.rows.length;i++){
+                                if(keyVal[table.rows[i].cells[0].innerText])
+                                    table.rows[i].cells[8].innerText = keyVal[table.rows[i].cells[0].innerText];
+                                else{
+                                    table.deleteRow(i); 
+                                    i--;
+                                }
+                            }
+                        }
+                        map.style.display = grid.style.display = 'block';
+                        if(opt == 'Map'  || table.rows.length == 1)
+                            grid.style.display = 'none';    
+                        else if(opt == 'Grid'){
+                            map.style.display = 'none';
+                        }
+                        if(table.rows.length ==1){
+                            //alert("{!$Label.svmxc__SLKPSC1_MSG022}");
+                        }
+                        requestStockId.value ='';
+                    }
+                    function toggleTable(){
+                        if (grid.style.display == 'block' || grid.style.display == '')
+                            grid.style.display = 'none'; 
+                        else if(table.rows.length > 1)
+                            grid.style.display = 'block';  
+                        else alert("{!$Label.svmxc__SLKPSC1_MSG022}");
+                    }
+                    function showMessage(){
+                        if(document.getElementById('{!$Component.isUpdateSuccessfully}').value == 'true'){
+                            alert("{!$Label.svmxc__SLKPSC1_MSG020}");
+                            window.location.assign(strCommnutniyName+"/" + '{!recordId}');
+                        }
+                        else{
+                            checkBoxClick(null);
+                            alert("{!$Label.svmxc__SLKPSC1_MSG018} "+SVMXC_GetLocationName(requestStockId.value)+', '+document.getElementById('{!$Component.strErrorMesssage}').value);
+                        }
+                    }
+                    function toggleMap(){
+                        var display = new String(); 
+                        display = map.style.display; 
+                        if (display == 'block' || display == '')
+                            map.style.display = 'none'; 
+                        else 
+                            map.style.display = 'block';  
+                    }
+                    function toggleOptions(){
+                        var display = new String(); 
+                        var options = document.getElementById('{!$Component.pageBlock1.options}');
+                        display = options.style.display; 
+                        if (display == 'block' || display == '')
+                            options.style.display = 'none'; 
+                        else 
+                            options.style.display = 'block';  
+                    }
+                    function checkBoxClick(chkbx){
+                        var chk = document.getElementsByTagName('input');
+                        for(var i=0; i < chk.length; i++){
+                            if(chk[i].type=='checkbox' && chk[i]==chkbx){ 
+                                if(chk[i].checked)
+                                    requestStockId.value =chkbx.title;
+                                else requestStockId.value ='';
+                            }
+                            else chk[i].checked=false;  
+                        }                   
+                    }
+                    function SVMXC_RequestStock(siteId){
+                        if(siteId)
+                            requestStockId.value = siteId;
+                        if(requestStockId.value){
+                            var ans = confirm(SVMXC_GetLocationName(requestStockId.value)+"{!$Label.svmxc__SLKPSC1_MSG015}");
+                            if (ans)
+                                RequestStockAF();
+                            else if(siteId){
+                                requestStockId.value = '';
+                                return;
+                            }
+                        }
+                        else alert("{!$Label.svmxc__SLKPSC1_MSG003}");
+                    }
+                    window.onload = function () {
+                        if(!'{!JSENCODE(curLocation)}' || document.getElementById('{!$Component.strErrorMesssage}').value =='Error'){
+                            alert("{!$Label.svmxc__SLKPSC1_MSG011}");
+                            window.location.assign(strCommnutniyName+"/" + '{!URLENCODE(recordLineId)}');
+                        }
+                        else{
+                            SVMXC_SetupStockLookupPage('{!JSENCODE(curLocation)}', '{!reqQty}','{!strJSONLstMesssage}');
+                            grid.style.display = 'none';
+                        }
+                    }  
+                </script>
+                <apex:pageBlockTable id="table" value="{!LstProdStock}" var="prodStock">
+                    <apex:column headerValue="{!$Label.svmxc__SLKPSC1_LAB009}" value="{!prodStock.SVMXC__Location__r.Name}"/>
+                    <apex:column headerValue="{!$Label.svmxc__SLKPSC1_LAB010}" value="{!prodStock.SVMXC__Location__r.SVMXC__Street__c}"/>
+                    <apex:column headerValue="{!$Label.svmxc__SLKPSC1_LAB011}" value="{!prodStock.SVMXC__Location__r.SVMXC__City__c}"/>
+                    <apex:column headerValue="{!$Label.svmxc__SLKPSC1_LAB012}" value="{!prodStock.SVMXC__Location__r.SVMXC__State__c}"/>
+                    <apex:column headerValue="{!$Label.svmxc__SLKPSC1_LAB013}" value="{!prodStock.SVMXC__Location__r.SVMXC__Zip__c}"/>
+                    <apex:column headerValue="{!$Label.svmxc__SLKPSC1_LAB014}" value="{!prodStock.SVMXC__Location__r.SVMXC__Country__c}"/>
+                    <apex:column headerValue="{!$Label.svmxc__SLKPSC1_LAB015}" value="{!prodStock.SVMXC__Location__r.SVMXC__Site_Phone__c}"/>
+                    <apex:column headerValue="{!$Label.svmxc__SLKPSC1_LAB016}" value="{!prodStock.SVMXC__Quantity2__c}"/>
+                    <apex:column headerValue="{!$Label.svmxc__SLKPSC1_LAB017}"/>                     
+                    <apex:column headerValue="{!$Label.svmxc__SLKPSC1_LAB018}">  
+                        <apex:inputCheckbox title="{!prodStock.SVMXC__Location__c}" onclick="checkBoxClick(this)"/>
+                    </apex:column>
+                </apex:pageBlockTable> 
+            </apex:pageBlockSection>
+        </apex:pageBlock> 
+        <apex:pageBlock id="pageBlock2" mode="maindetail"> 
+            <apex:pageBlockButtons location="top" >
+                <apex:commandButton value="{!$Label.svmxc__SLKPSC1_LAB004}" Action="{!FindStock}" status="stockStatus" reRender="grid,tableButton"/>
+                <apex:commandButton id="tableButton" value="{!$Label.svmxc__SLKPSC1_LAB005}" onclick="toggleTable();" reRender="none"/>
+                <apex:commandButton value="{!$Label.svmxc__SLKPSC1_LAB006}" onclick="toggleMap();" reRender="none"/>
+                <apex:commandButton value="{!$Label.svmxc__SLKPSC1_LAB007}" onclick="SVMXC_RequestStock();" reRender="none"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1" id="map">
+                <div id="googlemap" name="googlemap" style="height:600px; width:75%; display:block"></div>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <script>
+            var map = document.getElementById('{!$Component.pageBlock2.map}');
+        </script>
+    </apex:form> 
+</apex:page>

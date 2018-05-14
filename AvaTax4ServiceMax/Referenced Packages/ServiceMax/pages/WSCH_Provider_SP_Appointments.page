@@ -1,0 +1,132 @@
+<apex:page Controller="SVMXC.WSCH_Provider_SP_Appointments_Calendar" action="{!buildListData}">
+    <script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+  <apex:form id="WO_appt_form">
+
+   <apex:PageBlock title="{!TAG008} {!strWorkOrderID}" helptitle="{!HLPTITLE}" helpurl="{!HLPURL}">
+     <!--<apex:outputText style="font-size:16px;font-weight:bold" value="{!TAG008} {!strWorkOrderID}"></apex:outputText>-->
+     <style type="text/css">
+     div.hdrcell {
+            font-weight: bold;
+            font-size: 20px;
+            }
+     h2.mainTitle { width: 500px }
+
+     </style>
+    <link rel="STYLESHEET" type="text/css" href="{!URLFOR($Resource.SVMXC__COMM_Resources4, 'SVMXDC_resources/dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.css')}"/>
+    <link rel="STYLESHEET" type="text/css" href="{!URLFOR($Resource.SVMXC__COMM_Resources4, 'SVMXDC_resources/dhtmlx/dhtmlxGrid/codebase/skins/dhtmlxgrid_dhx_skyblue.css')}"/>
+    <link rel="STYLESHEET" type="text/css" href="{!URLFOR($Resource.SVMXC__COMM_Resources4, 'SVMXDC_resources/dhtmlx/dhtmlxGrid/codebase/skins/dhtmlxgrid_dhx_blue.css')}"/>
+    <script src="{!URLFOR($Resource.SVMXC__COMM_Resources4, 'SVMXDC_resources/dhtmlx/dhtmlxGrid/codebase/dhtmlxcommon.js')}" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.SVMXC__COMM_Resources4, 'SVMXDC_resources/dhtmlx/dhtmlxGrid/codebase/dhtmlxgrid.js')}" type="text/javascript"></script>
+    <script src="{!URLFOR($Resource.SVMXC__COMM_Resources4, 'SVMXDC_resources/dhtmlx/dhtmlxGrid/codebase/dhtmlxgridcell.js')}" type="text/javascript"></script>
+
+    <apex:PageBlock title="{!TAG037}" rendered="{!IsDisplayCurrentAppt}">
+    <!--<apex:PageBlock title="Current Appointments" rendered="false">-->
+        <apex:outputText style="font-Weight:bold;font-size: 15px" value="{!strCurrentApptMsg}"></apex:outputText>
+    </apex:PageBlock>
+
+    <!--<apex:pageBlockSection rendered="{!Not(IsBookApptSuccess)}"> commented to check bookAppt timeout ex-->
+    <apex:pageBlockSection rendered="{!IsBookApptSuccess}">
+        <apex:outputLabel value="{!strBookApptErrorMsg}"/>
+    </apex:pageBlockSection>
+
+    <!-- below section currently commented as we navigate back to WO immediately after forceBook -->
+    <!--<apex:pageBlockSection rendered="{!IsDisplayForceBookMsg}">
+        <apex:outputLabel value="{!strForceBookMsg}"/>
+    </apex:pageBlockSection>-->
+
+    <apex:pageBlockSection rendered="{!IsBookApptSuccess}">
+        <apex:outputLabel value="{!strBookApptSuccessMsg}"/>
+    </apex:pageBlockSection>
+
+    <apex:PageBlock title="{!TAG009}" rendered="{!Not(IsBookApptSuccess)}">
+
+     <apex:actionFunction name="OnSelectRule" action="{!saveSelectedAppt}" reRender="SMXC_PageBLOCK1,deleteSkilid" status="SVMX_Procesng"/>
+      <apex:inputHidden id="Getselected_ID" value="{!selectedRowId}" />
+      <apex:actionStatus id="SVMX_Procesng" startText="{!ProcessingText}"/>
+
+    <apex:pageblockSection rendered="{!IsMoreApptEmpty}">
+        <apex:outputLabel value="{!strOfferApptErrorMsg}"/>
+    </apex:pageblockSection>
+
+    <apex:pageBlockSection columns="1" rendered="{!Not(IsWOApptEmpty)}">
+        <div id="WO_appointments_grid" style="width:95%;height:230px;text-align:center;"></div>
+    </apex:pageBlockSection>
+
+    <apex:pageblockSection rendered="{!IsWOApptEmpty}">
+        <apex:outputLabel value="{!strOfferApptErrorMsg}"/>
+    </apex:pageblockSection>
+
+      <apex:pageBlockButtons location="BOTTOM" Style="padding-left:0%;">
+        <apex:commandButton action="{!bookAppointment}" value="{!TAG010}" Disabled="{!IsWOApptEmpty}" onclick="return bookAppointment();"/>
+        <apex:commandButton action="{!forceSchedule}" value="{!TAG024}" Disabled="{!Not(IsForceBookJob)}"/>
+        <apex:commandButton action="{!viewMoreAppointments}" value="{!TAG023}" Disabled="{!DisplayViewMore}" onclick="return loadMoreAppointments();"/>
+        <apex:commandButton action="{!cancelApptSelection}" value="{!TAG011}"/>
+      </apex:pageBlockButtons>
+
+
+    <script>
+        var mygrid=new dhtmlXGridObject('WO_appointments_grid');
+        mygrid.imgURL="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/dhtmlx/grid_tree/imgs/')}";
+        mygrid.attachEvent("onCheckbox",doOnRadioSelect);
+        mygrid.attachEvent("onRowSelect",doOnRowSelect);
+        mygrid.setHeader("{!TAG002},{!TAG019},{!IPAD004_TAG018},{!TAG006} - {!TAG007},{!TAG025}");
+        <!--mygrid.setInitWidths("80,195,155,240,995"); -->
+        mygrid.enableAutoWidth(true);       
+        mygrid.setInitWidths("80");
+        mygrid.setColAlign("middle,left,left,middle,left");
+        mygrid.setColSorting("na,na,date,na,na");
+        mygrid.setColTypes("ra,ro,ro,ro,ro");
+        mygrid.setSkin('dhx_skyblue');
+
+        mygrid.init();
+        mygrid.enableMultiline(true);
+        
+        mygrid.loadXMLString('{!strXMLData}');
+        for(var i=0;i<mygrid.rowsCol.length;i++) {
+            mygrid.setRowTextStyle(i,"font-size: 20px;padding-left:10px");
+            mygrid.setCellTextStyle(i,0,"padding-top:10px");
+        }
+
+        function loadMoreAppointments() {
+            mygrid.loadXMLString('{!strXMLData}');
+            for(var i=0;i<mygrid.rowsCol.length;i++) {
+                mygrid.setRowTextStyle(i,"font-size: 20px;padding-left:10px");
+                mygrid.setCellTextStyle(i,0,"padding-top:10px");
+            }
+        }
+
+        function doOnRadioSelect(rowId, cellIndex, checkBoxState) {
+             document.getElementById('{!$Component.Getselected_ID}').value = rowId;
+             OnSelectRule();
+        }
+
+        function doOnRowSelect(rowId, cellIndex){
+            //alert("Selected row is " + rowId + " selected cell is " + cellIndex);
+        }
+
+        function bookAppointment() {
+            var rowId = document.getElementById('{!$Component.Getselected_ID}').value;
+            if(rowId.trim() == ''){
+                alert("Please select an appointment to book.");
+                return false;
+            }
+            return true;
+            //OnSelectRule();
+        }
+
+        function goBack() {
+            history.go(-2);
+        }
+    </script>
+
+    </apex:PageBlock>
+      <apex:pageBlockButtons location="BOTTOM" Style="padding-left:0%;" rendered="{!IsBookApptSuccess}">
+        <apex:commandButton action="{!navigateToWorkOrder}" value="{!TAG012}" Disabled="{!Not(IsBookApptSuccess)}"/>
+      </apex:pageBlockButtons>
+      <!--<apex:pageBlockButtons location="BOTTOM" Style="padding-left:0%;" rendered="{!IsDisplayForceBookMsg}">
+        <apex:commandButton action="{!navigateToWorkOrder}" value="{!TAG012}" Disabled="{!Not(IsDisplayForceBookMsg)}"/>
+      </apex:pageBlockButtons>-->
+   </apex:PageBlock>
+
+  </apex:form>
+</apex:page>

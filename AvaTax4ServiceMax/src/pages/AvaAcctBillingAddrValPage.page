@@ -1,0 +1,29 @@
+<apex:page controller="AvaAcctBillingAddrValMsg">
+    <apex:pageBlock title="{!m_oUserMessage.MsgBoxTitle__c}">
+    <h1>Account Billing Address</h1><br /><br />
+        <apex:form >
+            <table width="50%" border="0">
+                <col width="20%"/><col width="10%"/><col width="20%"/>
+                <tr><td><h1>Original Address</h1></td><td /><td><h1>Validated Address</h1></td></tr>
+                
+                <tr><td><apex:outputField value="{!m_oUserMessage.Message_Col1__c}"/></td><td />
+                    <td><apex:outputField value="{!m_oUserMessage.Message_Addr2__c}"/></td></tr>
+                    
+                <tr><td><apex:outputText value="{!m_oUserMessage.City_Col1__c}"/>,&nbsp; 
+                    <apex:outputText value="{!m_oUserMessage.Region_Col1__c}"/>&nbsp;&nbsp;<apex:outputText value="{!m_oUserMessage.PostalCode_Col1__c}"/></td>
+                    <td />
+                <td><apex:outputText value="{!m_oUserMessage.City_Col2__c}"/>,&nbsp; 
+                    <apex:outputText value="{!m_oUserMessage.Region_Col2__c}"/>&nbsp;&nbsp;<apex:outputText value="{!m_oUserMessage.PostalCode_Col2__c}"/></td></tr>
+                <tr><td><apex:outputText value="{!m_oUserMessage.Country_Col1__c}"/></td><td /><td><apex:outputText value="{!m_oUserMessage.Country_Col2__c}"/></td></tr>
+            </table>
+            <br />
+            <hr />
+            <br />
+            <table width="50%" border="0">
+                <col width="20%"/><col width="10%"/><col width="20%"/>
+                <tr><td><apex:commandButton action="{!DismissPage}" value="Keep Original" /></td><td />
+                <td><apex:commandButton action="{!UpdateAddress}" value="Save Validated" /></td></tr>
+            </table>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>

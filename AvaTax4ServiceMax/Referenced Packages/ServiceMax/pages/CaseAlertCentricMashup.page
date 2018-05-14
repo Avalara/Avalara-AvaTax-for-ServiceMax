@@ -1,0 +1,81 @@
+<apex:page standardController="Case" extensions="SVMXC.IOTMashupExtension">
+    <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMX_resources, 'SVMXDC_resources/zone/jquery.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMX_resources, 'SVMXDC_resources/zone/json2.js')}"/>
+    <style>
+        .dashboard_frame {
+            width: 100%;
+            height: 300px;
+        }
+    </style>
+    <script>
+    
+    function JsrGetThingInfoFromCase(request){
+        var requestStr = JSON.stringify(request);
+        var d = $.Deferred();
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.IOTMashupExtension.JsrGetThingInfoFromCase}', requestStr, 
+            function(result, event){ 
+                 processResult(result, event, d);
+            }, {escape: false}
+        );
+        return d;
+    }
+    
+    function processResult(result, event, d){
+        var ret = {success : false};
+        if(event.status == true){
+            ret = JSON.parse(result);
+        }
+        d.resolve(ret);
+    }
+    
+    $(document).ready(function(){
+    debugger;
+        var baseUrl = "https://svmx.upnd.io/Thingworx/Runtime/index.html#mashup=PTC-SVMX.Demo.Mashup.AlertChart";
+        var thingName = null;
+        var alertDate = "&alertDate=2015-07-10T00:00:00.000Z&days=2";
+        var alertProperty = "&alertProperty=HeliumLevel";
+        var alertName = "&alertName=Low";
+        
+        var rid = "{!Case.id}";
+        var objName = "Case";
+        
+        JsrGetThingInfoFromCase({recordId : rid, objectName : objName}).done(function(result){
+        
+            if(result.success === false || !result.thingName || result.thingName.length == 0){
+                $("#dashboard_ui_root").html("Cannot find the associated thing!");
+                return; 
+            }
+            
+            if(result.thingName)
+                thingName = "&thingName=" + result.thingName; //"&thingName=PTC.Demo.Assets.MRI_8"
+            if(result.alertDate)
+                alertDate = "&alertDate=" + result.alertDate; //"2015-07-10T00:00:00.000Z"
+            if(result.alertProperty)
+                alertProperty = "&alertProperty=" + result.alertProperty; //HeliumLevel"
+            if(result.alertName)
+                alertName = "&alertName=" + result.alertName; //Low"
+            
+            var thingUrl = baseUrl;
+            
+            if(thingName){
+                thingUrl = thingUrl + thingName;
+            }
+            if(alertDate){
+                thingUrl = thingUrl + alertDate;
+            }
+            if(alertProperty){
+                thingUrl = thingUrl + alertProperty;
+            }
+            if(alertName){
+                thingUrl = thingUrl + alertName;
+            }
+            
+            $("#dashboard_ui_root").html("<iframe frameborder='0' class='dashboard_frame' src='" + thingUrl + "'></iframe>");
+        });
+        
+    });
+    
+    </script>
+    <div id="dashboard_ui_root">Loading Thing Data...</div>
+</apex:page>

@@ -1,0 +1,17 @@
+<apex:page showHeader="false" sidebar="false">
+<html>
+ <head>
+  <style> 
+     body {font-family: Arial Unicode MS;}
+  </style>
+ </head>
+ <body>
+  <center>
+  <h1>This is a test</h1>
+  <h2> 这是一个测试 </h2>
+  <div>这是一个测试</div>
+  <div>[12:00:56 PM] Indresh M S: ಗುಂಡನಿಗೆ ಈಜು ಬರುತ್ತಿರಲಿಲ್ಲ. ಒಂದು ದಿನ ಆಕಸ್ಮಿಕವಾಗಿ ನೀರಿನಲ್ಲಿ ಬಿದ್ದ, ನೀರಿನಲ್ಲಿ ಮುಳುಗಬೇಕಾದರೆ ಕೈಗೆ ಸಿಕ್ಕಿದ ಒಂದು ಮೀನನ್ನು ದಡಕ್ಕೆ ಎಸೆದು ಹೇಳ್ತಾನೆ... ನಾನಂತೂ ಬದುಕೊಲ್ಲ.. ನೀನಾದ್ರೂ ಬದುಕೋ ಹೋಗು.</div>
+  </center>
+  </body>
+</html>
+</apex:page>

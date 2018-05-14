@@ -1,0 +1,215 @@
+<apex:page controller="SVMXC.SFM_TDM_Designer" id="page1">
+
+<script>
+var __htmlDesignerCodeBase = "{!URLFOR($Resource.HTMLDesigner,'HTMLDesigner')}";
+</script>
+<style type="text/css" media="screen">
+    html, body { width:100%;height:100%; background-color: #ffffff;}
+    body { margin:0;  padding:0; }
+    #flashContent { width:100%; height:100%;}
+    .jstree-classic.jstree-focused {background: none !important}
+    span.cke_skin_kama {padding:0 !important; border:1px solid #BAB4AF !important}
+    
+    .inputTxtHolder .rightCurve #expressionLabel {height: 22px; border: 1px solid #CFD7E6; width: 100%;}
+    .tree-container {height: 73%;}
+    .inputTxtHolder .rightCurve #expression,.inputTxtHolder .rightCurve #expressionLabel {padding-top:4px\9; height:21px\9;}
+    
+    .jstree li {min-height:24px; line-height:24px;}
+    .jstree-classic.jstree-focused {margin:0 10px}
+    .jstree-classic .jstree-hovered {background:none;}
+    .jstree-classic .jstree-clicked {background:#d8f2fa; color: #015ba7; border: none;}
+    textarea{word-wrap:normal;}/*textarea style added to fix issue #20521 in Chrome. But this still does not work in IE11 */
+</style>
+    <script type="text/javascript">
+        var usrTimeFormat = UserContext.timeFormat;
+        var swf = document.getElementById('SFM_DesignerSWF');
+        var swf1 = document.getElementById('SFM_DesignerSWF1');
+        if( swf != null && swf != "" )
+            swf.height = screen.height - 130;
+        else if(swf1 != null && swf1 != "")
+            swf1.height = screen.height - 130;
+        
+        function getTimeFormat()
+        {
+            return usrTimeFormat; 
+        }
+    
+        function getStaticResourceURL(lang)
+        {
+            var url = "";
+            
+            if(lang == "zh_CN")
+            {
+                url = "{!$Resource.SFM_LANG_zh_CN}";
+            }
+            else if(lang == "zh_TW")
+            {
+                url = "{!$Resource.SFM_LANG_zh_TW}";
+            }
+            else if(lang == "ja_JP")
+            {
+                url = "{!$Resource.SFM_LANG_ja_JP}";
+            }
+            
+            return url;
+        }
+    </script>
+     <script type="text/javascript" src="{!URLFOR($Resource.HTMLDesigner,'HTMLDesigner/HTMLDesigner.js')}"></script>
+    <script>
+    <apex:stylesheet value="{!URLFOR($Resource.SVMXC__HTMLDesigner,'HTMLDesigner/css/HTMLDesignerStyle.css')}"/>
+    
+    var hdInst = new HtmlDesigner();
+    hdInst.initialize();
+    
+    function initialize()
+    {
+        window["main"] = document.getElementById("main");
+    }
+    
+    //This function will set data in ckeditor
+    function loadDocTemplate(params) {
+        hdInst.setHTMLDesignerEditorData(params);
+    }
+    
+    //This function will load tree data.
+    function lodaMetaData(params){
+        hdInst.lodaMetaData(params);
+        hdInst.afterInitialize();
+        hdInst.addCustomFieldInTabelDialog();
+    }
+    
+    //This function returns the designed html template to Flex
+    function getDocTemplate()
+    {
+        return hdInst.getHTMLDesignerEditorData();
+    }
+    
+    //This function will toggle htmldesigner.
+    function toggleCKEditor(value) {
+        
+        if(value === 'block')
+            hdInst.showHTMLDesigner();
+        else if(value === 'none')
+            hdInst.hideHTMLDesigner();
+        
+        //On resizing, swf flickers in Chrome http://code.google.com/p/chromium/issues/detail?id=129733.
+        //Need to implement a workaround - Jasmine
+        //var swf = document.getElementsByTagName("embed");   
+        //swf[0].height = value == "block" ? 150 : 680;
+        
+        var obj = document.getElementsByTagName("object");
+        obj[0].height = value == "block" ? 150 : 660;
+    }
+    
+    //This function will clear CKEditor data.
+    function resetCKEditor()
+    {
+        hdInst.clearHTMLDesignerEditorData();
+    }
+    
+    //This function will clear the text input data.
+    function resetExpression()
+    {
+        hdInst.clearHTMLDesignerExpression();
+    }
+    
+    function getAdditionalTemplateInfo(params)
+    {
+        //params = JSON.parse(params);
+        //Pass teh template data from JS itself because if the string is too long, passing it from flex to JS is resulting
+        //in lost data which is preventing the save/save as functionality for template
+        params.template = getDocTemplate()
+        hdInst.parseContent(params,function(results){           
+            var flexObj = getAppInstance("main");
+            flexObj[params.callBack](results);
+        });
+    }
+    
+    // query the flash object instance based on the embedding broswer type
+    function getAppInstance(name){
+        if (navigator.appName.indexOf ("Microsoft") !=-1) {
+            if(navigator.appVersion.indexOf("MSIE 9.0") != -1) {
+                return document[name];
+            }else{
+                return window[name];
+            }
+        } else {
+            return document[name];
+        }
+    }
+    
+    function describeObject(objectsInfo, describeObjectCallback){
+        
+        function describeObjectComplete(results){
+            describeObjectCallback(results);
+        }
+        window.describeObjectComplete = describeObjectComplete;
+        
+        var flexObj = getAppInstance("main");
+        flexObj.getNameFields(objectsInfo, "describeObjectComplete")
+    }
+    
+    </script>
+    <div id="flashContent" style="background-color:#80e1fc;"> 
+        <object id="main" width="100%" height="680px" align="middle" type="application/x-shockwave-flash"
+                data="{!URLFOR($Resource.SFM_TDM_Designer,'SFM_Designer/bin-release/Main.swf')}" name="main">
+            <param name="wmode" value="window"/>
+            <param name="allowScriptAccess" value="always" />
+            <param name="movie" value="{!URLFOR($Resource.SFM_TDM_Designer,'SFM_Designer/bin-release/Main.swf')}"/>
+            <param name="quality" value="high" />
+            <param name="bgcolor" value="#ffffff" />
+            <param name="FlashVars" value="sessionID={!$Api.Session_ID}&serverURL={!partnerServerURL}&SVMX_retURL={!returnURL}&userAuthTag={!userAuthTag}&loadingTag={!loadingTag}&loadingProcTag={!loadingProcTag}&welcomeTag={!welcomeTag}&SVMX_ShowPrivate={!ShowPrivate}&SVMX_DefaultSortingColumn={!strDefaultSortingColumn}&ns=SVMXC&isEnableAPITab={!isEnableAPITab}&processID={!ProcessID}&isEnableChecklist={!isEnableChecklist}"/>
+         </object> 
+    </div>
+    
+    <div id="htmlDesigner" class="html-design-container" style="display:none;">
+        
+        <div class="main-container">
+            <div class="seperator"></div>            
+            <table cellspacing="0" height="100%" width="100%" border="0" class="columns-holder">
+                <tr>
+                    <td width="1%" valign="top">&nbsp;</td>
+                    <td width="25%" valign="top" height="100%">
+                        <div class="treeview-left-curve">
+                            <div class="treeview-right-curve"  style="height: 464px;">
+                                <div class="treeview-top-left-curve"><div class="treeview-top-right-curve"></div></div>
+                                <div class="copy-past-label">
+                                    {!$Label.SFM001_TAG322}
+                                </div>
+                                
+                                <div style="clear:both; padding:0 10px; overflow:hidden">
+                                    <div style="float:left; width:23%; padding:4px 0 4px 0">{!$Label.SFM001_TAG330}</div>
+                                    <div class="inputTxtHolder" style="float:left; width:70%">
+                                        <div class="rightCurve">
+                                            <input type="text" id="expression" class="textInput" />                                        
+                                        </div>  
+                                    </div>
+                                </div>
+                                <div style="clear:both; padding:0 10px; overflow:hidden">
+                                    <div style="float:left; width:23%; padding:4px 0 4px 0">{!$Label.SFM001_TAG331}</div>
+                                    <div class="inputTxtHolder" style="float:left; width:70%">
+                                        <div class="rightCurve">
+                                            <input type="text" id="expressionLabel" class="textInput" />
+                                        </div>  
+                                    </div>
+                                </div>    
+                                <div id="objectTree" class="tree-container" style="width:320px;">
+                                    
+                                </div>
+                            </div>
+                         </div>    
+                      <!--   <div class="clipbord-content">
+                            <div class="chkBox"><input id="copyToClipboard"type="checkbox" checked="checked" /></div><div class="chkBoxTxt">{!$Label.SFM001_TAG323}</div>
+                        </div> -->
+                    </td>
+                    <td width="1%" valign="top">&nbsp;</td>
+                    <td width="72%" height="100%" valign="top">
+                        <textarea id="ckeditor" name="ckeditor" class="ckeditor"></textarea>
+                    </td>
+                    <td width="1%" valign="top">&nbsp;</td>
+                </tr>
+            </table>
+        </div>        
+    </div>
+
+</apex:page>

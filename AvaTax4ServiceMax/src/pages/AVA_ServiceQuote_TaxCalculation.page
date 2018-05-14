@@ -1,0 +1,2 @@
+<apex:page standardController="SVMXC__Quote__c" extensions="AVA_GetTaxQuote" action="{!CalcTax}" >
+</apex:page>

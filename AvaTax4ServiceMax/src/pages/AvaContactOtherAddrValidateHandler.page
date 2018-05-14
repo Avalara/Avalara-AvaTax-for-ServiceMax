@@ -1,0 +1,2 @@
+<apex:page standardController="Contact" extensions="AvaContactOtherValidate" action="{!Validate}" >
+</apex:page>

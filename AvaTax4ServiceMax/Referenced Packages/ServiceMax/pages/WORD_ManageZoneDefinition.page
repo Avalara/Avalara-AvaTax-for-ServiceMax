@@ -1,0 +1,1374 @@
+<apex:page showHeader="false" standardStylesheets="false" sidebar="false"  controller="SVMXC.WORD_ManageZoneDefinition">
+   <script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+        
+                <link rel="stylesheet" href="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/css/ui-lightness/jquery-ui-1.8.11.custom.css')}" />
+                <link rel="stylesheet" href="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/css/ui-lightness/demos.css')}" />
+                <link rel="stylesheet" href="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/zone.css')}"/> 
+                <link rel="stylesheet" href="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/demo_page.css')}"/> 
+                <link rel="stylesheet" href="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/demo_table.css')}"/>    
+                <apex:stylesheet value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/APL/css/fullResolution.css')}"/>
+                <apex:stylesheet value="{!URLFOR($Resource.SVMXC__COMM_Resources4, 'SVMXDC_resources/zone/dataTables_2-11-2011.css')}"/>                  
+                <script src="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/jquery.js')}" ></script>
+                <script src="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/jquerydataTables.js')}" ></script>
+                <script src="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/utils.js')}" ></script>
+                 <script src="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/json2.js')}" ></script>
+                <script src="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/jquery.ui.core.js')}" ></script>
+                <script src="{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/jquery.ui.datepicker.js')}" ></script>
+                <script src="https://maps.google.com/maps/api/js?sensor=false&libraries=drawing,geometry"></script>
+                <script src="https://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/src/markerclusterer.js">
+                </script>               
+                     
+                <script type="text/javascript">
+
+                      var clusterOn = true;
+                      var markerClusterer;
+                      var map = null;
+                      var imageUrl = "{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/dot_yellow.gif')}";
+                      var markers = [];
+                      var markerCluster ;
+                      var overLays = [];
+                      var polygons = [];
+                      var circles = [];
+                      var rectangles = [];
+                      var ZonesIDtoDelete ="ZoneIds";
+                      var uniqueId = 0;      
+                      var drawingManager;
+                      var selectedShape;
+                      var colors = ['#1E90FF', '#FF1493', '#32CD32', '#FF8C00', '#4B0082'];
+                      var selectedColor = colors[Math.floor(Math.random() * colors.length) + 1];
+                      
+                      console.log('selectedColor   '+selectedColor);
+                      var colorButtons = {};
+                      var strSelTerritory;
+                      var lstIdShape = {};
+                      var lstIdZone = {};
+                      var lstTabIdZoneId = {};
+                      var lstDeleteZone = {};
+                      var j$ = jQuery.noConflict();
+                      var lstzoneNameCount = new Array();
+                      var ZoneTable ;
+                      var isdelete = false;
+                      j$(document).ready(function()
+                      {
+                            j$( "#startDate" ).datepicker({ dateFormat: "{!strLocalDateFormat}" });
+                            j$( "#endDate" ).datepicker({ dateFormat: "{!strLocalDateFormat}" });
+                            document.getElementById("panel").style.visibility="hidden";
+                            
+                        
+                            
+        
+                        })
+                    
+                      function initialize() 
+                      {
+                            
+                            
+                            map = new google.maps.Map(document.getElementById('map_canvas'), {
+                              zoom: 7,
+                              minZoom: 5,                            
+                              mapTypeId: google.maps.MapTypeId.ROADMAP,
+                              disableDefaultUI: true,
+                              zoomControl: true
+                            });
+
+                            var polyOptions = {
+                              strokeWeight: 0,
+                              fillOpacity: 0.3,
+                              editable: true,
+                              type: google.maps.drawing.OverlayType.POLYGON
+                            };
+                            var circleOptions = {
+                              strokeWeight: 0,
+                              fillOpacity: 0.3,
+                              editable: true,
+                              type: google.maps.drawing.OverlayType.CIRCLE
+                            };
+                            var rectangleOptions = {
+                              strokeWeight: 0,
+                              fillOpacity: 0.3,
+                              editable: true,
+                              type: google.maps.drawing.OverlayType.RECTANGLE
+                            };
+                            // Creates a drawing manager attached to the map that allows the user to draw
+                            // markers, lines, and shapes.
+                            drawingManager = new google.maps.drawing.DrawingManager({
+                              drawingMode: null,
+                              drawingControlOptions: { 
+                                position: 
+                                    google.maps.ControlPosition.TOP_LEFT, 
+                                    drawingModes: [
+                                        google.maps.drawing.OverlayType.POLYGON, 
+                                        google.maps.drawing.OverlayType.CIRCLE, 
+                                        google.maps.drawing.OverlayType.RECTANGLE
+                                    ]
+                                },
+                              rectangleOptions: rectangleOptions,
+                              circleOptions: circleOptions,
+                              polygonOptions: polyOptions,
+                              map: map});                   
+                           selectColor(colors[0]);
+
+                            google.maps.event.addListener(drawingManager, 'click', function(e) 
+                            {debugger;})
+                            
+                            google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) 
+                            {
+                                if (e.type != google.maps.drawing.OverlayType.MARKER)
+                                {
+                                    // Switch back to non-drawing mode after drawing a shape.
+                                    drawingManager.setDrawingMode(null);
+
+                                    // Add an event listener that selects the newly-drawn shape when the user
+                                    // mouses down on it.
+                                    var newShape = e.overlay;
+                                    newShape.type = e.type;
+                                    
+                                    setSelection(newShape);
+                                    countMarkers(newShape);
+                                    if(e.type == 'polygon')
+                                    {
+                                        newShape.id = getUniqueId();
+                                        createPolygon(e.overlay.getPath());
+                                        google.maps.event.addListener(newShape, 'click', function() {
+                                          setSelection(newShape);
+                                          countMarkers(newShape);
+                                          updatePolygon(newShape);
+                                        });
+                                        selectNextColor();
+                                       // lstIdZone[newShape.id]=newShape;
+                                    }
+                                    if(e.type == 'circle')
+                                    {
+                                        newShape.id = getUniqueId();
+                                        createCircles(e.overlay);
+                                        google.maps.event.addListener(newShape, 'click', function() {
+                                        setSelection(newShape);
+                                        countMarkers(newShape);
+                                        updateCircle(newShape);
+                                        });
+                                       // console.log('selectedColor   '+selectedColor);
+                                        selectNextColor();
+                                        lstIdZone[newShape.id]=newShape;
+                                    }
+
+                                    if(e.type == 'rectangle')
+                                    {
+                                        newShape.id = getUniqueId();
+                                        createRectangle(e.overlay);
+                                        google.maps.event.addListener(newShape, 'click', function() {
+                                          setSelection(newShape);
+                                          countMarkers(newShape);
+                                          updateRectangle(newShape);
+                                        });
+                                        selectNextColor();
+                                        lstIdZone[newShape.id]=newShape;
+                                    }
+                                    
+                                }
+                            });
+                            var markerImage = new google.maps.MarkerImage(imageUrl);                                
+                                
+                            // Clear the current selection when the drawing mode is changed, or when the
+                            // map is clicked.
+                            google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+                            google.maps.event.addListener(map, 'click', clearSelection);
+                           // google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
+                            google.maps.event.addDomListener(document.getElementById('savezone-button'), 'click', savezone);
+                            var straddressval;
+                            Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.WORD_ManageZoneDefinition.getOrganizationAddress}', 
+                            function(result, event)
+                            {
+                                if (event.status)
+                                {
+                                    straddressval = result;
+                                    setMapPosition(straddressval);
+                                } 
+                               
+                               // loadPolygons(strSelTerritory);
+                            }, 
+                            {escape: true});    
+                            //document.getElementById("tablermadetails_filter").style.display=none;
+                           // document.getElementById("tablermadetails_info").style.display=none;
+                           // document.getElementById("tablermadetails_length").style.display=none;  
+
+                            selectColor(colors[Math.floor(Math.random() * colors.length) + 1]);
+                            }
+                              
+                              function savezone() 
+                              {                                
+
+
+
+                                var strSelTerritory1 = document.getElementById('{!$Component.FormZone.selTerritory_ID}').value;
+                                
+                                
+                                var strpolygon ;
+                                var temppolygons = new Array;
+                                
+                                for(var i = 0; i < polygons.length; i++)
+                                {
+                                    if(polygons[i]!=undefined && JSON.stringify(polygons[i]) != undefined )
+                                    {
+                                        
+                                        polygons[i].name = convert(polygons[i].name);
+                                        temppolygons.push(polygons[i]);
+                                    }  
+                                }
+                                polygons = temppolygons; 
+                                temppolygons=[];
+                                
+                                for(var i = 0; i < circles.length; i++)
+                                {
+                                    if(circles[i]!= undefined && JSON.stringify(circles[i]) != undefined )
+                                    {
+                                        console.log('Name   :'+circles[i].name);
+                                        circles[i].name = convert(circles[i].name);
+                                        console.log('Name Aftr  :'+circles[i].name);
+                                        temppolygons.push(circles[i]);
+                                    }  
+                                }
+                                circles = temppolygons; 
+                                temppolygons=[];
+                                for(var i = 0; i < rectangles.length; i++)
+                                {
+                                    if(rectangles[i]!=undefined && JSON.stringify(rectangles[i]) != undefined )
+                                    {
+                                        rectangles[i].name = convert(rectangles[i].name);
+                                        temppolygons.push(rectangles[i]);
+                                    }  
+                                }
+                                rectangles = temppolygons;   
+                                if(polygons.length == 0 && circles.length == 0 && rectangles.length == 0)
+                                {
+                                if( isdelete == false)
+                                    confirm('{!$Label.SORG002_TAG130}');
+                                    else
+                                    {
+                                        Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.WORD_ManageZoneDefinition.SaveZones}',strSelTerritory1, JSON.stringify(polygons), JSON.stringify(circles),JSON.stringify(rectangles),ZonesIDtoDelete,
+                                    function(result, event)
+                                    { 
+                                       var urlnparam = window.location.href;   
+                                        var spliturlnparam = urlnparam.split("?");
+                                        var url = spliturlnparam[0];
+                                        if(strSelTerritory1 != '--None--')
+                                            url += '?id='+strSelTerritory1;
+                                        //Security check    
+                                        window.location.href = url;   
+                                        //window.location.href = escape(url);   
+                                                            
+                                        //console.log(result);
+                                    }
+                                    );
+                                    }
+                                }
+                                else
+                                {
+                                    Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.WORD_ManageZoneDefinition.SaveZones}',strSelTerritory1, JSON.stringify(polygons), JSON.stringify(circles),JSON.stringify(rectangles),ZonesIDtoDelete,
+                                    function(result, event)
+                                    { 
+                                       var urlnparam = window.location.href;   
+                                        var spliturlnparam = urlnparam.split("?");
+                                        var url = spliturlnparam[0];
+                                        if(strSelTerritory1 != '--None--')
+                                            url += '?id='+strSelTerritory1;
+                                        //Security check    
+                                        window.location.href = url;   
+                                        //window.location.href = escape(url); 
+                                        //console.log(result);
+                                    }
+                                    );
+                                }
+                                
+                              }
+                                
+                                function deleteAllMarkers() 
+                                {
+                                    setAllMap(null);
+                                    markers = [];
+                                    if(markerCluster)
+                                        markerCluster.clearMarkers();
+                                }
+                                function setAllMap(map) 
+                                {
+                                  for (var i = 0; i < markers.length; i++) 
+                                  {
+                                    markers[i].setMap(map);
+                                  }
+                                }
+                              
+                                google.maps.event.addDomListener(window, 'load', onChngTerritory);
+                                
+                              function getWorkorderData()
+                              {
+                                    debugger;
+
+                                    //markers = [];
+                                    deleteAllMarkers();
+                                     
+                                    var startDate = j$( "#startDate" ).datepicker('getDate');
+                                    var endDate = j$( "#endDate" ).datepicker('getDate');
+                                    var strSelWOfldTerrId = document.getElementById('{!$Component.FormZone.selWOField_ID}').value;
+                                    var strTerrId = document.getElementById('{!$Component.FormZone.selTerritory_ID}').value;
+                                    console.log('Start Date: ' + startDate);
+                                    console.log('End Date: ' + endDate);
+                                    console.log('WO field: ' + strSelWOfldTerrId);
+                                    strSelWOfldTerrId = strSelWOfldTerrId +"\,"+strTerrId
+                                    Visualforce.remoting.Manager.invokeAction(
+                                    '{!$RemoteAction.WORD_ManageZoneDefinition.GetWO}', 
+                                    startDate, endDate, strSelWOfldTerrId,
+                                    function(result, event)
+                                    {
+                                        if (event.status)
+                                        {
+                                            var lstWO;
+                                            lstWO= result;
+                                            debugger;
+                                            
+                                            for(var i=0;i<lstWO.length;i++)
+                                            {
+                                                var wo1=lstWO[i];
+                                                var latLng = new google.maps.LatLng(parseFloat(wo1.SVMXC__Latitude__c),parseFloat(wo1.SVMXC__Longitude__c ));
+                                                var marker = new google.maps.Marker({
+                                                position: latLng,
+                                                map: map,
+                                                icon: "{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/red_dot.png')}"
+                                                });
+                                                markers.push(marker);
+                                            }
+                                            Clusterload();
+                                        } 
+                                        else if (event.type === 'exception') 
+                                        {
+                                            //document.getElementById("responseErrors").innerHTML = event.message;
+                                        } 
+                                        else 
+                                        {
+                                        document.getElementById("responseErrors").innerHTML = event.message;
+                                        }
+                                    }, 
+                                    {escape: true});
+                                }
+                                function Clusterload()
+                                {
+                                    if (clusterOn) 
+                                    {
+                                        setAllMap(map);
+                                        markerCluster = new MarkerClusterer(map, markers);
+                                    }
+                                    setTimeout(function(){ updateWOCount()},3000);
+                                    //callback();
+                                }
+
+
+                              // Polygon actions
+                              // Load Polygon from memory
+                             function loadPolygons(StrTerr)
+                              {
+                              
+                              var strSelectedTerritory;
+                                var strSelTer ='';
+                                strSelTer = strSelTerritory;
+                                Visualforce.remoting.Manager.invokeAction(
+                                '{!$RemoteAction.WORD_ManageZoneDefinition.getZones}',StrTerr,
+                                function(result, event)
+                                {
+                                    if (event.status)
+                                    {
+                                        if(result != null)
+                                        {
+                                        
+                                            var regex = new RegExp('\&quot\;', 'g');
+                                            var zonelyt=result.replace(regex,"\"");
+                                            var zonesval = zonelyt.split("+");
+                                            
+                                            
+                                            
+                                            if(zonesval[0])
+                                            {   
+                                                //Security check
+                                                var polygonDataSafe = zonesval.map(function(it){ var innerItem=JSON.parse(it); return innerItem;});     
+                                                var polygonData = polygonDataSafe[0];
+                                                //var polygonData = eval(zonesval[0]);
+                                                for(var i = 0; i < polygonData.length; i++)
+                                                {
+                                                    if(polygonData[i] != null)
+                                                    {
+                                                        drawPolygon(polygonData[i])
+                                                        var zoneNameCount = new Array();
+                                                        zoneNameCount.push('<input type="checkbox"'  +  'id=Check_'+polygonData[i].id +' />');
+                                                        zoneNameCount.push('<input type="text"' + 'title="'+polygonData[i].name+'"' +  'id="'+polygonData[i].id+'"' + 'onblur="onblurZoneName(this.id)"   value='+'"'+polygonData[i].name+'"' + 'style="width:100px" />');
+                                                        zoneNameCount.push('<input type="text"'  +  'id=counter_'+polygonData[i].id +   ' value='+0+' disabled style="width:50%;border: none;background-color: white;"/>');
+                                                        
+                                                        //countMarkers(polygonData[i]);
+                                                        zoneNameCount.push(polygonData[i].name);
+                                                        zoneNameCount.push(polygonData[i].id);
+                                                        lstzoneNameCount.push(zoneNameCount);
+                                                        var key = polygonData[i].id;
+                                                        lstIdShape[key] = polygonData[i];
+                                                        var index = (Object.keys(lstTabIdZoneId).length)
+                                                        lstTabIdZoneId[index] = polygonData[i].id;
+                                                        console.log('lstIdShape :  '+lstIdShape[key].fillColor);
+                                                        selectedColor = polygonData[i].fillColor;
+                                                         
+                                                    }
+                                                    
+                                                    console.log('lstIdShape :  '+lstIdShape);
+                                                    console.log('lstTabIdZoneId :  '+lstTabIdZoneId);
+                                                    
+                                                }
+                                                selectNextColor();
+                                               
+                                            }
+                                            if(zonesval[1])
+                                            {
+                                                //Security check
+                                                var circleDataSafe = zonesval.map(function(it){ var innerItem=JSON.parse(it); return innerItem;});      
+                                                var circleData = circleDataSafe[1];
+                                                //var circleData = eval(zonesval[1]);
+                                                if(circleData)
+                                                {
+                                                    for(var i = 0; i < circleData.length; i++)
+                                                    {
+                                                        if(circleData[i] != null)
+                                                        drawCircle(circleData[i])
+                                                        var zoneNameCount = new Array();                                                   
+                                                      zoneNameCount.push('<input type="checkbox"'  +  'id=Check_'+circleData[i].id +' />');
+                                                       zoneNameCount.push('<input type="text"' + 'title="'+circleData[i].name+'"' +  ' id="'+circleData[i].id+'"' + 'onblur="onblurZoneName(this.id)"   value='+'"'+circleData[i].name+'"' + 'style="width:100px" />');
+                                                       zoneNameCount.push('<input type="text"'  +  'id=counter_'+circleData[i].id +   ' value='+0+' disabled style="width:50%;border: none;background-color: white;"/>');
+                                                        
+                                                        //countMarkers(circleData[i]);
+                                                       zoneNameCount.push(circleData[i].name);
+                                                       zoneNameCount.push(circleData[i].id);
+                                                       lstzoneNameCount.push(zoneNameCount);
+                                                       var key = circleData[i].id;
+                                                        lstIdShape[key] = circleData[i];
+                                                        var index = (Object.keys(lstTabIdZoneId).length)
+                                                        lstTabIdZoneId[index] =circleData[i].id;
+                                                       selectedColor = circleData[i].fillColor;
+                                                        console.log('lstIdShape :  '+lstIdShape[key].fillColor);
+                                                    }
+                                                     selectNextColor();
+                                                }
+                                            }
+                                            
+                                             if(zonesval[2])
+                                            {
+                                                //Security check
+                                                var rectangleDataSafe = zonesval.map(function(it){ var innerItem=JSON.parse(it); return innerItem;});       
+                                                var rectangleData = rectangleDataSafe[2];
+                                                //var rectangleData = eval(zonesval[2]);
+                                                if(rectangleData)
+                                                {
+                                                    for(var i = 0; i < rectangleData.length; i++)
+                                                    {
+                                                        if(rectangleData[i] != null)
+                                                        drawRectangle(rectangleData[i])
+                                                        var zoneNameCount = new Array();                                                   
+                                                        zoneNameCount.push('<input type="checkbox"'  +  'id=Check_'+rectangleData[i].id +' />');
+                                                        zoneNameCount.push('<input type="text"' + 'title="'+rectangleData[i].name + '"'  +'id="' + rectangleData[i].id +'"' + 'onblur="onblurZoneName(this.id)"  value='+'"'+rectangleData[i].name+'"' + 'style="width:100px" />');
+                                                        zoneNameCount.push('<input type="text"'  +  'id=counter_'+rectangleData[i].id +   ' value='+0+' disabled style="width:50%;border: none;background-color: white;"/>');
+                                                        
+                                                        //countMarkers(rectangleData[i]);
+                                                       zoneNameCount.push(rectangleData[i].name);
+                                                       zoneNameCount.push(rectangleData[i].id);
+                                                       lstzoneNameCount.push(zoneNameCount);
+                                                        var key = rectangleData[i].id;
+                                                        lstIdShape[key] = rectangleData[i];
+                                                        var index = (Object.keys(lstTabIdZoneId).length)
+                                                        lstTabIdZoneId[index] = rectangleData[i].id;
+                                                       selectedColor = rectangleData[i].fillColor; 
+                                                    }
+                                                }
+                                                selectNextColor();
+                                            }
+                                             selectNextColor();    
+                                             console.log('lstTabIdZoneId :  '+lstTabIdZoneId);
+                                             
+                                        
+                                                ZoneTable =  j$('#tablermadetails').dataTable(
+                                                            {
+                                                                "bAutoWidth": false,
+                                                                "aaData": lstzoneNameCount,
+                                                                "aaSorting": [[3,'asc']],
+                                                                "aoColumns": 
+                                                                [
+                                                                    {"sTitle": "","sWidth": "5px"},
+                                                                    { "sTitle": "{!$Label.SORG002_TAG122}","sSortDataType": "dom-text" , "sWidth": "5px" },
+                                                                    { "sTitle": "{!$Label.SORG002_TAG119}" ,"sClass": "center","sWidth": "5px"},
+                                                                    { "sTitle": "ZNname" ,"sClass": "center"},
+                                                                    { "sTitle": "id" ,"sClass": "center"},
+                                                
+                                                                ],
+                                                                "aoColumnDefs":
+                                                                [                     
+                                                                    { "bVisible": false, "aTargets": [ 4 ]},
+                                                                    { "bVisible": false, "aTargets": [ 3 ]},
+                                                                    
+                                                                    { 'bSortable': false, 'aTargets': [ 0 ] },
+                                                                    { 'bSortable': false, 'aTargets': [ 2 ] }
+                                                                    
+                                                                ]
+                                                                
+                                                            } );    
+
+                                                j$.fn.dataTableExt.afnSortData['dom-text'] = function  ( oSettings, iColumn )
+                                                {
+                                                    debugger;
+                                                    var aData = [];
+                                                    j$( 'td:eq('+iColumn+') input', oSettings.oApi._fnGetTrNodes(oSettings) ).each( function () {
+                                                        aData.push( this.value );
+                                                    } );
+                                                    return aData;
+                                                }
+                                                
+                                                
+                                                
+                                                    loadTags();
+                                                        var ShapeSelected;
+                                                        j$("#tablermadetails tr").live('mouseenter',function()
+                                                        {
+                                                            ShapeSelected = '';
+                                                            var nTds = j$('td', this);
+                                                            //var zoneid = j$(nTds[4]).text();
+                                                            var Zonedat = ZoneTable.fnGetData( this );
+                                                           
+                                                            if(Zonedat)
+                                                            {
+                                                            if(lstIdZone != null && lstIdZone[Zonedat[4]] != null)
+                                                            {
+                                                            //alert('zoneid '+ Zonedat[4]);
+                                                             ShapeSelected = lstIdZone[Zonedat[4]];
+                                                           // lstIdZone[Zonedat[4]].setOptions({strokeColor: //changeColor(lstIdZone[Zonedat[4]].fillColor, 0.1, 1), strokeOpacity: 1, //strokeWeight: 2});
+                                                           
+                                                            //setSelection(lstIdZone[Zonedat[4]]);
+                                                            }
+                                                            }
+                                                        });
+                                                        j$("#tablermadetails tr").live('mouseleave',function()
+                                                        {
+                                                            if(ShapeSelected)
+                                                            {
+                                                              //  ShapeSelected.setOptions({strokeColor: //changeColor(ShapeSelected.fillColor, 0.1, 1), strokeOpacity: 0, //strokeWeight: 0});   
+                                                                //clearSelection();
+                                                            }
+                                                        });    
+                                                        j$("#tablermadetails tr").live('click',function()
+                                                        {
+                                                            var Zonedat = ZoneTable.fnGetData( this );
+                                                           // console.log(' Check box  ' + document.getElementById("Check_"+Zonedat[4]).checked);                                                         
+                                                            
+                                                                    if(Zonedat != null && document.getElementById("Check_"+Zonedat[4]).checked)
+                                                                    {                                                                           
+                                                                        lstDeleteZone[Zonedat[4]] = lstIdZone[Zonedat[4]];
+                                                                        console.log('In IF   ');
+                                                                        lstIdZone[Zonedat[4]].setOptions({strokeColor: changeColor(lstIdZone[Zonedat[4]].fillColor, 0.1, 1), strokeOpacity: 1, strokeWeight: 2});
+                                                                    }
+                                                                    else if(Zonedat != null)
+                                                                    {
+                                                                        lstIdZone[Zonedat[4]].setOptions({strokeColor: changeColor(lstIdZone[Zonedat[4]].fillColor, 0.1, 1), strokeOpacity: 0, strokeWeight: 0});
+                                                                        delete lstDeleteZone[Zonedat[4]];
+                                                                    }   
+                                                                        
+                                                                    //console.log(' Check box  ' + Zonedat[0].val());
+                                                        });                                                         
+                                
+                                                updateWOCount();
+                                                
+                                       }
+
+                                    } 
+                                   
+                                }, 
+                                {escape: true});
+                               
+
+                            
+
+                            
+                              }
+                              function SelectDeSelectall()
+                              {
+                                if(document.getElementById("check_all").checked)
+                                {
+                                    for(var zoneid in lstIdZone)
+                                    {
+                                        document.getElementById("Check_"+zoneid).checked = true;
+                                        lstIdZone[zoneid].setOptions({strokeColor: changeColor(lstIdZone[zoneid].fillColor, 0.1, 1), strokeOpacity: 1, strokeWeight: 2});
+                                        lstDeleteZone[zoneid] = lstIdZone[zoneid];
+                                    }
+                                }
+                                else
+                                {
+                                    for(var zoneid in lstIdZone)
+                                    {
+                                        document.getElementById("Check_"+zoneid).checked = false;
+                                        lstIdZone[zoneid].setOptions({strokeColor: changeColor(lstIdZone[zoneid].fillColor, 0.1, 1), strokeOpacity: 0, strokeWeight: 0});
+                                        delete lstDeleteZone[zoneid];
+                                    }   
+                                }
+                              }
+                             function updateWOCount()
+                            {
+                                for(var i in lstIdZone)
+                                    countMarkers(lstIdZone[i]);
+                            }
+                                 function  updateZoneNametab()
+                                {
+                                    ZoneTable.fnClearTable(0);
+                                    ZoneTable.fnAddData(lstzoneNameCount);
+                                    loadTags();
+                                }
+                                
+                                function onblurZoneName(elementId)
+                                {
+                                    var item = document.getElementById(elementId);
+                                    var shapeobj = lstIdShape[item.id];                                 
+                                    shapeobj.name = item.value;                                 
+                                }
+
+                                function refreshPage() 
+                                {
+                                     var strTerrid = '';                                
+                                    var paramval = window.location.search;
+                                    var idval = paramval.split("?");
+                                    for (var i=0;i<idval.length;i++)
+                                    {
+                                        var pair = idval[i].split("=");
+                                        if (pair[0] == "id") 
+                                        {
+                                            strTerrid = pair[1];
+                                            
+                                          
+                                        }
+                                    }
+                                     var urlnparam = window.location.href;   
+                                    var spliturlnparam = urlnparam.split("?");
+                                    var url = spliturlnparam[0];
+                                    if(strTerrid != '--None--')
+                                        url += '?id='+strTerrid;
+                                    //Security check    
+                                    window.location.href = url;   
+                                    //window.location.href = escape(url);   
+                                                              
+                                   
+                                }
+                              // Create polygon on user intraction
+                              function createPolygon(paths)
+                              {
+                                var poly = SVMXPolygon(getUniqueId());
+                                var zoneName = 'Untitled';
+                                zoneName = prompt("{!$Label.SORG002_TAG118}","Untitled");
+                                if (zoneName!=null && zoneName!="")
+                                  {
+                                    poly.name = convert(zoneName);
+                                 
+                                 
+                                for(var i=0; i < paths.length; i++)
+                                {
+                                    poly.latLng.push(buildLatLng(paths.getAt(i)));
+                                }
+                                
+                                 
+                                polygons.push(poly);
+                                //setZoneName(zoneName,poly);
+                               // countMarkers(poly);
+                               lstIdZone[poly.id] =  poly;
+                               savezone();
+                               updateWOCount();
+                                }
+                                else
+                                refreshPage();
+                              }
+                              // Paint polygons on UI
+                              function drawPolygon(polygonData) 
+                              {
+                                var path = polygonData.latLng;
+                                var polygonOptions = drawingManager.get('polygonOptions');
+                                polygonOptions.fillColor = polygonData.fillColor;
+                                var poly = new google.maps.Polygon(polygonOptions);
+
+                                var points = [];
+
+                                for (var i = 0; i < path.length; i++) {
+                                  points.push(new google.maps.LatLng(path[i].lat, path[i].lng));
+                                }
+                                if(polygonData.id.length<10)    
+                                {
+                                    poly.id = getUniqueId();                                
+                                    polygonData.id = poly.id;
+                                    polygonData.name = poly.name;
+                                }
+                                else
+                                  poly.id = polygonData.id ;
+                                  poly.name = polygonData.name ;
+                                poly.setMap(map);
+                                poly.setPath(points);
+                                poly.setVisible(true);
+
+                                google.maps.event.addListener(poly, 'click', function() {
+                                      setSelection(poly);
+                                      countMarkers(poly);
+                                      updatePolygon(poly,polygonData);
+                                });
+
+
+                                google.maps.event.addListener(poly, 'mouseout', function() {
+
+                                      countMarkers(poly);
+                                      updatePolygon(poly,polygonData);
+                                });
+                               // addZoneName(poly,polygonData);
+                               lstIdZone[ poly.id] =  poly;
+                                polygons.push(polygonData);
+                              }
+                            // Update Polygon on user intraction
+                            function updatePolygon(newShape,polygonData, color)
+                            {
+                                var paths = newShape.getPath();
+                                var objPoly = SVMXPolygon(newShape.id);
+                                
+                               // objPoly.deleteZone = polygonData.deleteZone;
+                                for(var i=0; i < paths.length; i++)
+                                {
+
+                                    objPoly.latLng.push(buildLatLng(paths.getAt(i)));
+                                }
+                                if(color)
+                                    objPoly.fillColor = color;
+                                else if(newShape.fillColor)
+                                    objPoly.fillColor = newShape.fillColor;
+                                    if(polygonData)
+                                objPoly.name = polygonData.name;
+                                else 
+                                lstIdZone[objPoly.id]=objPoly;
+                                polygons = updateShape(objPoly, polygons);
+                            }
+                        /* APP Security changes
+                            // Circle actions
+                            // Load Circle from memory
+                            function loadCircles()
+                            {
+
+                                if(localStorage['zones-circles'])
+                                {
+                                    var circleData = eval(localStorage['zones-circles']);
+                                    if(circleData)
+                                    for(var i = 0; i < circleData.length; i++){
+                                        drawCircle(circleData[i])
+                                    }
+                                }
+                            }  */
+                              
+                            // Create Circle on user intraction
+                            function createCircles(circle){
+                                circle.id = getUniqueId();
+                                var objCircle = SVMXCircle(circle)
+                                var zoneName = 'Untitled';
+                                 zoneName = prompt("{!$Label.SORG002_TAG118}","Untitled");
+                                if (zoneName!=null && zoneName!="")
+                                  {
+                                    objCircle.name = convert(zoneName);
+                                    
+
+
+                                  
+                                  
+                                objCircle.fillColor = circle.fillColor;
+                                
+                                circles.push(objCircle);
+                               // setZoneName(zoneName,objCircle);
+                               // countMarkers(objCircle);
+                                lstIdZone[objCircle.id] =  objCircle;
+                                savezone();
+                               updateWOCount();
+                               }
+                               else
+                                refreshPage();
+                            }
+                            
+                            // Paint Circles on UI
+                               function drawCircle(circleData)
+                              {
+                                    var circleOptions = drawingManager.get('circleOptions');
+                                    circleOptions.fillColor = circleData.fillColor;
+                                    circleOptions.center = new google.maps.LatLng(circleData.center.lat, circleData.center.lng);
+                                    circleOptions.radius = circleData.radius;
+                                    var cir = new google.maps.Circle(circleOptions);
+                                    
+                                    if(circleData.id.length<10) 
+                                    {
+                                         cir.id = getUniqueId();
+                                        circleData.id = cir.id;
+                                        circleData.name = cir.name;
+                                    }
+                                    else
+                                        cir.id = circleData.id ;
+                                        cir.name = circleData.name ;
+                                   
+                                    cir.setMap(map);
+                                    cir.setVisible(true);
+                                    google.maps.event.addListener(cir, 'click', function() {
+                                          setSelection(cir);
+                                          countMarkers(cir);
+                                          updateCircle(cir,circleData);
+                                    });
+                                    google.maps.event.addListener(cir, 'center_changed', function() {
+                                          setSelection(cir);
+                                          countMarkers(cir);
+                                          updateCircle(cir,circleData);
+                                    });
+                                    google.maps.event.addListener(cir, 'radius_changed', function() {
+                                          setSelection(cir);
+                                          countMarkers(cir);
+                                          updateCircle(cir,circleData);
+                                    });
+                                    //addZoneName(cir, circleData);
+                                    lstIdZone[ cir.id] =  cir;
+                                    circles.push(circleData);
+                              }
+                              // Update Circle on user intraction
+                              
+                            function updateCircle(newShape,circleData, color)
+                            {
+                                var objCircle = SVMXCircle(newShape);
+                                if(circleData)
+                                objCircle.name = circleData.name; 
+                                //objCircle.deleteZone = circleData.deleteZone;
+                                if(color)
+                                    objCircle.fillColor = color;
+                                else if(newShape.fillColor)
+                                    objCircle.fillColor = newShape.fillColor;
+                                circles = updateShape(objCircle, circles);
+                            }
+
+                            /* APP security changes
+                            // Rectangle actions
+                            // Load rectangle from memory
+                            function loadRectangle()
+                            {
+                                if(localStorage['zones-rectangles'])
+                                {
+                                    var rectangleData = eval(localStorage['zones-rectangles']);
+                                    if(rectangleData)
+                                    {
+                                        for(var i = 0; i < rectangleData.length; i++)
+                                        {
+                                            drawRectangle(rectangleData[i])
+                                        }
+                                    }
+                                }
+                            } */
+                              
+                            // Create Circle on user intraction
+                            function createRectangle(rectangle)
+                            {
+                                rectangle.id = getUniqueId();
+                                
+                               
+                                var objRectangle = SVMXRectangle(rectangle);
+                                var zoneName = 'Untitled';
+                                  zoneName = prompt("{!$Label.SORG002_TAG118}","Untitled");
+                                if (zoneName!=null && zoneName!="")
+                                  {
+
+                                    objRectangle.name = convert(zoneName);
+
+                                                              
+
+
+                                objRectangle.fillColor = rectangle.fillColor;
+                               
+                                rectangles.push(objRectangle);
+                                 //setZoneName(zoneName,objRectangle);
+                                 lstIdZone[objRectangle.id] =  objRectangle;
+                                //countMarkers(objRectangle);
+                                savezone();
+                                updateWOCount();
+                                }
+                                else
+                                refreshPage();
+                            }
+                            
+                            // Paint Circles on UI
+                             function drawRectangle(rectangleData)
+                            {
+                                debugger;
+                                var rectangleOptions = drawingManager.get('rectangleOptions');
+                                rectangleOptions.fillColor = rectangleData.fillColor;
+                                var rect = new google.maps.Rectangle(rectangleOptions);
+                                if(rectangleData.id.length<10)  
+                                {
+                                    rect.id = getUniqueId();
+                                    rectangleData.id = rect.id;
+                                    rectangleData.name = rect.name;
+                                }
+                                else
+                                rect.id = rectangleData.id ;
+                                rect.name = rectangleData.name ;
+                                rect.setMap(map);
+                                rect.setBounds(new google.maps.LatLngBounds(new google.maps.LatLng(rectangleData.sw.lat, rectangleData.sw.lng), new google.maps.LatLng(rectangleData.ne.lat, rectangleData.ne.lng)));
+                                rect.setVisible(true);
+                                
+                                google.maps.event.addListener(rect, 'click', function() {
+                                      setSelection(rect);
+                                      countMarkers(rect);
+                                      updateRectangle(rect,rectangleData);
+                                });
+                                google.maps.event.addListener(rect, 'bounds_changed', function() {
+                                      setSelection(rect);
+                                      countMarkers(rect);
+                                      updateRectangle(rect,rectangleData);
+                                });
+                                //addZoneName(rect, rectangleData);
+                                lstIdZone[ rect.id] =  rect;
+                                rectangles.push(rectangleData);
+                              }
+                            // Update Circle on user intraction
+                            function updateRectangle(newShape,rectangleData, color)
+                            {
+                                var objRectangle = SVMXRectangle(newShape);
+                                if(objRectangle)
+                                objRectangle.name = rectangleData.name;
+                                //objRectangle.deleteZone = rectangleData.deleteZone;
+
+                                if(color)
+                                    objRectangle.fillColor = color;
+                                else if(newShape.fillColor)
+                                    objRectangle.fillColor = newShape.fillColor;
+                                rectangles = updateShape(objRectangle, rectangles);
+                            }
+                            
+                           function setZoneName(strZoneName,shapedat)
+                            {
+                                var zoneNameCount = new Array();
+                                if(strZoneName == null || strZoneName =='')
+                                strZoneName = 'Untitled';
+                                zoneNameCount.push('<input type="checkbox"'  +  'id=Check_'+shapedat.id +' />');
+                                zoneNameCount.push('<input type="text"' + 'title="'+shapedat.name+'"' +  ' id="'+shapedat.id+'"' + 'onblur="onblurZoneName(this.id)"   value='+'"'+strZoneName+'"' + 'style="width:100px" />');
+                                zoneNameCount.push('<input type="text"'  +  'id=counter_'+shapedat.id +   ' value='+0+' disabled style="width:50%;border: none;background-color: white;"/>');
+                                  console.log('<div id=counter_'+shapedat.id + ' style="font-size:40px;display:none"></div>');
+                                //countMarkers(shapedat);
+                                zoneNameCount.push(shapedat.id);
+                                lstzoneNameCount.push(zoneNameCount);
+                                //lstIdZone[shapedat.id] =  shapedat;
+                                var index = (Object.keys(lstTabIdZoneId).length)
+                                lstTabIdZoneId[index] = shapedat.id;
+                                var key = shapedat.id;
+                                lstIdShape[key] = shapedat;
+                                updateZoneNametab();
+                                //countMarkers(shapedat);
+                                updateWOCount();
+
+
+
+
+
+
+
+
+                            }
+                            function onChngTerritory()
+                            {   
+                                var strTerrid = '';
+                                //var item = document.getElementById("listZones_previous");
+                                //item.display ='None';
+                                    var paramval = window.location.search;
+                                    var idval = paramval.split("?");
+                                    for (var i=0;i<idval.length;i++)
+                                    {
+                                        var pair = idval[i].split("=");
+                                        if (pair[0] == "id") 
+                                        {
+                                            strTerrid = pair[1];
+                                            if(strTerrid != null &&  strTerrid != '')
+                                                document.getElementById('{!$Component.FormZone.selTerritory_ID}').value = strTerrid;
+                                          
+                                        }
+                                    }
+                                initialize();                              
+                               
+                                document.getElementById("panel").style.visibility="visible";                               
+                                
+                                strSelTerritory = document.getElementById('{!$Component.FormZone.selTerritory_ID}').value;
+                                if(strSelTerritory != '--None--')
+                                {                               
+                                    var straddressval = '';
+                                    Visualforce.remoting.Manager.invokeAction(
+                                    '{!$RemoteAction.WORD_ManageZoneDefinition.getAddress}', strSelTerritory,
+                                    function(result, event)
+                                    {
+                                        if (event.status)
+                                        {
+                                            straddressval = result;
+                                            if(straddressval != undefined && straddressval != '' && straddressval != null)
+                                                setMapPosition(straddressval);
+                                        } 
+                                        loadPolygons(strSelTerritory);
+                                        console.log('TEST: ' + j$('.editZoneName'));
+                                        //j$('.editZoneName').onclick = function(){edtZoneName()};
+                                    }, 
+                                    {escape: true});
+                                }
+                            }
+                            
+                            function setMapPosition(straddress)
+                            {
+                                myGeocoder = new google.maps.Geocoder(); //new GClientGeocoder(); 
+                                if (!myGeocoder) 
+                                { 
+                                    return null; 
+                                } 
+                                myGeocoder.geocode( { 'address': straddress}, 
+                                function(results, status) 
+                                {
+                                    if (status == google.maps.GeocoderStatus.OK) 
+                                    {
+                                        var latval = '';
+                                        var lngval = '';
+                                        latval = results[0].geometry.location.lat();
+                                        lngval = results[0].geometry.location.lng();
+                                    
+                                        if(latval != null && lngval != null && latval!=undefined && latval!=undefined)
+                                        map.setCenter(new google.maps.LatLng(latval,lngval));
+                                    } 
+                                    
+                                });
+                            }
+                            function ConfirmDelete()
+                            {
+                              var x = confirm('{!Tag002}');
+                              //console.log('Row id  '+ lstTabIdZoneId[selectedShape.id]);
+                              if (x)
+                              {
+                                if(Object.keys(lstDeleteZone).length )
+                                {
+
+                                  deleteSelectedShape();
+                                  isdelete=true;
+                                  savezone();
+                                  deleteZoneTabEntry();
+                                  
+                                 
+                                }
+                                else
+                                confirm('{!$Label.COMM001_TAG050}');
+                                  
+                              }
+                            }
+                            function deleteZoneTabEntry()
+                            {
+                                
+                                
+                                for (var key in lstTabIdZoneId)
+                                {
+                                      if(lstTabIdZoneId[key] == lstDeleteZone.hasOwnProperty(key))
+                                      {
+                                        var i;
+                                        for(i= Number(key); i< (Object.keys(lstTabIdZoneId).length )-1 ;i++)
+                                        {
+                                            lstTabIdZoneId[i]= lstTabIdZoneId[i+1];
+                                        }
+                                        delete lstTabIdZoneId[i];
+                                        ZoneTab = j$('#tablermadetails').dataTable();
+                                        lstzoneNameCount.splice(Number(key),1);
+                                        ZoneTab.fnDeleteRow(Number(key));
+                                        
+                                        break;
+                                      }
+                                }
+                                
+                            }
+                            function updatelstTabIdZoneId(key)
+                                {
+                                var lstZoneNameId = {};
+                                for(var i= 0; i< key ;i++)
+                                {
+                                    lstZoneNameId[key]= lstTabIdZoneId[key];
+                                }
+                                for(var i= key; i< (Object.keys(lstTabIdZoneId).length )-1 ;i++)
+                                {
+                                    lstZoneNameId[key]= lstTabIdZoneId[key+1];
+                                }
+                                }
+                            function toggleSidebar(){
+                                if(j$("#sidebar").hasClass("side-bar-open")){
+                                    j$("#sidebar").removeClass("side-bar-open").addClass("side-bar-close");
+                                    j$("#sidebar-icon").removeClass("sb-indicator-open").addClass("sb-indicator-close");
+                                    j$('#panel').hide();
+                                }
+                                else if(j$("#sidebar").hasClass("side-bar-close")){
+                                    j$("#sidebar").removeClass("side-bar-close").addClass("side-bar-open");
+                                    j$("#sidebar-icon").removeClass("sb-indicator-close").addClass("sb-indicator-open");
+                                    j$('#panel').show();
+                                }
+                                google.maps.event.trigger(map, 'resize');
+                            }
+                            function loadTags()
+                            {
+                                
+                                j$("span#tablermadetails_first").text("{!$Label.COMM001_TAG024}");
+                                j$("span#tablermadetails_previous").text("{!$Label.COMM001_TAG026}");
+                                j$("span#tablermadetails_next").text("{!$Label.COMM001_TAG025}");
+                                j$("span#tablermadetails_last").text("{!$Label.COMM001_TAG027}");
+                            }
+
+
+
+                            </script>
+                            
+                    <!-- <div id="panel" class="whitebg">
+
+                      <div style="display:none"><br/><br/>{!$Label.WORD015_TAG190}</div>
+                      <div id="counter" style="font-size:40px;display:none"></div>
+                       <div  style="width:100%;padding:0px" cellspacing="0" class="ZoneDefTableHeader">
+                             <tr class="ZoneDefTableHeader"> 
+                            <div>
+                                <span >{!$Label.SORG002_TAG124}</span>
+                                <span style="float: right;">{!$Label.SORG002_TAG119}</span>
+                            </div>
+                               </tr> 
+                       </div> <br/><br/> -->
+
+                        <div id="panel" class="whitebg">
+                         <apex:form id="FormZone">
+                        <style> 
+                        .paginate_disabled_previous
+                        {
+                            display:None;
+                        }
+                        .paginate_disabled_next
+                        {
+                            display:None;
+                        }
+                        .sorting_1
+                        {
+                            width:100%;
+                        }
+                            .disableTab 
+                            {
+                                background-color : Lightgrey ;
+                                color:black;
+                                background-image:none;
+                                font-size:1.2em;
+                                color:black;
+                                 padding:0px;
+                                font-color:black;
+                            }
+                            .activeTab {background-color: #8599B1; color:Black; background-image:none; font-size:14Px}
+                            .inactiveTab {background-color: #B0BFD2; color:black; background-image:none}        
+                           .rich-panelbar {border-color: rgb(5, 5, 5);  }
+                           .ZoneDefTableHeader {
+                                border: 1px solid #7C7C7C;
+                                line-height: 30px;
+                                 text-align: center;
+
+                                font-weight: bold;
+                                color: #FFF;
+                                -moz-border-radius: 5px 5px 0 0;
+                                -webkit-border-radius: 5px 5px 0 0;
+                                border-radius: 5px 5px 0 0;
+                                background: #18D5FE;
+                                background: -moz-linear-gradient(top, #18D5FE 0%, #28C2E4 100%);
+                                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#18D5FE), color-stop(100%,#28C2E4));
+                                background: -webkit-linear-gradient(top, #18D5FE 0%,#28C2E4 100%);
+                                background: -o-linear-gradient(top, #18D5FE 0%,#28C2E4 100%);
+                                background: -ms-linear-gradient(top, #18D5FE 0%,#28C2E4 100%);
+                                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#18d5fe', endColorstr='#28c2e4',GradientType=0 );
+                                background: linear-gradient(top, #18D5FE 0%,#28C2E4 100%);
+                                }
+                                 #tablermadetails th
+                                {
+                                    background-color: #D3D3D3;
+                                    color:black;
+                                    
+                                }
+                        </style>
+                        
+         <apex:actionStatus startText="{!$Label.svmxc__COMM001_TAG041}" style="font-Size:20px"  id="Statusid"/> 
+        <apex:actionFunction name="ChngTerritory1"  action="{!onChangeTerritory1}"   rerender="selTerritory_ID " status="Statusid"/>
+            <apex:inputhidden id="selTerritory_ID" value="{!strSelectedTerritory}"/> 
+            <apex:inputhidden id="selWOField_ID" value="{!strSelectedWOField}"/> 
+          
+                    <apex:pageBlock title="" id="SVMX_pgBlck1" >
+                            
+                            
+                               <apex:outputPanel id="thePanel" layout="block" Style="color:darkgrey;border-bottom-color: darkgrey;border-right-color: darkgrey;border-left-color: darkgrey;font-size: 11px;font-family: Arial,Verdana,sans-serif;border-style: solid;background: white;border-width: 1px;padding: 0px;padding-top: 0px;">
+                                <apex:outputPanel >
+                                <center>
+                                     <apex:toolbar id="theToolbarPP" styleClass="disableTab"
+                                    width="100%">
+                                        <apex:toolbarGroup id="toolbarGroupPP">
+                                            <apex:outputText value="{!$Label.svmxc__SORG002_TAG126}" style="font-weight: bold;font-Size:12px; color: black;padding-bottom: 5px;text-align:center;padding-left: 32px;"/>
+                                        </apex:toolbarGroup>
+                                    </apex:toolbar>
+                                     </center>
+                                    <BR/>
+                                    <apex:outputText value="{!$Label.svmxc__SORG002_TAG125}" style="font-weight: bold;font-Size:12px;font-family: Arial, sans-serif;color: black;padding-left: 3px;padding-right: 13px;"/>
+                                    <apex:selectList id="WOid" value="{!strSelectedWOField}" style="font-Size:12px;font-family: Arial, sans-serif;color: black;width:65%;padding-left: 3px;" size="1"  >
+                                        <apex:SelectOptions value="{!lstWOfield}"/>
+                                    </apex:selectList>
+                                     <BR/>
+                                    <BR/>
+                                     <!-- <apex:outputPanel id="thePanel" layout="block" Style="color: black;border-bottom-color: black;border-right-color: black;border-left-color: black;font-size: 11px;font-family: Arial,Verdana,sans-serif;"> -->
+                                     <apex:outputText value="{!$Label.svmxc__SORG002_TAG120}" style="font-weight: bold;font-Size:12px; color: black;padding-bottom: 5px;padding-left: 3px;"/> 
+                                        <input id="startDate" type="text"   size="12"/>
+                                        <BR/>
+                                        <BR/>
+                                         <apex:outputText value="{!$Label.svmxc__SORG002_TAG121}" style="font-weight: bold;font-Size:12px; color: black;padding-bottom: 5px;padding-left: 3px;padding-right: 7px;"/>
+                                        <input id="endDate" type="text"  size="12"/>
+                                          <BR/>
+                                          <BR/>
+                                          <div style=" text-align:center;">
+                                        <apex:commandButton action="{!onChangeTerritory1}" oncomplete="getWorkorderData();" value="{!$Label.svmxc__COMM001_TAG068}" rerender="selTerritory_ID,selWOField_ID" id="getWorkOrder" style="color: #333;margin: 1px;padding: 2px 3px;border: 1px solid #b5b5b5;border-bottom-color: #7f7f7f;
+font-weight: bold;font-size: 12px;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;width: 49px;height: 24px;" status="Statusid"/>
+                                        </div>
+                                    </apex:outputPanel>  
+                                </apex:outputPanel>  
+                                <BR/>
+                                <BR/>
+                                
+                                
+                                
+                                              
+                            
+                    </apex:pageBlock>
+                    
+              
+        </apex:form>
+                     
+                      <div Style="border:gray solid 1px">
+                      <div style="font-weight: bold;font-Size:12px; color: black;padding-bottom: 5px;padding-left: 3px;padding-right: 7px;background-color:#DCDCDC ;text-align:center;font-family: Arial,Verdana,sans-serif;"> {!$Label.SORG002_TAG127}</div>
+                      <div style="background-color: white;height: 10px;"/>
+                       <table id="tablermadetails" style="width:192px;padding:0px" class="tablermadetails" cellspacing="0">
+                            <!-- <tr class="ZoneDefTableHeader">
+
+                                <th>{!$Label.SORG002_TAG124}</th>
+                                <th>{!$Label.SORG002_TAG119}</th>
+                              </tr> -->
+                       </table> <br/><br/>
+
+
+
+                      <div>
+                        <button id="delete-button" onClick="ConfirmDelete()" style="color: #333;margin: 1px;padding: 2px 3px;border: 1px solid #b5b5b5;border-bottom-color: #7f7f7f;
+font-weight: bold;font-size: 12px;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;width: 92px;
+height: 27px;font-family: Arial,Verdana,sans-serif;">{!$Label.SORG002_TAG128}</button>
+                         <button id="savezone-button" style="color: #333;margin: 1px;padding: 2px 3px;border: 1px solid #b5b5b5;border-bottom-color: #7f7f7f;
+font-weight: bold;font-size: 12px;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;width: 92px;
+height: 27px;font-family: Arial,Verdana,sans-serif;">{!$Label.SORG002_TAG129}</button>
+                      </div>                      
+                     
+                       
+                      </div>
+                      
+                    </div>
+                    <div id="sidebar" class="side-bar-open" onclick="toggleSidebar()" ><div id="sidebar-icon" class="sb-indicator-open"  ></div></div>
+                    <div id="map_canvas"></div>
+                   
+<style>
+.zonename{
+    font-weight:bold;
+    padding:5px;
+}
+.whitebg{
+    background:white;
+    padding: 5px;
+    height: 100%;
+}
+.side-bar-close{
+    float: left;k
+    height: 100%;
+}
+
+.side-bar-open{
+    float: left;
+    height: 100%;
+}
+
+.side-bar-close:hover{
+    cursor: url(/img/cursors/col-expand.cur),pointer;
+    background-color:#CEECF2;
+}
+
+.side-bar-open:hover{
+    cursor: url(/img/cursors/col-collapse.cur),pointer;
+    background-color:#CEECF2;
+}
+.sb-indicator-open {
+    height: 31px;
+    width: 9px;
+    right: 0;
+    background: url(/img/alohaSkin/sidebar_sprite.png) 0 0 no-repeat;
+}
+.sb-indicator-close {
+    height: 31px;
+    width: 9px;
+    right: 0;
+    background: url(/img/alohaSkin/sidebar_sprite.png) 0 -62px no-repeat;
+}
+.dataTables_wrapper
+{
+    padding:3px;
+    
+}
+.tablermadetails dataTable
+{
+width: 190px;
+padding: 0px;
+}
+#tableserialSelection td
+{
+    background_color:white;
+}
+#addProduct td {
+background-color:white;
+}
+.sorting_asc {
+    background:  url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/sort_asc.png')}') no-repeat center right;
+}
+
+.sorting_desc {
+    background: url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/sort_desc.png')}') no-repeat center right;
+}
+
+.sorting {
+    background: url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/sort_both.png')}') no-repeat center right;
+}
+
+.sorting_asc_disabled {
+    background: url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/sort_asc_disabled.png')}') no-repeat center right;
+}
+
+.sorting_desc_disabled {
+    background: url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/sort_desc_disabled.png')}') no-repeat center right;
+}
+.paginate_disabled_previous {
+    background: url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/back_disabled.png')}') no-repeat top left;
+}
+
+.paginate_enabled_previous {
+    background: url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/back_enabled.png')}') no-repeat top left;
+}
+.paginate_enabled_previous:hover {
+    background: url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/back_enabled_hover.png')}') no-repeat top left;
+}
+
+.paginate_disabled_next {
+    background: url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/forward_disabled.png')}') no-repeat top right;
+}
+
+.paginate_enabled_next {
+    background: url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/forward_enabled.png')}') no-repeat top right;
+}
+.paginate_enabled_next:hover {
+    background: url('{!URLFOR($Resource.COMM_Resources4, 'SVMXDC_resources/zone/images/forward_enabled_hover.png')}') no-repeat top right;
+}
+
+#tablermadetails_previous
+{
+text-decoration: underline;
+}
+
+</style>
+</apex:page>

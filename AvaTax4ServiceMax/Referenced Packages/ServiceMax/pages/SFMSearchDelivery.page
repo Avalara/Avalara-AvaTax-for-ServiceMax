@@ -1,0 +1,239 @@
+<apex:page title="Search Delivery" standardStylesheets="false" controller="SVMXC.SFMSearchDelivery">
+<script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+<script>
+
+    //Remove the inline=1 from url while loading the page based on the showHeader attribute. This is done to display the 
+    //header while rendering the page.
+    var url = location.href;
+    var match = url.match(/showHeader=true/);
+    if(match != null) {
+        match = url.match(/inline=1/);
+        if (match != null) { 
+           var newUrl = url.replace(/inline=1/, '');
+           window.top.location=newUrl;
+       }
+    }
+    
+    function processResourceURL(url){
+        var ret = url, index;
+        if((index = url.indexOf("?")) != -1){
+            ret = url.substring(0, index);
+        }
+        return ret;
+    }
+    
+    // TODO: Read from settings
+    var __SVMX_LOAD_VERSION__ = "micro";
+    var __SVMX_CLIENT_LIB_PATH__ = processResourceURL("{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib')}");
+    var svmx_display_tags = {
+        SFMSEARCH: {
+            "TAG0002"         : "{!HTMLENCODE($Label.SFM003_TAG002)}",
+            "TAG0003"         : "{!HTMLENCODE($Label.SFM003_TAG003)}",
+            "TAG0004"         : "{!HTMLENCODE($Label.SFM003_TAG004)}",
+            "TAG0005"         : "{!HTMLENCODE($Label.SFM003_TAG005)}",
+            "TAG0006"         : "{!HTMLENCODE($Label.SFM003_TAG006)}",
+            "TAG0007"         : "{!HTMLENCODE($Label.SFM003_TAG007)}",
+            "TAG0008"         : "{!HTMLENCODE($Label.SFM003_TAG008)}",
+            "TAG0009"         : "{!HTMLENCODE($Label.SFM003_TAG009)}",
+            "COMM001_TAG012" : "{!HTMLENCODE($Label.COMM001_TAG012)}",
+            "COMM001_TAG013" : "{!HTMLENCODE($Label.COMM001_TAG013)}",
+            "COMM001_TAG014" : "{!HTMLENCODE($Label.COMM001_TAG014)}",
+            "COMM001_TAG015" : "{!HTMLENCODE($Label.COMM001_TAG015)}",
+            "COMM001_TAG031" : "{!HTMLENCODE($Label.COMM001_TAG031)}",
+            "SFW_TITLE"      : "{!HTMLENCODE($Label.CONF005_TEXT73)}",
+            "SFW_AVLBL_SRCH" : "{!HTMLENCODE($Label.CONF031_TAG024)}",
+            "SFW_YES_BTN"    : "{!HTMLENCODE($Label.COMM001_TAG119)}",
+            "SFW_NO_BTN"     : "{!HTMLENCODE($Label.COMM001_TAG120)}",
+            "CONF016_TAG113" : "{!HTMLENCODE($Label.CONF016_TAG113)}",
+            "CONF016_TAG114" : "{!HTMLENCODE($Label.CONF016_TAG114)}",
+            "CONF016_TAG032" : "{!HTMLENCODE($Label.CONF016_TAG032)}",
+            "CONF016_TAG115" : "{!HTMLENCODE($Label.CONF016_TAG115)}",
+            "TAG0010"        : "{!HTMLENCODE($Label.SFM002_TAG088)}" 
+        } 
+    };
+    
+    var SVMXJsr = {
+        
+        JsrGetSearchInfo : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMSearchDelivery.JsrGetSearchInfo}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrGetSearchResult : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMSearchDelivery.JsrGetSearchResult}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrGetDisplayTags : function(request, callback, context){
+            var me = this;
+            
+            setTimeout(function(){
+                me.processResult(svmx_display_tags.SFMSEARCH, {status : true}, callback, context);
+            }, 1);
+        },
+        
+        JsrGetWizardInfo : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMSearchDelivery.JsrGetWizardInfo}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+         
+        processResult : function(result, event, callback, context){
+            var ret = {success : false};
+            if(event.status == true){
+                ret = SVMX.toObject(result);
+            }
+            callback.call(context, ret, event);
+        }
+   };
+   
+   var svmx_sfmsearch_delivery_search_info = "{!JSENCODE(SearchInfo)}";
+</script>
+
+<script type="text/javascript" src="{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib/src/bootstrap.js')}"></script>
+
+<script>
+
+jQuery(document).ready(function(){
+    var client_runtime         = processResourceURL("{!URLFOR($Resource.com_servicemax_client_runtime, '')}");
+    var client_sfmconsole      = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmconsole, '')}");
+    var client_sfmsearch       = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmsearchdelivery, '')}");
+    var client_sfmsearch_ui_desktop = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmsearchdelivery_ui_desktop, '')}");
+    var client_sfmsearch_model = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_sfmsearch_model, '')}");
+    var client_sal             = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal, '')}");
+    var client_mvc             = processResourceURL("{!URLFOR($Resource.com_servicemax_client_mvc, '')}");
+    var ui_components          = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_components, '')}");
+    var client_sfw             = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfwdelivery, '')}");
+    var client_sfw_ui_desktop  = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfwdelivery_ui_desktop, '')}");
+    var client_sfw_model       = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_sfw_model, '')}");
+    var client_sfmconsole_model= processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_sfmconsole_model, '')}");
+    var sfmconsole_ui_web          = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmconsole_ui_web, '')}");
+    var ui_themes_orange      = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_desktop_themes_orange, '')}");
+
+    
+    var config = {title : "{!HTMLENCODE($Label.CONF005_TEXT73)}", version : "1.0.0",
+        modules : [
+            { id : "com.servicemax.client.sfmconsole",              version : "1.0.0" , codebase : client_sfmconsole },
+            { id : "com.servicemax.client.runtime",                 version : "1.0.0" , codebase : client_runtime },
+            { id : "com.servicemax.client.sfmsearchdelivery",       version : "1.0.0" , codebase : client_sfmsearch },
+            { id : "com.servicemax.client.sfmsearchdelivery.ui.desktop",       version : "1.0.0" , codebase : client_sfmsearch_ui_desktop },
+            { id : "com.servicemax.client.sal.sfmsearch.model",     version : "1.0.0" , codebase : client_sfmsearch_model },           
+            { id : "com.servicemax.client.sal",                     version : "1.0.0" , codebase : client_sal },
+            { id : "com.servicemax.client.mvc",                     version : "1.0.0" , codebase : client_mvc },
+            { id : "com.servicemax.client.ui.components",           version : "1.0.0" , codebase : ui_components },
+            { id : "com.servicemax.client.sfwdelivery",             version : "1.0.0" , codebase : client_sfw },
+            { id : "com.servicemax.client.sfwdelivery.ui.desktop",  version : "1.0.0" , codebase : client_sfw_ui_desktop },
+            { id : "com.servicemax.client.sal.sfw.model",           version : "1.0.0" , codebase : client_sfw_model },
+            { id : "com.servicemax.client.sal.sfmconsole.model",    version : "1.0.0" , codebase : client_sfmconsole_model },
+            { id : "com.servicemax.client.sfmconsole.ui.web",           version : "1.0.0" , codebase : sfmconsole_ui_web},
+            { id : "com.servicemax.client.ui.desktop.themes.orange",           version : "1.0.0" , codebase : ui_themes_orange}            
+        ],
+    
+        "app-config" : {
+            "org-name-space": "SVMXC",
+            "application-id"   : "console",
+            "svmx-api-version" : "9.0",
+            "sal-service-runtime-mode" : "VISUAL_FORCE",
+            "enable-cache" : true,
+            "enable-log" : true,
+            "svmx-sfm-sal-model-use-jsr" : true,
+            "svmx-base-url" : "{!$Site.Prefix}"
+        },
+    
+        "platform-config" : {
+    
+        }
+    };
+    
+        
+    // create the client instance
+    var client = new com.servicemax.client.lib.core.Client();
+
+    // set up the session id
+    client.addApplicationParameter("session-id", "{!GETSESSIONID()}");   
+    
+    setTimeout(function(){
+        client.run({configType : "local", data : config, loadVersion : __SVMX_LOAD_VERSION__ });
+    }, 200);
+    
+    ///////////////////////////// start - handling of hide/show for the SFDC sidebar /////////////////////
+    /**
+     * @ Indresh M S
+     * The life cycle of the 'client_display_root' div is maintained by ExtJs. And because of that,
+     * whenever SFDC triggers a page layout change, ExtJs does not react to it. It has to be explicitly
+     * told to re-layout.
+     * In order to achieve that, we will have to fall back on the elements  from SFDC that are involved
+     * in the layout change.
+     * !!! WARNING: It is possible that SFDC may adjust id's of the elements refered to below. Make sure that this
+     * feature continues to run by testing against every SFDC upgrade.
+     */
+    $("#handlebarContainer").click(function(evt){
+        resize();
+    });
+       
+    var panelTimer;
+
+    function checkForPanel() {
+        panelTimer = setTimeout(function(){
+            try { 
+                var engine = SVMX.getCurrentApplication().defaultSearchInstance;
+                if (engine.getRoot()) {
+                    clearTimeout(panelTimer);
+                    engine.__isContainerExternal = true;
+                    engine.__parent = {
+                        heightOffset: $("#AppBodyHeader").height() + 10,
+                        widthOffset: $("#sidebarCell").width() + 60
+                    }                
+                    resize();
+                } else {
+                    clearTimeout(panelTimer);
+                    checkForPanel();    
+                }
+            } catch(e) {
+                clearTimeout(panelTimer);
+                checkForPanel();
+            }    
+        }, 200);
+    };
+                             
+    function resize(){
+        setTimeout(function(){
+            var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+            var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+            var heightOffset = $("#AppBodyHeader").height() + 10;
+            var widthOffset = $("#sidebarCell").width() + 40;
+            
+            $("#client_display_root")
+            .width($("#AppBodyHeader").width() - widthOffset)
+            .height(h - heightOffset);
+            
+            try { 
+                var engine = SVMX.getCurrentApplication().defaultSearchInstance;
+                engine.__parent = {
+                    heightOffset: heightOffset,
+                    widthOffset: widthOffset + 20
+                } 
+                
+                engine.onResize(
+                    { width : $("#client_display_root").width(), 
+                      height : $("#client_display_root").height()
+                    }
+                );
+                SVMX.getCurrentApplication().defaultSearchInstance.getRoot().doLayout(); 
+             } catch(e){}
+        }, 5);
+    }
+    checkForPanel();
+    ///////////////////////////// end - handling of hide/show for the SFDC sidebar //////////////////////
+});
+
+</script>
+<body>
+<div id="client_display_root"></div>
+</body>
+</apex:page>

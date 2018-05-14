@@ -1,0 +1,279 @@
+<apex:page controller="SVMXC.DXT_Console" docType="html-5.0">
+<script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+<style type="text/css">
+    .filterClass table.detailList {width: 72% !important; padding:5px 0 !important; margin:0 !important;}
+    .filterClass table.detailList th {width: 10% !important; padding:0 !important; margin:0 !important;}
+    .filterClass table.detailList th label {line-height: 20px; padding-right: 5px !important; font-size: small;}
+    .filterClass table.detailList td {width: 20% !important; padding:0 !important; margin:0 !important;}
+    .filterClass table.detailList td .btn {margin-left:40px !important;}
+    .tertiaryPalette h3 {color:black !important; }    
+    .pbButton {width: 18%;}
+    .pbButtonb {width: 18%;}    
+    .pageblock-2 .pbHeader table tr td.pbTitle h2.mainTitle {font-size:1.2em !important}
+  
+    table#recordTable {
+        border-collapse: collapse;
+        clear: both;    
+        font-family:Arial, Helvetica, sans-serif;
+        width: 100%;
+        margin:0;
+        border-right-width: 0;
+    }
+    table#recordTable th {
+        border-bottom: 1px solid #e0e3e5;   
+        padding: 5px 4px;
+        border-right: 1px solid #e0e3e5;
+        background: #f2f3f3;
+    }
+    table#recordTable td {
+        padding: 4px;
+        text-align: left;
+        white-space: normal;
+        border-bottom: 1px solid #e3deb8;   
+    }
+    
+    table#recordTable tr {
+        background: #FFF;
+    }
+
+    table#recordTable tr:hover {
+        background: #e3f3ff;
+    }
+
+    .header-checkbox {
+        border:none;
+        padding: 3px 0 !important;
+    }
+    
+    .tab1 {
+        clear: both;
+        width: 100%;
+        border-collapse: collapse;
+        font-family:Arial, Helvetica, sans-serif;
+    }
+    .tab1 thead th {
+        padding: 3px 4px 3px 4px;
+        font-weight: bold;
+        background: #f2f3f3;
+        border: 1px solid #e0e3e5;
+    }
+    
+</style>
+
+<!--[if lte IE 7]>
+<style type="text/css">
+.inner {overflow-x:hidden}
+
+</style>
+<![endif]-->
+
+<!--[if lte IE 8]>
+<style type="text/css">
+.header-checkbox {
+    padding-top: 6px !important;
+}
+</style>
+<![endif]-->
+
+
+<script>
+    var listOfId = '';
+    function checkOne(id, cbComponent){     
+        var hidden = document.getElementById("{!$Component.form.WorkId}");
+        if(cbComponent.checked){
+            listOfId = listOfId + id + ',';
+        }
+        else{
+            listOfId = listOfId.replace(id + ',',"");
+        }
+        hidden.value = listOfId;        
+    }
+    function checkAll(cb){ 
+        var inputElem = document.getElementsByTagName("input"); 
+        for(var i=0; i<inputElem.length; i++){
+            if(inputElem[i].id.indexOf("check")!=-1){
+                if(cb.checked && !inputElem[i].checked)
+                    listOfId = listOfId + inputElem[i].title + ',';
+                inputElem[i].checked = cb.checked;
+            }
+        }
+        if(!cb.checked){
+            var inputElem1 = document.getElementsByTagName("input"); 
+            for(var i=0; i<inputElem1.length; i++){
+                if(inputElem1[i].id.indexOf("check")!=-1){
+                    if(!inputElem1[i].checked){
+                        listOfId = listOfId.replace(inputElem[i].title + ',',"");
+                    }
+                }
+            }
+        }
+        var hidden = document.getElementById("{!$Component.form.WorkId}");
+        hidden.value = listOfId;        
+    }
+    function unCheckHeaderCheckbox(){
+        var headerCheckBox1 = document.getElementById("{!$Component.form.pageBlock1.pageBlock2.headerbox}");
+        var flag = true;
+        var inputElem = document.getElementsByTagName("input"); 
+        for(var i=0; i<inputElem.length; i++){
+            if(inputElem[i].id.indexOf("check")!=-1){
+                if(!inputElem[i].checked){
+                    flag = false;
+                    break;
+                }
+            }
+        }
+        headerCheckBox1.checked = flag;
+    }
+    function resetListOfId(){
+        listOfId = '';
+        var hidden = document.getElementById("{!$Component.form.WorkId}");
+        hidden.value = listOfId;
+        unCheckHeaderCheckbox();  //can be removed
+    }
+    function download(filename){
+        var nAgt = navigator.userAgent;
+        var flagToClick = false;
+        var contentType = 'text/tab-separated-values';
+        var downloadElement = document.createElement('a');        
+        var content = document.getElementById("{!$Component.form.fileContent}").value;
+        content = content.replace(/~NEXTLINE~/g , "\n");
+        content = content.replace(/~NEXTTAB~/g , "\t");
+        var blob;
+        downloadElement.download = filename;
+        
+        // For MSIE(Microsoft Internet Explorer)    
+        if (nAgt.indexOf("MSIE")!=-1 && content.length >0) {
+            var ifrm = document.createElement("IFRAME");
+            ifrm.id = "SaveFrame";
+            ifrm.style.display = "none";
+            document.body.appendChild(ifrm);
+        
+            SaveFrame.document.open("text/tab-separated-values", "replace");
+            SaveFrame.document.write(content);
+            SaveFrame.document.close();
+            SaveFrame.focus();
+            var fname = filename.split('.iif');
+            fname[0] = fname[0].replace(/\//g , "-");
+            SaveFrame.document.execCommand('SaveAs',false, fname[0]);
+        }
+        // For Chrome
+        else if (nAgt.indexOf("Chrome")!=-1 && window.webkitURL != null) {
+            blob = new Blob([content], {type : contentType});        
+            downloadElement.href = window.webkitURL.createObjectURL(blob);
+            flagToClick = true;
+        }
+        // For Firefox
+        else if (nAgt.indexOf("Firefox")!=-1) {
+            blob = new Blob([content], {type : contentType});
+            downloadElement.href = window.URL.createObjectURL(blob);            
+            downloadElement.style.display = "none";
+            document.body.appendChild(downloadElement);
+            flagToClick = true;
+        }
+        
+        if(content.length >0 && flagToClick == true)            
+            downloadElement.click();
+        resetListOfId();
+    }
+    function isNumberKey(evt){
+        var charCode = (evt.which) ? evt.which : event.keyCode;
+        if (charCode != 47 && charCode > 31 && (charCode < 48 || charCode > 57))
+            return false;
+        return true;
+    }
+        
+</script>
+    <apex:form id="form">
+        <apex:inputHidden id="WorkId" value="{!sObjectId}"/>    
+        <apex:inputHidden id="fileContent" value="{!strFileContent}"/>
+        <apex:actionFunction name="Export" action="{!exportData}"/>     
+        <apex:pageBlock id="pageBlock1" title="{!TAG012}" helptitle="{!TAG019}" helpurl="{!HLPURL}">    
+            <apex:outputpanel id="messagePanel">
+                <apex:pageMessages id="successMessage" rendered="{!messageStatus}"/>
+            </apex:outputpanel>
+            <div class="filterClass">
+            <apex:pageBlockSection id="pageBlockSection1" title="{!TAG013}" columns="3">                
+                <apex:inputField value="{!objCase.SVMXC__BW_Date__c}" id="from" label="{!TAG007}" onkeypress="return isNumberKey(event)"/>
+                <apex:inputField value="{!objCase.SVMXC__Scheduled_Date__c}" id="to" label="{!TAG008}" onkeypress="return isNumberKey(event)"/>
+                <apex:commandButton id="GoButton" oncomplete="resetListOfId();" status="Processing" reRender="pageBlock2,messagePanel" value="{!TAG009}" action="{!filterRecordsBetweenDates}" title="{!TAG009}"/>
+            </apex:pageBlockSection>
+            <script>
+                twistSection(document.getElementById('{!$Component.pageBlockSection1}').getElementsByTagName('img')[0]);
+                document.getElementById('{!$Component.pageBlockSection1}').firstChild.style.cssText = "background-color: gainsboro";
+            </script>
+            </div>
+            <apex:outputPanel >
+                    <apex:actionStatus id="Processing" startText="{!TAG006}"/>
+            </apex:outputPanel>
+            <div class="pageblock-2">
+            <apex:pageBlock id="pageBlock2" title="{!TAG014}">
+            <apex:outputPanel rendered="{!lstSObjectWrapper.size=0}">
+                <div style="overflow-x: auto; width: 87em; margin-bottom: 10px;">
+                <table class="tab1">
+                    <thead>
+                    <tr>
+                        <th><apex:inputCheckbox /></th>
+                        <apex:repeat value="{!lstColumnLabel}" var="colLabel"> 
+                            <th>{!colLabel}</th>
+                        </apex:repeat>
+                    </tr>
+                    </thead>
+                </table>
+                </div>
+                <center><apex:outputLabel value="{!TAG004}" style="font-weight:bold"/></center>
+            </apex:outputPanel>
+                <apex:outputPanel rendered="{!lstSObjectWrapper.size>0}">                 
+                     <div style="clear: both; overflow: auto; width: 87em; height: 300px; border: 1px solid #eaeaea; margin-bottom: 10px;">
+                     <table id="recordTable">
+                            <thead>
+                            <tr>
+                                <th><apex:inputCheckbox id="headerbox" onclick="checkAll(this)"/></th>
+                                <apex:repeat value="{!lstColumnLabel}" var="colLabel"> 
+                                    <th>{!colLabel}</th>
+                                </apex:repeat>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <apex:repeat value="{!lstSObjectWrapper}" var="WO">                 
+                                <tr>
+                                        <td><apex:inputCheckbox id="check" onclick="checkOne('{!WO.objSObject.id}', this)" title="{!WO.objSObject.id}" value="{!WO.isSelect}"/></td>
+                                        <apex:repeat value="{!lstDisplayFieldWrapper}" var="fieldName">
+                                            <td><apex:outputText value="{!WO.objSObject[fieldName.strFieldName]}" rendered="{!fieldName.isReference}"/><apex:outputField value="{!WO.objSObject[fieldName.strFieldName]}" rendered="{!NOT(fieldName.isReference)}"/></td>
+                                        </apex:repeat>
+                                    </tr>
+                            </apex:repeat>
+                            </tbody>
+                        </table>
+                        </div>
+                    
+                </apex:outputPanel>
+                <apex:panelGroup rendered="{!lstSObjectWrapper.size>0}">
+                    <apex:outputText >{!(pageNumber * size)+1-size}-{!IF((pageNumber * size)>noOfRecords, noOfRecords,(pageNumber * size))} {!TAG024} {!noOfRecords}</apex:outputText>
+                    <apex:selectList id="chooseSize" value="{!size}" size="1" style="margin-left: 15px;">
+                        <apex:selectOptions value="{!lstSize}"/>
+                        <apex:actionSupport event="onchange" action="{!userSelectedNumber}" status="Processing" reRender="pageBlock2"/>
+                    </apex:selectList>
+                </apex:panelGroup>
+                <apex:panelGroup style="margin-left: 30%;" rendered="{!lstSObjectWrapper.size>0}">
+                    <apex:commandButton oncomplete="unCheckHeaderCheckbox();" status="Processing" reRender="pageBlock1" value="|<<" action="{!Navigate}" disabled="{!!hasPrevious}" title="{!TAG020}">
+                        <apex:param assignTo="{!strNavigateType}" name="myparm1" value="first"/>     
+                    </apex:commandButton>
+                    <apex:commandButton oncomplete="unCheckHeaderCheckbox();" status="Processing" reRender="pageBlock1" value="|<" action="{!Navigate}" disabled="{!!hasPrevious}" title="{!TAG022}">
+                        <apex:param assignTo="{!strNavigateType}" name="myparm1" value="previous"/>     
+                    </apex:commandButton>
+                    <apex:commandButton oncomplete="unCheckHeaderCheckbox();" status="Processing" reRender="pageBlock1" value=">|" action="{!Navigate}" disabled="{!!hasNext}" title="{!TAG021}">
+                        <apex:param assignTo="{!strNavigateType}" name="myparm1" value="next"/>     
+                    </apex:commandButton>
+                    <apex:commandButton oncomplete="unCheckHeaderCheckbox();" status="Processing" reRender="pageBlock1" value=">>|" action="{!Navigate}" disabled="{!!hasNext}" title="{!TAG023}">
+                        <apex:param assignTo="{!strNavigateType}" name="myparm1" value="last"/>     
+                    </apex:commandButton>
+                </apex:panelGroup>
+                <apex:pageBlockButtons >
+                    <apex:commandButton value="{!TAG010}" action="{!exportData}" oncomplete="resetListOfId();" reRender="pageBlock2,messagePanel" status="Processing" disabled="{!lstSObjectWrapper.size=0}"/>
+                    <apex:commandButton value="{!TAG011}" action="{!saveIIFFile}" oncomplete="download('{!strFileName}');" reRender="fileContent,pageBlock2,messagePanel" status="Processing" disabled="{!lstSObjectWrapper.size=0}"/>
+                </apex:pageBlockButtons>
+            </apex:pageBlock>
+            </div>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

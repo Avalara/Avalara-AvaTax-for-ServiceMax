@@ -1,0 +1,57 @@
+<apex:page controller="SVMXC.CONF_ManageScheduledSFM" id="manageScheduledSFM">
+    <script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+    <apex:form id="form1">
+        <apex:pageBlock id="pageBlock1" title="{!$Label.svmxc__CONF039_TAG001}" helptitle="{!$Label.svmxc__COMM001_TAG064}" helpurl="{!$Label.svmxc__CONF039_HLPURL}">
+            <apex:pageBlockButtons id="pageBlockButton1" location="TOP">
+                <apex:commandButton value="{!$Label.svmxc__COMM001_TAG047}" action="{!backToSetupHomeAndNewProcess}" id="New" status="ProcessingStatus" reRender="pageBlock1,pageMessage1">
+                    <apex:param assignTo="{!strActionType}" name="myparm1" value="New"/> 
+                </apex:commandButton>
+                <apex:commandButton value="{!$Label.svmxc__COMM001_TAG048}" action="{!editCustomScheduledSFMProcess}" id="Edit" disabled="{!isCustomButtonEnabled}" status="ProcessingStatus" reRender="pageBlock1,pageMessage1"/>
+                <apex:commandButton value="{!$Label.svmxc__COMM001_TAG045}" action="{!cloneCustomScheduledSFMProcess}" id="CloneCustom" disabled="{!isCustomButtonEnabled}" status="ProcessingStatus" reRender="pageBlock1,pageMessage1"/>
+                <apex:commandButton value="{!$Label.svmxc__COMM001_TAG049}" action="{!deleteCustomScheduledSFMProcess}" Disabled="{!isCustomButtonEnabled}"  onClick="{if(!confirm('{!$Label.svmxc__COMM001_TAG057}')){return false}}" status="ProcessingStatus" reRender="pageBlock1,pageMessage1"/> 
+                <apex:commandButton value="{!$Label.svmxc__CONF039_TAG002}" action="{!runCustomProcess}" id="RunNow" disabled="{!isCustomButtonEnabled}" status="ProcessingStatus" reRender="pageBlock1,pageMessage1"/>
+                <apex:commandButton value="{!$Label.svmxc__COMM001_TAG046}" action="{!backToSetupHomeAndNewProcess}" id="BackToSetupHome" status="ProcessingStatus" reRender="pageBlock1,pageMessage1">
+                    <apex:param assignTo="{!strActionType}" name="myparm1" value="SetupHome"/> 
+                </apex:commandButton>
+            </apex:pageBlockButtons>
+            <apex:outputPanel style="padding-left: 12px;" layout="block">
+                <apex:actionStatus id="ProcessingStatus" startText="{!$Label.svmxc__COMM001_TAG041}"/>
+                <apex:pageMessages id="pageMessage1"/>
+            </apex:outputPanel>
+            <apex:pageBlockSection columns="1" id="pageBlockSection1">
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable id="pageBlockTable1" value="{!lstCustomProcess}" var="custmProcess">
+                        <apex:column >
+                            <apex:facet name="header" >{!$Label.svmxc__COMM001_TAG044}</apex:facet>
+                            <apex:inputField value="{!custmProcess.SVMXC__Select__c}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!$Label.svmxc__COMM001_TAG056}</apex:facet>
+                            <apex:outputText value="{!custmProcess.SVMXC__ProcessID__c}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!$Label.svmxc__COMM001_TAG055}</apex:facet>
+                            <apex:outputText value="{!custmProcess.SVMXC__Name__c}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!$Label.svmxc__COMM001_TAG017}</apex:facet>
+                            <apex:outputText value="{!custmProcess.SVMXC__Description__c}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!$Label.svmxc__COMM001_TAG016}</apex:facet>
+                            <apex:outputfield value="{!custmProcess.SVMXC__Active__c}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!$Label.svmxc__COMM001_TAG076}</apex:facet>
+                            <apex:outputText value="{!custmProcess.LastModifiedBy.Name}"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!$Label.svmxc__COMM001_TAG067}</apex:facet>
+                            <apex:outputfield value="{!custmProcess.LastModifiedDate}"/>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

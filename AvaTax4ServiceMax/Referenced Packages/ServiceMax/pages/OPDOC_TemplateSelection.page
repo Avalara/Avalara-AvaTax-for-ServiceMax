@@ -1,0 +1,26 @@
+<apex:page controller="SVMXC.OPDOC_TemplateSelection" tabStyle="SVMXC__Service_Order__c" >
+
+    <apex:form >
+    <apex:pageBlock title="{!Tag005} : {!recordName}" > 
+        <apex:pageBlockButtons location="top" style="width:1%;">
+            <apex:commandButton value="{!Tag003}" action="{!Cancel}"  />
+        </apex:pageBlockButtons>
+
+        <apex:pageBlockSection columns="1"  title="{!Tag001}" rendered="{!docWrapperList.size > 0}">
+            <apex:pageBlockTable columns="2" value="{!docWrapperList}" var="doc" >
+                <apex:column >
+                    <apex:facet name="header" >Name</apex:facet>   
+                    <apex:outputLink value="{!doc.url}">{!doc.processRec.SVMXC__Name__c}</apex:outputLink>            
+                </apex:column>
+                
+                <apex:column >
+                    <apex:facet name="header">Description</apex:facet>   
+                    <apex:outputField value="{!doc.processRec.SVMXC__Description__c}"/>
+                </apex:column>                
+            </apex:pageBlockTable>
+        </apex:pageBlockSection>
+
+        <apex:outputLabel value="{!Tag004}" rendered="{!docWrapperList.size == 0}"></apex:outputLabel>
+     </apex:pageBlock>
+     </apex:form>     
+</apex:page>

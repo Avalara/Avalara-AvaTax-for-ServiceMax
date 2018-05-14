@@ -1,0 +1,221 @@
+<apex:page title="SPM Configuration" standardStylesheets="true" showHeader="true" sidebar="true" controller="SVMXC.SPM_Configuration">
+  <script>
+      var __SVMX_LOAD_VERSION__  = "micro";
+      var __SVMX_CLIENT_LIB_PATH__ = "{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib')}";  
+  </script>
+  
+  <script>
+      function processResourceURL(url){    
+        var ret = url, index;
+        if((index = url.indexOf("?")) != -1){
+            ret = url.substring(0, index);
+        }
+        return ret;
+      }
+     
+     var svmx_display_tags = {
+        SPM: {
+            "TAG001"         : "{!$Label.SPM003_TAG001}",
+            "TAG002"         : "{!$Label.SPM003_TAG002}",
+            "TAG003"         : "{!$Label.SPM003_TAG003}",
+            "TAG004"         : "{!$Label.SPM003_TAG004}",
+            "TAG005"         : "{!$Label.SPM003_TAG005}",
+            "TAG006"         : "{!$Label.SPM003_TAG006}",
+            "TAG007"         : "{!$Label.SPM003_TAG007}",
+            "TAG008"         : "{!$Label.SPM003_TAG008}",
+            "TAG009"         : "{!$Label.SPM003_TAG009}",
+            "TAG010"         : "{!$Label.SPM003_TAG010}",
+            "TAG011"         : "{!$Label.SPM003_TAG011}",
+            "TAG012"         : "{!$Label.SPM003_TAG012}",
+            "TAG013"         : "{!$Label.SPM003_TAG013}",
+            "TAG014"         : "{!$Label.SPM003_TAG014}",
+            "TAG015"         : "{!$Label.SPM003_TAG015}",
+            "TAG016"         : "{!$Label.SPM003_TAG016}",
+            "TAG017"         : "{!$Label.SPM003_TAG017}",
+            "TAG018"         : "{!$Label.SPM003_TAG018}",
+            "TAG019"         : "{!$Label.SPM003_TAG019}",
+            "TAG020"         : "{!$Label.SPM003_TAG020}",
+            "TAG021"         : "{!$Label.SPM003_TAG021}",
+            "TAG022"         : "{!$Label.SPM003_TAG022}",
+            "TAG023"         : "{!$Label.SPM003_TAG023}",
+            "TAG024"         : "{!$Label.SPM003_TAG024}",
+            "TAG025"         : "{!$Label.SPM003_TAG025}",
+            "TAG026"         : "{!$Label.SPM003_TAG026}",
+            "TAG027"         : "{!$Label.SPM003_TAG027}",
+            "TAG028"         : "{!$Label.SPM003_TAG028}",
+            "TAG029"         : "{!$Label.SPM003_TAG029}",
+            "TAG030"         : "{!$Label.SPM003_TAG030}",
+            "TAG031"         : "{!$Label.SPM003_TAG031}",
+            "TAG032"         : "{!$Label.SPM003_TAG032}",
+            "TAG033"         : "{!$Label.SPM003_TAG033}",
+            "TAG034"         : "{!$Label.SPM003_TAG034}",
+            "TAG035"         : "{!$Label.SPM003_TAG035}",
+            "TAG036"         : "{!$Label.SPM003_TAG036}",
+            "TAG037"         : "{!$Label.SPM003_TAG037}",
+            "TAG038"         : "{!$Label.SPM003_TAG038}",
+            "TAG039"         : "{!$Label.SPM003_TAG039}",
+            "TAG040"         : "{!$Label.SPM003_TAG040}",
+            "TAG041"         : "{!$Label.SPM003_TAG041}",
+            "TAG042"         : "{!$Label.SPM003_TAG042}",
+            "TAG043"         : "{!$Label.SPM003_TAG043}",
+            "TAG044"         : "{!$Label.SPM003_TAG044}",
+            "TAG045"         : "{!$Label.SPM003_TAG045}",
+            "TAG046"         : "{!$Label.SPM003_TAG046}",
+            "TAG047"         : "{!$Label.SPM003_TAG047}",
+            "TAG048"         : "{!$Label.SPM003_TAG048}",
+            "TAG049"         : "{!$Label.SPM003_TAG049}",
+            "TAG050"         : "{!$Label.SPM003_TAG050}",
+            "TAG051"         : "{!$Label.SPM003_TAG051}",
+            "TAG052"         : "{!$Label.SPM003_TAG052}",
+            "TAG053"         : "{!$Label.SPM003_TAG053}",
+            "TAG054"         : "{!$Label.SPM003_TAG054}",
+            "TAG055"         : "{!$Label.SPM003_TAG055}",
+            "TAG056"         : "{!$Label.SPM003_TAG056}",
+            "TAG057"         : "{!$Label.SPM003_TAG057}",
+            "TAG058"         : "{!$Label.SPM003_TAG058}",
+            "TAG059"         : "{!$Label.SPM003_TAG059}",
+            "TAG060"         : "{!$Label.SPM003_TAG060}",
+            "TAG061"         : "{!$Label.SPM003_TAG061}",
+            "TAG062"         : "{!$Label.SPM003_TAG062}",
+            "TAG063"         : "{!$Label.SPM003_TAG063}",
+            "TAG064"         : "{!$Label.SPM003_TAG064}",
+            "TAG065"         : "{!$Label.SPM003_TAG065}",
+            "TAG066"         : "{!$Label.SPM003_TAG066}",
+            "TAG067"         : "{!$Label.SPM003_TAG067}",
+            "TAG068"         : "{!$Label.SPM003_TAG068}",
+            "TAG069"         : "{!$Label.SPM003_TAG069}",
+            "TAG070"         : "{!$Label.SPM003_TAG070}"
+        } 
+    };
+     
+      var SVMXJsr = {
+            
+            JsrDeleteCalculationMethod: function(request, callback, context) {            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SPM_Configuration.deleteCalculationMethod}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            JsrGetSPMJobs: function(request, callback, context) {            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SPM_Configuration.getSPMJobs}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrExecuteBatch: function(request, callback, context) {            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SPM_Configuration.executeBatch}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrGetSPMConfiguration: function(request, callback, context) {            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SPM_Configuration.getSPMConfiguration}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrGetAllSPMProcess : function(request, callback, context) {           
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SPM_Configuration.getAllSPMProcess}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+ 
+            JsrSaveSPMConfiguration : function(request, callback, context) {           
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SPM_Configuration.saveSPMConfiguration}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+
+            processResult : function(result, event, callback, context) {     
+                var ret = {success : false};
+                if(event.status == true) {
+                    ret = SVMX.toObject(result);
+                }
+                callback.call(context, ret, event);
+            },
+            JsrGetDisplayTags : function(request, callback, context){
+                var me = this;
+            
+                setTimeout(function(){
+                    me.processResult(svmx_display_tags.SPM, {status : true}, callback, context);
+                }, 1);
+            }  
+        };
+  </script>
+  
+  <script type='text/javascript' src="{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib/src/bootstrap.js')}"/>
+  
+  <script>
+    jQuery(document).ready(function() {
+
+        var client_runtime                = "{!URLFOR($Resource.com_servicemax_client_runtime, '')}";
+        var client_mvc                    = "{!URLFOR($Resource.com_servicemax_client_mvc, '')}";
+        var client_components             = "{!URLFOR($Resource.com_servicemax_client_ui_components, '')}";
+        var client_sfmconsole             = "{!URLFOR($Resource.com_servicemax_client_sfmconsole, '')}";
+        var ui_components_bubble          = "{!URLFOR($Resource.com_servicemax_client_ui_components_bubble, '')}";
+        var client_themes                 = "{!URLFOR($Resource.com_servicemax_client_ui_themes, '')}";
+        var client_themes2                = "{!URLFOR($Resource.com_servicemax_client_ui_themes2, '')}";
+       
+        var client_sal                    = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal, '')}");
+        var client_sal_model              = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_model, '')}");
+        var client_sal_sfmconsole_model   = "{!URLFOR($Resource.com_servicemax_client_sal_sfmconsole_model, '')}";
+        var sfmconsole_ui_web             = "{!URLFOR($Resource.com_servicemax_client_sfmconsole_ui_web, '')}";
+        
+        var ui_themes_orange              = "{!URLFOR($Resource.com_servicemax_client_ui_desktop_themes_orange, '')}";
+        
+        var client_spm                    = "{!URLFOR($Resource.com_servicemax_client_spm, '')}";
+        var client_spm_model                    = "{!URLFOR($Resource.com_servicemax_client_sal_spm_model, '')}";
+        var client_spm_desktop                    = "{!URLFOR($Resource.com_servicemax_client_spm_ui_desktop, '')}";  
+        
+        var config = {title:"SPM Configuration", version:"1.0.0",
+            modules:[
+                { id : "com.servicemax.client.runtime",                 version : "1.0.0",  codebase : client_runtime},
+                { id : "com.servicemax.client.mvc",                     version : "1.0.0" , codebase : client_mvc },
+                { id : "com.servicemax.client.ui.components",           version : "1.0.0" , codebase : client_components },
+                { id : "com.servicemax.client.sfmconsole",              version : "1.0.0" , codebase : client_sfmconsole},
+               
+                { id : "com.servicemax.client.sal",                     version : "1.0.0" , codebase : client_sal },
+             
+                { id : "com.servicemax.client.sal.sfmconsole.model",    version : "1.0.0" , codebase : client_sal_sfmconsole_model},
+                { id : "com.servicemax.client.ui.components.bubble",    version : "1.0.0" , codebase : ui_components_bubble },
+                { id : "com.servicemax.client.ui.themes",               version : "1.0.0" , codebase : client_themes },
+                { id : "com.servicemax.client.ui.themes2",              version : "1.0.0" , codebase : client_themes2 },
+                { id : "com.servicemax.client.sfmconsole.ui.web",       version : "1.0.0" , codebase : sfmconsole_ui_web },
+
+                { id : "com.servicemax.client.sal.spm.model",         version : "1.0.0" , codebase : client_spm_model },
+                { id : "com.servicemax.client.spm",               version : "1.0.0" , codebase : client_spm },
+                { id : "com.servicemax.client.spm.ui.desktop",    version : "1.0.0" , codebase : client_spm_desktop },
+                { id : "com.servicemax.client.ui.desktop.themes.orange",version : "1.0.0" , codebase : ui_themes_orange }
+            ],
+            
+            "app-config" : {
+                "application-id" : "console",
+                "theme"                      : "ORANGE",
+                "sal-service-runtime-mode" : "VISUAL_FORCE",
+                "org-name-space": "SVMXC",
+                "enable-cache"      : true,
+                "enable-log"        : true,
+                "svmx-sfm-sal-model-use-jsr" : true
+            },
+            
+            "platform-config" : {}
+        }
+        
+        var client = new com.servicemax.client.lib.core.Client();
+        
+        // set up the session id
+        client.addApplicationParameter("session-id", "{!GETSESSIONID()}");
+        client.run({configType : "local", data : config, loadVersion : __SVMX_LOAD_VERSION__ });
+    });
+  </script>
+  
+  <body>
+    <div id="client_display_root"></div>
+  </body>
+
+</apex:page>

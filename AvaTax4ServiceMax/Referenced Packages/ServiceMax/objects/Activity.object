@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Break_Time_Total__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This is the total time of all breaks taken during the service. There could be multiple breaks taken during the service.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the total time of all breaks taken during the service. There could be multiple breaks taken during the service.</inlineHelpText>
+        <label>Total Break Time (Mins)</label>
+        <precision>8</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Driving_Time_Home__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Driving or travel time to get back to the technician&apos;s home base from the last work order location for the day or working shift.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Driving or travel time to get back to the technician&apos;s home base from the last work order location for the day or working shift.</inlineHelpText>
+        <label>Travel Time Back to Home Base (Mins)</label>
+        <precision>8</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Driving_Time__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Driving or travel time to this work order location from the last work order location or from the home base.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Driving or travel time to this work order location from the last work order location or from the home base.</inlineHelpText>
+        <label>Travel Time to Workorder Location (Mins)</label>
+        <precision>8</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Overhead_Time_After__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Total overhead or flex time at the end of the service at the work order location.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Total overhead or flex time at the end of the service at the work order location.</inlineHelpText>
+        <label>Overhead Time at End of the Job (Mins)</label>
+        <precision>8</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Overhead_Time_Before__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Total overhead or flex time before the start of the actual service at the work order location.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Total overhead or flex time before the start of the actual service at the work order location.</inlineHelpText>
+        <label>Overhead Time at Start of the Job (Mins)</label>
+        <precision>8</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service_Duration__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Total service time, which is the wrench time of the service</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Total service time or the wrench time of the service.</inlineHelpText>
+        <label>Service Time (in Seconds)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>

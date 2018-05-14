@@ -1,0 +1,3 @@
+<apex:page standardController="SVMXC__Service_Pricebook__c" sidebar="false">
+   <c:SFM_Wizard recordId="{!SVMXC__Service_Pricebook__c.Id}" />
+</apex:page>

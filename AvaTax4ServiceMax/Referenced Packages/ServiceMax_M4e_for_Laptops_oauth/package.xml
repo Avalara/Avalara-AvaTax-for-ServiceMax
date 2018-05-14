@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ServiceMax_M4e_for_Laptops_oauth</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <modules>
+        <module>
+            <label>ServiceMax_M4e_for_Laptops_oauth</label>
+            <moduleType>connected</moduleType>
+            <name>ServiceMax_M4e_for_Laptops_oauth</name>
+            <types>
+                <members>ServiceMax_M4e_for_Laptops_oauth_devConfig</members>
+                <name>ConnectivityDevConfigMetadata</name>
+            </types>
+            <types>
+                <members>SVMXC__ServiceMax_M4e_for_Laptops_oauth</members>
+                <name>Module</name>
+            </types>
+            <version>168.0</version>
+        </module>
+    </modules>
+    <namespacePrefix>SVMXC</namespacePrefix>
+    <version>31.0</version>
+</Package>

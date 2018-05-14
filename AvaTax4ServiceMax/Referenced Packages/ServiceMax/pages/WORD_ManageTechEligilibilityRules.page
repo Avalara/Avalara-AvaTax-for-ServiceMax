@@ -1,0 +1,361 @@
+<apex:page controller="SVMXC.WORD_ManageTechEligilibilityRules"  >
+    <script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+    <apex:form id="SVMX_FORM">
+        <apex:pageMessages id="SVMX_PgMsg"/>
+        <apex:actionStatus id="SVMX_Processing" startText="{!TAG007}"/>
+         <style>
+.activeTab {
+    background-color: #8599B1;
+    color: white;
+    background-image: none;
+    font-size: 14px;
+}
+
+.inactiveTab {
+    background-color: #B0BFD2;
+    color: black;
+    background-image: none;
+    font-size: 14px;
+}
+
+.disableTab {
+    background-color: Lightgrey;
+    color: LightGrey;
+    background-image: none;
+    font-size: 14px;
+}
+
+.rowcls {
+    height: 80px;
+    text-align: center;
+}
+.customPopup {
+    background-color: white;
+    border-style: solid;
+    border-width: 2px;
+    left: 50%;
+    padding: 10px;
+    position: absolute;
+    PopupAnimation: Fade;
+    z-index: 9999;
+    /* These are the 3 css properties you will need to tweak so the popup displays in the center of the screen. First set the width. Then set            margin-left to negative half of what the width is. You can also add            the height property for a fixed size pop up.*/
+    width: 450px;
+    margin-left: -250px;
+    top: 100px;
+    opacity: 10;
+}
+
+.grayscrean {
+    opacity: .5;
+}
+
+.Nograyscrean {
+    opacity: 1;
+}
+</style>
+     <apex:outputPanel styleClass="customPopup" layout="block"
+            rendered="{!displaySeqPopup}">
+            <apex:pageBlock id="Svmx_PageBlock" mode="edit">
+                <apex:pageMessages rendered="{!displaySeqPopup}" />
+                 <b><apex:actionStatus id="LoadingSeqPopUp" startText="{!TAG050}" />
+                </b>
+                <apex:pageBlockButtons id="pbtns" location="Bottom">
+                    <apex:commandButton value="{!TAG005}" id="SaveOnSeq"
+                        action="{!SVMX_SaveSequence}" reRender="SVMX_FORM,SMXC_PageBLOCK1"
+                        status="LoadingSeqPopUp" />
+                    <apex:commandButton value="{!TAG006}" action="{!cancelEligibilityCriteria}"
+                       status="LoadingSeqPopUp" reRender="SVMX_FORM,SMXC_PageBLOCK1" />
+                </apex:pageBlockButtons>
+                <apex:panelGrid cellpadding="0" cellspacing="1" columns="2"
+                    width="31%" border="0">
+                    <apex:pageBlockSection columns="1" id="list1">
+                        <apex:panelGrid cellspacing="0" cellpadding="0" width="65%"
+                            columns="1" border="0">
+                            <center>
+                                <apex:toolbar id="theToolbarPP" styleClass="disableTab"
+                                    width="45%">
+                                    <apex:toolbarGroup location="left" id="toolbarGroupPP">
+                                        <apex:outputText value="{!TAG044}" />
+                                    </apex:toolbarGroup>
+                                </apex:toolbar>
+                            </center>
+                            <apex:selectList value="{!strEligibilityidRearrange}" multiselect="true"
+                                style="height:200px;width:320px">
+                                <apex:selectOptions value="{!Seqoptions}" />
+                            </apex:selectList>
+                            <p />
+                        </apex:panelGrid>
+                    </apex:pageBlockSection>
+                    <apex:panelGrid cellspacing="7" cellpadding="0" width="35%"
+                        columns="1" style="text-align: center;">
+                        <apex:outputText value="  " />
+                        <apex:outputText value="  " />
+                        <apex:outputText value="  " />
+                        <apex:outputText value="  " />
+                        <apex:outputText value="  " />
+                        <apex:outputText value="  " />
+                        <div>
+                            <apex:commandButton action="{!Top}" id="top"
+                                style="width:18px;height:18px;background:white" value="Top"
+                                image="{!URLFOR($Resource.SVMXC__COMM_Resources2, 'SVMXC_resources/images/Top_Bttn.JPG')}"
+                                rerender="Svmx_PageBlock" alt="Top" title="Top"
+                                status="LoadingSeqPopUp" />
+                            <apex:commandButton action="{!UP}" id="Up"
+                                style="width:18px;height:18px;background:white" value="UP"
+                                image="{!URLFOR($Resource.SVMXC__COMM_Resources2, 'SVMXC_resources/images/Up_Bttn.JPG')}"
+                                rerender="Svmx_PageBlock" alt="Up" title="Up"
+                                status="LoadingSeqPopUp" />
+                            <apex:commandButton action="{!Down}" id="down"
+                                style="width:18px;height:18px;background:white" value="down"
+                                image="{!URLFOR($Resource.SVMXC__COMM_Resources2, 'SVMXC_resources/images/Down_Bttn.JPG')}"
+                                rerender="Svmx_PageBlock" alt="Down" title="Down"
+                                status="LoadingSeqPopUp" />
+                            <apex:commandButton action="{!Bottom}" id="Bottom"
+                                style="width:18px;height:18px;background:white" value="Bottom"
+                                image="{!URLFOR($Resource.SVMXC__COMM_Resources2, 'SVMXC_resources/images/Bottom_Bttn.JPG')}"
+                                rerender="Svmx_PageBlock" alt="Bottom" title="Bottom"
+                                status="LoadingSeqPopUp" />
+                        </div>
+                    </apex:panelGrid>
+                </apex:panelGrid>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        <apex:pageBlock id="SMXC_PageBLOCK1" helptitle="{!HLPTITLE}" helpurl="{!HLPURL}">
+             <apex:pageMessages id="SVMX_PgMsg"/>
+                <apex:actionStatus id="SVMX_Processing" startText="{!TAG050}" style="font-Size:12px;Font-weight:bold;"/>
+                <center>
+                    <apex:toolbar id="theToolbar" styleClass="disableTab" width="55%">          
+                    <apex:toolbarGroup location="left" id="toolbarGroupForm">
+                        <apex:outputText value=" "/>
+                    </apex:toolbarGroup>
+                    <apex:toolbarGroup location="left" id="toolbarGroupForm1">
+                        <apex:outputText value="{!TAG001}"/>                
+                    </apex:toolbarGroup>
+                    </apex:toolbar>
+                </center>
+            <apex:pageBlockButtons id="pgBlckBtns1" location="TOP">
+                <apex:commandButton value="{!TAG002}"  action="{!newEligibilityCriteria}" status="SVMX_Processing" reRender="SMXC_PageBLOCK1" rendered="{!isRenderNew}"/>
+                <apex:commandButton value="{!TAG003}" action="{!editEligibilityCriteria}"  status="SVMX_Processing" reRender="SMXC_PageBLOCK1,Pageblck1Sec4,Pageblck1Sec7" rendered="{!isRenderEdit}"/>
+                <apex:commandButton value="{!TAG004}" action="{!deleteEligibilityCriteria}" onClick="if(!confirm('{!TAG049}')){return false;}" status="SVMX_Processing" reRender="SMXC_PageBLOCK1" rendered="{!isRenderDelete}"/>
+                <apex:commandButton value="{!TAG045}" action="{!SVMX_OrderSequence}"
+                    rendered="{!isRenderRuleSeq}" reRender="SVMX_FORM"
+                    status="SVMX_Processing" />
+                <apex:commandButton value="{!TAG005}" action="{!saveEligibilityCriteria}" status="SVMX_Processing" reRender="SMXC_PageBLOCK1" rendered="{!isRenderSave}"/>
+                <apex:commandButton value="{!TAG006}" action="{!cancelEligibilityCriteria}" status="SVMX_Processing" reRender="SMXC_PageBLOCK1" rendered="{!isRendercancel}"/>
+                 <apex:commandButton value="{!TAG046}" action="{!SVMX_GoSetupHome}"
+                    reRender="RuleForm,RuleBlock" status="SVMX_Processing" />
+               
+            </apex:pageBlockButtons>
+              <apex:inputHidden value="{!StrDelIndex1}" id="StrDelIndex1" />
+               <apex:inputHidden value="{!StrDelIndex2}" id="StrDelIndex2" />
+            <apex:pageBlockSection columns="1" id="Pageblck1Sec1">
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable id="blck1Table" value="{!lstEligibilityMatchingRules}" var="Process1">
+                    
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG008}</apex:facet>
+                            <apex:inputCheckbox value="{!Process1.SVMXC__Select__c}" id="stdselected" disabled="{!isDisableSelect}"/>
+                        </apex:column>
+                        <apex:column width="30%">
+                            <apex:facet name="header">{!TAG009}</apex:facet>
+                            <apex:outputText value="{!Process1.SVMXC__Name__c}" rendered="{!if(Process1.SVMXC__Select__c==false,true,false)}"/>
+                            <apex:inputText value="{!strProcessName}" style="font-Size:12px;width:80%" rendered="{!if(Process1.SVMXC__Select__c==true,true,false)}"/>
+                        </apex:column>
+                        
+                        <apex:column width="50%">
+                            <apex:facet name="header" >{!TAG010}</apex:facet>
+                            <apex:outputText value="{!Process1.SVMXC__Description__c}" rendered="{!if(Process1.SVMXC__Select__c==false,true,false)}"/>
+                             <apex:inputTextArea value="{!strDescription}" style="font-Size:12px;width:80%" rendered="{!if(Process1.SVMXC__Select__c==true,true,false)}"/>
+                        </apex:column>   
+                        
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG011}</apex:facet>
+                             <apex:inputCheckbox value="{!Process1.SVMXC__Active__c}" disabled="{!if(Process1.SVMXC__Select__c==false,true,false)}"/>
+                        </apex:column>   
+                        
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="1" id="Pageblck1Sec2" rendered="{!isRenderExp}">
+                <apex:pageBlockSectionItem dataStyle="text-align:left;"
+                    datastyleClass="disableTab">
+                    <apex:outputText value="{!TAG012}"
+                        style="font-weight: bold;font-Size:12px;color:#000000;background:LightGrey;"
+                        styleclass="disableTab" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+                    
+            <apex:pageBlockSection columns="1" collapsible="false" dir="LTR" id="Pageblck1Sec3" rendered="{!isRenderExp}">
+            
+                
+                <!--    <apex:pageBlockSectionItem dataStyle="text-align:left;" rendered="{!isNewRule}">
+                        <apex:pageBlockSection columns="1">
+                             <apex:outputtext value="{!TAG013}" style="font-Size:12px;font-weight:bold;width:40%" />
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="1">
+                            <apex:outputPanel layout="block" styleClass="requiredInput">
+                                <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                                <apex:inputText value="{!strProcessName}" style="font-Size:12px;width:50%"/>
+                            </apex:outputPanel>
+                        </apex:pageBlockSection>
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem dataStyle="text-align:left;" rendered="{!isNewRule}">
+                        <apex:pageBlockSection columns="1">
+                            <apex:outputtext value="{!TAG014}" style="font-Size:12px;font-weight:bold;width:40%" />
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="1">
+                            <apex:inputTextArea value="{!strDescription}" style="font-Size:12px;width:50%" />
+                        </apex:pageBlockSection>
+                    </apex:pageBlockSectionItem> 
+                    
+                    <apex:pageBlockSectionItem dataStyle="text-align:left;" rendered="{!isNewRule}">
+                        <apex:pageBlockSection columns="1">
+                            <apex:outputtext value="{!TAG011}" style="font-Size:12px;font-weight:bold;width:40%" />
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection columns="1">
+                            <apex:inputCheckbox value="{!isactive}"/>
+                        </apex:pageBlockSection>
+                    </apex:pageBlockSectionItem>-->
+                
+            </apex:pageBlockSection>
+            
+            <apex:actionStatus id="statusCriteria" startText="{!TAG050}" style="font-Size:12px;Font-weight:bold;"/>
+            <apex:pageBlockSection columns="1" id="Pageblck1Sec4" rendered="{!isRenderExp}">
+                <apex:pageBlockTable id="SVMX_TAB1table1" value="{!lsteligibilityMatchConfig}" var="item" >
+                
+                    <apex:column rendered="true" style="font-Size:12px;width:2%;">
+                      
+                      <apex:outputtext value="{!Round(item.SVMXC__Sequence__c, 0)}" style="font-Size:12px"/>
+                    </apex:column>
+                    
+                    <apex:column style="font-Size:12px;width:30%;">
+                        <apex:facet name="header">{!TAG016}</apex:facet>
+                        <apex:selectList value="{!item.SVMXC__Field_Name__c}" size="1" multiselect="false" style="font-Size:12px;" >
+                            <apex:selectOptions value="{!lstWOfield}"/>
+                        </apex:selectList>
+                    </apex:column>
+                    
+                    <apex:column style="font-Size:12px;width:30%;">
+                        <apex:facet name="header">{!TAG017}</apex:facet>
+                        <apex:selectList value="{!item.SVMXC__Operator__c}"  size="1" multiselect="false" style="font-Size:12px">
+                            <apex:selectOptions value="{!lstOperatorSelectLst}"/>
+                        </apex:selectList>
+                    </apex:column>
+                    
+                    <apex:column style="font-Size:12px;width:30%;">
+                        <apex:facet name="header">{!TAG018}</apex:facet>
+                        <apex:inputText value="{!item.SVMXC__Operand__c}"  style="font-Size:12px"/>
+                    </apex:column>
+                                
+                    <apex:column style="font-Size:12px;width:7px;height:7px;width:8%;" >
+                    
+                        <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/delete_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue" value="DeleteRow" action="{!HdrDeleteRow1}"   onclick="javascript:document.getElementById('{!$Component.StrDelIndex1}').value = {!item.SVMXC__Sequence__c}"  id="SVMX_TAB1hdrdeleterow1" status="statusCriteria" reRender="Pageblck1Sec4" title="{!TAG036}" />
+                        
+                        <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/add_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue" action="{!HdrADDRow1}"  id="SVMX_TAB1hdraddrow1" rendered="{!if((lsteligMatchSize == Round(item.SVMXC__Sequence__c, 0)) ,true,false)}" status="statusCriteria" reRender="Pageblck1Sec4" title="{!TAG035}" />
+                        
+                    </apex:column>
+                    
+                </apex:pageBlockTable>
+                    <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/add_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue" value="AddRow" action="{!HdrADDRow1}" rendered="{!if((lsteligMatchSize == 0 ) ,true,false)}" id="SVMX_TAB1hdraddrow2"  status="statusCriteria" reRender="Pageblck1Sec4" title="{!TAG035}" />
+             </apex:pageBlockSection>
+             
+            <apex:pageBlockSection columns="1" collapsible="false" dir="LTR" id="Pageblck1Sec5" rendered="{!isRenderExp}">
+                <apex:outputlabel value="{!TAG019}"  style="font-weight:bold;"/> 
+                <apex:inputText value="{!strAdvanceExp1}" size="80"/>
+            </apex:pageBlockSection>
+       
+        
+                        
+            <apex:pageBlockSection columns="1" id="Pageblck1Sec6" rendered="{!isRenderExp}">
+                <apex:pageBlockSectionItem dataStyle="text-align:left;"
+                    datastyleClass="disableTab">
+                    <apex:outputText value="{!TAG033}"
+                        style="font-weight: bold;font-Size:12px;color:#000000;background:LightGrey;"
+                        styleclass="disableTab" />
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+           
+                            
+            <apex:actionStatus id="statusExp" startText="{!TAG050}" style="font-Size:12px;Font-weight:bold;"/> 
+           <!-- <apex:inputHidden value="{!IntIndex}" id="IntIndex" />  -->
+           <apex:inputHidden value="{!StrSelectedIndex}" id="StrSelectedIndex" /> 
+            <apex:inputHidden value="{!strselTechField}" id="strselTechField" />            
+            <apex:actionFunction name="onchangeTechField"
+                        reRender="Pageblck1Sec7," action="{!onchangeTechField}"
+                        status="statusExp">
+                        <apex:param name="frstParametr" assignTo="{!IntIndex}" value="" />
+                    </apex:actionFunction>              
+             <apex:pageBlockSection columns="1"   id="Pageblck1Sec7" rendered="{!isRenderExp}">
+                 <apex:pageBlockTable id="SVMX_TAB1table2" value="{!LstCriWrap}" var="wrapobj" >
+                       
+                        <apex:column rendered="true" style="font-Size:12px;width:2%;">
+                            <center>
+                                <apex:outputtext value="{!Round(wrapobj.objConf.SVMXC__Sequence__c, 0)}" style="font-Size:12px"/>
+                            </center>
+                        </apex:column>
+                        
+                        <apex:column style="font-Size:12px;width:25%;">
+                          
+                                <apex:facet name="header">{!TAG047}</apex:facet>
+                               
+                                <apex:selectList value="{!wrapobj.objConf.SVMXC__Field_Name__c}" size="1" multiselect="false" style="font-Size:12px;width:80%" onchange="onchangeTechField({!wrapobj.objConf.SVMXC__Sequence__c})" onclick="javascript:document.getElementById('{!$Component.IntIndex}').value = {!wrapobj.objConf.SVMXC__Sequence__c}; javascript:document.getElementById('{!$Component.strselTechField}').value =  {!wrapobj.objConf.SVMXC__Field_Name__c};" >
+                                
+                                    <apex:selectOptions value="{!lstTechfield}"/>
+                                </apex:selectList>
+                         
+                            
+                        </apex:column>
+                        
+                        <apex:column style="font-Size:12px;width:25%;">
+                          
+                                <apex:facet name="header">{!TAG017}</apex:facet>
+                                <apex:selectList value="{!wrapobj.objConf.SVMXC__Operator__c}"  size="1" multiselect="false" style="font-Size:12px" rendered="{!Not(wrapobj.IsRenderpicklist)}">
+                                    <apex:selectOptions value="{!lstOperatorSelectLst}"/>
+                                </apex:selectList>
+                                 <apex:selectList value="{!wrapobj.objConf.SVMXC__Operator__c}"  size="1" multiselect="false" style="font-Size:12px" rendered="{!wrapobj.IsRenderpicklist}">
+                                    <apex:selectOptions value="{!lstOperatorSelectLst1}"/>
+                                </apex:selectList>
+                           
+                        </apex:column>
+                        
+                        <apex:column style="font-Size:12px;width:20%;">
+                            <right>
+                                <apex:facet name="header">{!TAG015}</apex:facet>
+                                <apex:selectList value="{!wrapobj.objConf.SVMXC__Target_Field_Name__c}" size="1" multiselect="false" style="font-Size:12px;width:80%" id="SVMX_WOfprTechField" rendered="{!wrapobj.IsRenderpicklist}" >
+                                    <apex:selectOptions value="{!wrapobj.lstWOforTechSel}"/>
+                                </apex:selectList>
+                                 <apex:inputText value="{!wrapobj.objConf.SVMXC__Display_Value__c}"  style="font-Size:12px;width:80%" rendered="{!Not(wrapobj.IsRenderpicklist)}"/>
+                            </right>     
+                        </apex:column>
+                        
+                        
+                        <apex:column style="font-Size:12px;width:7px;height:7px;" >
+                            <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources2, 'SVMXC_resources/images/edit.gif')}" style="width:20px;height:18px;background:lightblue" action="{!RerenderTextOrPicklist}"    id="RenPicklist" status="statusExp" reRender="Pageblck1Sec7"  onclick="javascript:document.getElementById('{!$Component.StrSelectedIndex}').value = {!wrapobj.objConf.SVMXC__Sequence__c}" rendered="{!wrapobj.IsRenderpicklist}"/>
+                            
+                            <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources2, 'SVMXC_resources/images/list.gif')}"  style="width:20px;height:18px;background:lightblue"  action="{!RerenderTextOrPicklist}" onclick="javascript:document.getElementById('{!$Component.StrSelectedIndex}').value = {!wrapobj.objConf.SVMXC__Sequence__c}" id="RenText" status="statusExp" reRender="Pageblck1Sec7" rendered="{!Not(wrapobj.IsRenderpicklist) }" />
+                        </apex:column>
+                        
+                        <apex:column style="font-Size:12px;width:7px;height:7px;width:8%;" >
+                            <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/delete_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue" value="DeleteRow1" action="{!HdrDeleteRow2}"  onclick="javascript:document.getElementById('{!$Component.StrDelIndex2}').value = {!wrapobj.objConf.SVMXC__Sequence__c}" id="SVMX_TAB1hdrdeleterow2" status="statusExp" reRender="Pageblck1Sec7" title="{!TAG036}" />
+                            <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/add_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue" action="{!HdrADDRow2}"  id="SVMX_TAB1hdraddrow3" rendered="{!if((LstCriWrapSize == Round(wrapobj.objConf.SVMXC__Sequence__c, 0)) ,true,false)}"  status="statusExp" reRender="Pageblck1Sec7" title="{!TAG035}" />
+                        </apex:column>
+                        
+                    </apex:pageBlockTable>
+                    <apex:commandButton image="{!URLFOR($Resource.SVMXC__COMM_Resources3, 'Resources/images/add_exp_img.JPG')}" style="width:20px;height:18px;background:lightblue" value="AddRow" action="{!HdrADDRow2}" rendered="{!if((LstCriWrapSize == 0 ) ,true,false)}" id="SVMX_TAB1hdraddrow4"  status="statusExp" reRender="Pageblck1Sec7" title="{!TAG035}" />
+                
+                 </apex:pageBlockSection>
+                <apex:pageBlockSection columns="1" collapsible="false" dir="LTR" id="Pageblck1Sec8" rendered="{!isRenderExp}">
+                    
+                        <apex:outputlabel value="{!TAG019}"  style="font-weight:bold;"/> 
+                        <apex:inputText value="{!strAdvanceExp2}" size="80"/>
+                  
+                 </apex:pageBlockSection>               
+                           
+                            
+        </apex:pageBlock>
+        
+       
+    </apex:form>
+</apex:page>

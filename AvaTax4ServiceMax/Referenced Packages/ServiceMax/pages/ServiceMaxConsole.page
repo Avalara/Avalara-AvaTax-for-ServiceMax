@@ -1,0 +1,299 @@
+<apex:page title="Service Delivery" standardStylesheets="false" controller="SVMXC.SFMDeliveryController">
+<script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+<apex:includeScript value="/support/console/29.0/integration.js"/>
+
+<script>
+    function processResourceURL(url){
+        var ret = url, index;
+        if((index = url.indexOf("?")) != -1){
+            ret = url.substring(0, index);
+        }
+        return ret;
+    }
+    
+    function navigateTo(urlStr, newRecord) {
+        if(urlStr && sforce.console.isInConsole()){
+            var primaryTabId = SVMX.getUrlParameter("priTabId");
+            var subtabId = SVMX.getUrlParameter("subtabId");
+            var tabLabel = '';
+            
+            if (newRecord) {
+                sforce.console.getEnclosingTabId(function(result) {
+                    sforce.console.openPrimaryTab(result.Id, urlStr, true, tabLabel, function() {   
+                        sforce.console.closeTab(result.id);
+                    });
+                });
+            } else {
+                sforce.console.getEnclosingTabId(function(result) {
+                    sforce.console.refreshSubtabById(subtabId, true, function() {
+                        sforce.console.refreshPrimaryTabById(primaryTabId, true, function() {
+                            sforce.console.closeTab(result.id);
+                        });
+                    });
+                });
+            }
+        } else {
+            //Praveen: Added this check to support lightning flow.
+            if((typeof sforce != 'undefined') && (typeof sforce.one != 'undefined') && (sforce.one != null)) {
+                if(urlStr.length == 6) {
+                    console.log('Navigating to the custom list page screen');
+                    urlStr = urlStr.substring(2);
+                }
+                sforce.one.navigateToURL(urlStr,true);
+            } else {
+                window.parent.location.href = '' + urlStr;
+            }
+        }
+    }
+    
+    // TODO: Read from settings
+    var __SVMX_LOAD_VERSION__ = "micro";
+    var __SVMX_CLIENT_LIB_PATH__ = 
+            processResourceURL("{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib')}");
+    
+    var svmx_sfm_delivery_page_data = null;
+    var svmx_sfm_delivery_process_title = "{!JSENCODE(ProcessTitle)}";
+    var svmx_sfm_delivery_settings = "{!JSENCODE(Settings)}";
+    var svmx_sfm_delivery_userinfo = "{!JSENCODE(UserInfo)}";
+    var svmx_sfm_delivery_is_sfmprocess = {!IsSFMProcess};
+    var svmx_sfm_delivery_is_qualified = {!IsQualified};
+    var svmx_sfm_delivery_error_message = "{!JSENCODE(ErrorMessage)}";
+    var svmx_sfm_delivery_basic_display_tags = "{!JSENCODE(BasicDisplayTags)}";
+    var svmx_sfm_delivery_process_lmd = {!ProcessLMD};
+    var svmx_sfm_delivery_attachments_enabled = false;
+    
+    if(window['Visualforce'] && Visualforce.remoting){
+        Visualforce.remoting.timeout = 120000;
+    }
+    
+    var SVMXJsr = {
+        
+        JsrGetPageLayout : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrGetPageLayout}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrGetBubbleData : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrGetBubbleData}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrDescribeObject : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrDescribeObject}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrGetLookupConfig : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrGetLookupConfig}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrAddRecords : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrAddRecords}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrSaveTarget : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrSaveTarget}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrGetNextStepInfo : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrGetNextStepInfo}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrGetSnippetForEvent : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrGetSnippetForEvent}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrGetRecordTypes : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrGetRecordTypes}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrGetLookupData : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrGetLookupData}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrGetPageData : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrGetPageData}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrRetrieveDisplayTags : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrRetrieveDisplayTags}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        JsrGetListOfChecklist : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.SFMDeliveryController.JsrGetListOfChecklist}', requestStr, 
+                function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+            );
+        },
+        
+        processResult : function(result, event, callback, context){
+            var ret = {success : false};
+            if(event.status == true){
+                ret = SVMX.toObject(result);
+            }
+            callback.call(context, ret, event);
+        }
+    };
+    
+</script>
+
+<script type="text/javascript" src="{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib/src/bootstrap.js')}"></script>
+
+<script>
+
+jQuery(document).ready(function(){
+    var client_runtime        = processResourceURL("{!URLFOR($Resource.com_servicemax_client_runtime, '')}");
+    var client_console        = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmconsole, '')}");
+
+    var client_sal            = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal, '')}");
+    var client_sfmdelivery    = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmdelivery, '')}");
+    var client_sfmdelivery_ui_desktop    = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmdelivery_ui_desktop, '')}");
+    var client_sal_model      = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_model, '')}");
+    var client_sal_sfmconsole_model      = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_sfmconsole_model, '')}");
+    var client_mvc            = processResourceURL("{!URLFOR($Resource.com_servicemax_client_mvc, '')}");
+    var ui_components         = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_components, '')}");
+    var ui_components_bubble  = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_components_bubble, '')}");
+    var ui_themes             = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_themes, '')}");
+    var ui_automation         = processResourceURL("{!URLFOR($Resource.com_servicemax_client_automation, '')}");
+    var ui_profiling          = processResourceURL("{!URLFOR($Resource.com_servicemax_client_profiler, '')}");
+    var ui_sfmbizrules        = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmbizrules, '')}");
+    var ui_app_utils          = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfm_app_utils, '')}");
+    var sfmconsole_ui_web     = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmconsole_ui_web, '')}");
+    var ui_themes_orange      = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_desktop_themes_orange, '')}");
+    
+    var config = {title : "{!JSENCODE(ProcessTitle)}", version : "1.0.0",
+        modules : [
+            { id : "com.servicemax.client.sfmconsole",              version : "1.0.0" , codebase : client_console },
+            { id : "com.servicemax.client.runtime",                 version : "1.0.0" , codebase : client_runtime },
+            { id : "com.servicemax.client.sfmdelivery",             version : "1.0.0" , codebase : client_sfmdelivery },
+            { id : "com.servicemax.client.sfmdelivery.ui.desktop",             version : "1.0.0" , codebase : client_sfmdelivery_ui_desktop },
+            { id : "com.servicemax.client.sal",                     version : "1.0.0" , codebase : client_sal },
+            { id : "com.servicemax.client.sal.model",               version : "1.0.0" , codebase : client_sal_model },
+            { id : "com.servicemax.client.sal.sfmconsole.model",               version : "1.0.0" , codebase : client_sal_sfmconsole_model },
+            { id : "com.servicemax.client.mvc",                     version : "1.0.0" , codebase : client_mvc },
+            { id : "com.servicemax.client.ui.components",           version : "1.0.0" , codebase : ui_components },
+            { id : "com.servicemax.client.ui.components.bubble",    version : "1.0.0" , codebase : ui_components_bubble },
+            { id : "com.servicemax.client.ui.themes",               version : "1.0.0" , codebase : ui_themes },
+            { id : "com.servicemax.client.sfmbizrules",             version : "1.0.0" , codebase : ui_sfmbizrules},
+            { id : "com.servicemax.client.sfm.app.utils",           version : "1.0.0" , codebase : ui_app_utils},
+            { id : "com.servicemax.client.sfmconsole.ui.web",           version : "1.0.0" , codebase : sfmconsole_ui_web},
+            { id : "com.servicemax.client.ui.desktop.themes.orange",           version : "1.0.0" , codebase : ui_themes_orange}
+        ],
+    
+        "app-config" : {
+            "org-name-space": "SVMXC",
+            "application-id"   : "console",
+            "svmx-api-version" : "9.0",
+            "sfmconsole-skip-sync": true,
+            "sfmconsole-runtime-start": "sfmdelivery",
+            "sal-service-runtime-mode" : "VISUAL_FORCE",
+            "svmx-sfm-section-label-align" : "right", 
+            "svmx-sfm-section-label-style" : "font-weight:bold", 
+            "svmx-sfm-validate-email-format" : true,
+            "svmx-sfm-validate-url-format" : false,
+            "svmx-sfm-reload-on-quick-save" : false,
+            "svmx-sfm-lookup-cache-limit": 10,
+            "svmx-sfm-validate-phone-format" : false,
+            "enable-cache" : true,
+            "enable-log" : true,
+            "svmx-use-server-cache" : false,
+            "svmx-sfmd-settings-instant-update" : false,
+            "ui-components-bubble-theme-path" : ui_components_bubble + "/com.servicemax.client.ui.components.bubble/resources/themes/images/bubble",
+            "svmx-sfm-sal-model-use-jsr" : true,
+            "svmx-base-url" : "{!$Site.Prefix}"
+
+        },
+    
+        "platform-config" : {
+    
+        }
+    };
+    
+    // check if automation is enabled
+    var automation = SVMX.getUrlParameter("svmx-automation");
+    if(automation !== undefined && automation !== null && automation === "true"){
+        config["modules"].push({ 
+            id : "com.servicemax.client.automation", version : "1.0.0" , codebase : ui_automation });
+    }
+    
+   
+           
+    var useServerCache = SVMX.getUrlParameter("svmx-use-server-cache");
+    if(useServerCache !== undefined && useServerCache !== null && useServerCache === "true"){
+        config["app-config"]["svmx-use-server-cache"] = true;
+    }
+    
+    var profiler = SVMX.getUrlParameter("svmx-profiling");
+    if(profiler !== undefined && profiler !== null && profiler === "true"){
+        config["modules"].push({ 
+            id : "com.servicemax.client.profiler", version : "1.0.0" , codebase : ui_profiling });
+    }
+    
+    // create the client instance
+    var client = new com.servicemax.client.lib.core.Client();
+        
+    // set up the session id
+    client.addApplicationParameter("session-id", "{!GETSESSIONID()}");
+    
+    setTimeout(function(){
+        client.run({configType : "local", data : config, loadVersion : __SVMX_LOAD_VERSION__ });
+    }, 200);
+    
+    ///////////////////////////// start - handling of hide/show for the SFDC sidebar /////////////////////
+    /**
+     * @ Indresh M S
+     * The life cycle of the 'client_display_root' div is maintained by ExtJs. And because of that,
+     * whenever SFDC triggers a page layout change, ExtJs does not react to it. It has to be explicitly
+     * told to re-layout.
+     * In order to achieve that, we will have to fall back on the elements  from SFDC that are involved
+     * in the layout change.
+     * !!! WARNING: It is possible that SFDC may adjust id's of the elements refered to below. Make sure that this
+     * feature continues to run by testing against every SFDC upgrade.
+     */
+    $("#handlebarContainer").click(function(evt){
+        setTimeout(function(){
+            $("#client_display_root").width($("#AppBodyHeader").width() - $("#sidebarCell").width() - 40);
+            SVMX.getCurrentApplication().getApplicationErrorHandler().getRoot().resize();
+        }, 5);
+    });
+    ///////////////////////////// end - handling of hide/show for the SFDC sidebar //////////////////////
+});
+
+</script>
+<body>
+<div id="client_display_root"></div>
+</body>
+</apex:page>

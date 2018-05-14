@@ -1,0 +1,88 @@
+<apex:page id="pageValAdd" controller="SVMXC.COMM_ValidateAddress" sidebar="true" showHeader="true">
+    <script  src="{!strGoogleUrl}" type="text/javascript"/>
+    <apex:form id="formValAdd">
+        <apex:actionFunction name="doUpdateLatLong" action="{!doUpdateLatLong}" reRender="formValAdd"/>
+        <apex:actionFunction name="doClearLatLong" action="{!doClearLatLong}" reRender="formValAdd"/>
+
+        <apex:inputHidden value="{!strLongitude}" id="longitude"/>
+        <apex:inputHidden value="{!strLatitude}" id="latitude"/>
+        <apex:inputHidden value="{!strResultMessage}" id="resultMessage"/>
+        
+        <apex:pageMessages />
+        
+        <center style="padding-top:150px;padding-bottom:150px;font-size:20px;background-color:aliceblue;">
+            <apex:outputText value="{!SUBSTITUTE(JSENCODE(strResultMessage), '\\n', '<br/>')}" escape="false"/>
+            <apex:image url="{!$Resource.SVMXC__Progress}" style="display:{!strDisplayImage}"/>
+        </center>
+        
+        <script type="text/javascript">
+            function SVMX_GetAddress(strAddress){
+
+                if(!strAddress){
+                    addError('{!JSINHTMLENCODE(TAG004)}');
+                }
+                else{
+                    var geocoder = new google.maps.Geocoder();
+                    if(geocoder){ 
+                        geocoder.geocode({'address': strAddress}, responseHandler);
+                    }
+                }
+            } 
+    
+            function responseHandler(results, status){
+                
+                if (status == google.maps.GeocoderStatus.OK){
+                    
+                    var latitude = document.getElementById('pageValAdd:formValAdd:latitude');
+                    var longitude = document.getElementById('pageValAdd:formValAdd:longitude');
+                    
+                    if(latitude && longitude){
+                        latitude.value = results[0].geometry.location.lat();
+                        longitude.value = results[0].geometry.location.lng();
+                        
+                        doUpdateLatLong();
+                    }
+                } 
+                else{
+                    addError('{!JSINHTMLENCODE(TAG003)}' + ': ' + status);
+                }
+            }
+            
+            function addError(errorMessage){
+                
+                var resultMessage = document.getElementById('pageValAdd:formValAdd:resultMessage');
+                if(resultMessage){
+                    resultMessage.value = errorMessage;
+                    doClearLatLong();
+                }
+            }
+            
+            function sleep(naptime){
+            
+                naptime = naptime * 1000;
+                var sleeping = true;
+                var now = new Date();
+                var alarm;
+                var startingMSeconds = now.getTime();
+                
+                while(sleeping){
+                
+                    alarm = new Date();
+                    alarmMSeconds = alarm.getTime();
+                    if(alarmMSeconds - startingMSeconds > naptime){
+                        sleeping = false; 
+                    }
+                }
+            }
+            
+            if( {!isValidated} && {!isSuccess} ){               
+                sleep(2);
+                window.location.href = '{!JSINHTMLENCODE(strReturnURL)}';
+            }
+            
+            window.onload = function(){
+                SVMX_GetAddress('{!JSINHTMLENCODE(strAddress)}');
+            }
+        </script>
+    </apex:form>
+</apex:page>

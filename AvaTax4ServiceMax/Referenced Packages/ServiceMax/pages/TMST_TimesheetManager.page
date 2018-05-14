@@ -1,0 +1,253 @@
+<apex:page standardStylesheets="true" showHeader="true" sidebar="true" controller="SVMXC.TMST_TimesheetManager">
+  <script>
+      var __SVMX_LOAD_VERSION__  = "micro";
+      var __SVMX_CLIENT_LIB_PATH__ = "{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib')}";
+      var __SVMX_CLIENT_TIMESHEET_PATH__ = "{!URLFOR($Resource.com_servicemax_client_timesheet, 'com.servicemax.client.timesheet')}";
+  </script>
+  
+  <script>
+  
+      function processResourceURL(url){
+      
+        var ret = url, index;
+        if((index = url.indexOf("?")) != -1){
+            ret = url.substring(0, index);
+        }
+        return ret;
+     }
+  
+      var svmx_display_tags = {
+        TMST: {
+            "TMST002_TAG001"         : "{!$Label.TMST002_TAG001}",
+            "TMST002_TAG002"         : "{!$Label.TMST002_TAG002}",
+            "TMST002_TAG003"         : "{!$Label.TMST002_TAG003}",
+            "TMST002_TAG004"         : "{!$Label.TMST002_TAG004}",
+            "TMST002_TAG005"         : "{!$Label.TMST002_TAG005}",
+            "TMST002_TAG006"         : "{!$Label.TMST002_TAG006}",
+            "TMST002_TAG007"         : "{!$Label.TMST002_TAG007}",
+            "TMST002_TAG008"         : "{!$Label.TMST002_TAG008}",
+            "TMST002_TAG009"         : "{!$Label.TMST002_TAG009}",
+            "TMST002_TAG010"         : "{!$Label.TMST002_TAG010}",
+            "TMST002_TAG011"         : "{!$Label.TMST002_TAG011}",
+            "TMST002_TAG012"         : "{!$Label.TMST002_TAG012}",
+            "TMST002_TAG013"         : "{!$Label.TMST002_TAG013}",
+            "TMST002_TAG014"         : "{!$Label.TMST002_TAG014}",
+            "TMST002_TAG015"         : "{!$Label.TMST002_TAG015}",
+            "TMST002_TAG016"         : "{!$Label.TMST002_TAG016}",
+            "TMST002_TAG017"         : "{!$Label.TMST002_TAG017}",
+            "TMST002_TAG018"         : "{!$Label.TMST002_TAG018}",
+            "TMST002_TAG019"         : "{!$Label.TMST002_TAG019}",
+            "TMST002_TAG020"         : "{!$Label.TMST002_TAG020}",
+            "TMST002_TAG021"         : "{!$Label.TMST002_TAG021}",
+            "TMST002_TAG022"         : "{!$Label.TMST002_TAG022}",
+            "TMST002_TAG023"         : "{!$Label.TMST002_TAG023}",
+            "TMST002_TAG024"         : "{!$Label.TMST002_TAG024}",
+            "TMST002_TAG025"         : "{!$Label.TMST002_TAG025}",
+            "TMST002_TAG026"         : "{!$Label.TMST002_TAG026}",
+            "TMST002_TAG027"         : "{!$Label.TMST002_TAG027}",
+            "TMST002_TAG028"         : "{!$Label.TMST002_TAG028}",
+            "TMST002_TAG029"         : "{!$Label.TMST002_TAG029}",
+            "TMST002_TAG030"         : "{!$Label.TMST002_TAG030}",
+            "TMST002_TAG031"         : "{!$Label.TMST002_TAG031}",
+            "TMST002_TAG032"         : "{!$Label.TMST002_TAG032}",
+            "TMST002_TAG033"         : "{!$Label.TMST002_TAG033}",
+            "TMST002_TAG034"         : "{!$Label.TMST002_TAG034}",
+            "TMST002_TAG035"         : "{!$Label.TMST002_TAG035}",
+            "TMST002_TAG036"         : "{!$Label.TMST002_TAG036}",
+            "TMST002_TAG037"         : "{!$Label.TMST002_TAG037}",
+            "TMST002_TAG038"         : "{!$Label.TMST002_TAG038}",
+            "TMST002_TAG039"         : "{!$Label.TMST002_TAG039}",
+            "TMST002_TAG040"         : "{!$Label.TMST002_TAG040}",            
+            "TMST002_TAG041"         : "{!$Label.TMST002_TAG041}",
+            "TMST002_TAG042"         : "{!$Label.TMST002_TAG042}",
+            "TMST002_TAG043"         : "{!$Label.TMST002_TAG043}",
+            "TMST002_TAG044"         : "{!$Label.TMST002_TAG044}",
+            "TMST002_TAG045"         : "{!$Label.TMST002_TAG045}",
+            "TMST002_TAG046"         : "{!$Label.TMST002_TAG046}",
+            "TMST002_TAG047"         : "{!$Label.TMST002_TAG047}",
+            "TMST002_TAG048"         : "{!$Label.TMST002_TAG048}",
+            "TMST002_TAG049"         : "{!$Label.TMST002_TAG049}",
+            "TMST002_TAG050"         : "{!$Label.TMST002_TAG050}",
+            "TMST002_TAG051"         : "{!$Label.TMST002_TAG051}",
+            "TMST002_TAG052"         : "{!$Label.TMST002_TAG052}",
+            "TMST002_TAG053"         : "{!$Label.TMST002_TAG053}",
+            "TMST002_TAG054"         : "{!$Label.TMST002_TAG054}",
+            "TMST002_TAG055"         : "{!$Label.TMST002_TAG055}",
+            "TMST002_TAG056"         : "{!$Label.TMST002_TAG056}",
+            "TMST002_TAG057"         : "{!$Label.TMST002_TAG057}",
+            "TMST002_TAG058"         : "{!$Label.TMST002_TAG058}",
+            "TMST002_TAG059"         : "{!$Label.TMST002_TAG059}",
+            "TMST002_TAG060"         : "{!$Label.TMST002_TAG060}",
+            "TMST002_TAG061"         : "{!$Label.TMST002_TAG061}",
+            "TMST002_TAG062"         : "{!$Label.TMST002_TAG062}",
+            "TMST002_TAG063"         : "{!$Label.TMST002_TAG063}",
+            "TMST002_TAG064"         : "{!$Label.TMST002_TAG064}",
+            "TMST002_TAG065"         : "{!$Label.TMST002_TAG065}",
+            "TMST002_TAG066"         : "{!$Label.TMST002_TAG066}",
+            "TMST002_TAG067"         : "{!$Label.TMST002_TAG067}",
+            "TMST002_TAG068"         : "{!$Label.TMST002_TAG068}",
+            "TMST002_TAG069"         : "{!$Label.TMST002_TAG069}",
+            "TMST002_TAG070"         : "{!$Label.TMST002_TAG070}",
+            "TMST002_TAG071"         : "{!$Label.TMST002_TAG071}",
+            "TMST002_TAG072"         : "{!$Label.TMST002_TAG072}",
+            "TMST002_TAG073"         : "{!$Label.TMST002_TAG073}",
+            "TMST002_TAG074"         : "{!$Label.TMST002_TAG074}",
+            "TMST002_TAG075"         : "{!$Label.TMST002_TAG075}",
+            "TMST002_TAG076"         : "{!$Label.TMST002_TAG076}",
+            "TMST002_TAG077"         : "{!$Label.TMST002_TAG077}",
+            "TMST002_TAG078"         : "{!$Label.TMST002_TAG078}",
+            "TMST002_TAG079"         : "{!$Label.TMST002_TAG079}"
+        } 
+    };
+  
+      var TimesheetManagerJsr = {
+         
+            JsrGetWorkDetailOwnership : function(request, callback, context) {
+            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.TMST_TimesheetManager.getWorkDetailOwnership}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrGetObjectMappingAndSVMXRules : function(request, callback, context) {
+            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.TMST_TimesheetManager.getObjectMappingAndSVMXRules}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrGetBusinessHours : function(request, callback, context) {
+            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.TMST_TimesheetManager.getBusinessHours}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrGetAllTimezones : function(request, callback, context) {
+            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.TMST_TimesheetManager.getAllTimezones}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrGetAllTimesheetProcess : function(request, callback, context) {
+            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.TMST_TimesheetManager.getAllTimesheetProcess}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            JsrDeleteTimesheetProcess : function(request, callback, context) {
+            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.TMST_TimesheetManager.deleteTimesheetProcess}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },            
+           
+            JsrSaveTimesheetConfiguration : function(request, callback, context) {
+            
+                var requestStr = SVMX.toJSON(request), me = this;
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.TMST_TimesheetManager.saveTimesheetConfiguration}', requestStr, 
+                    function(result, event){ me.processResult(result, event, callback, context); }, {escape: false}
+                );
+            },
+            
+            processResult : function(result, event, callback, context) {
+            
+                var ret = {success : false};
+                if(event.status == true) {
+                    ret = SVMX.toObject(result);
+                }
+                callback.call(context, ret, event);
+            },
+            
+            JsrGetDisplayTags : function(request, callback, context){
+                var me = this;
+            
+                setTimeout(function(){
+                    me.processResult(svmx_display_tags.TMST, {status : true}, callback, context);
+                }, 1);
+            }
+        };
+  </script>
+  
+  <script type='text/javascript' src="{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib/src/bootstrap.js')}"/>
+  <script>
+    jQuery(document).ready(function() {
+
+         var client_runtime                = processResourceURL("{!URLFOR($Resource.com_servicemax_client_runtime, '')}");
+ var client_sfmconsole             = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmconsole, '')}");
+ var client_sal                    = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal, '')}");
+ var client_sal_model              = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_model, '')}");
+ var client_sal_sfmconsole_model   = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_sfmconsole_model, '')}"); 
+ var client_mvc                    = processResourceURL("{!URLFOR($Resource.com_servicemax_client_mvc, '')}");      
+ var client_components             = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_components, '')}");        
+ var ui_components_bubble          = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_components_bubble, '')}");     
+ var client_themes                 = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_themes, '')}");
+ var sfmconsole_ui_web             = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmconsole_ui_web, '')}");
+
+ var client_themes2                  = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_themes2, '')}");
+        
+ var client_timesheet_model        ="{!URLFOR($Resource.com_servicemax_client_sal_timesheet_model, '')}";
+ var client_timesheet              = "{!URLFOR($Resource.com_servicemax_client_timesheet, '')}";
+ var client_timesheet_ui_desktop   = "{!URLFOR($Resource.com_servicemax_client_timesheet_ui_desktop, '')}";
+ var ui_themes_orange      = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_desktop_themes_orange, '')}");
+
+        
+        
+        var config = {title:"Timesheet Manager", version:"1.0.0",
+            modules:[
+                { id : "com.servicemax.client.runtime",                 version : "1.0.0",  codebase : client_runtime},
+                { id : "com.servicemax.client.mvc",                     version : "1.0.0" , codebase : client_mvc },
+                { id : "com.servicemax.client.ui.components",           version : "1.0.0" , codebase : client_components },
+                { id : "com.servicemax.client.sfmconsole",              version : "1.0.0" , codebase : client_sfmconsole},               
+               // { id : "com.servicemax.client.sal",                     version : "1.0.0" , codebase : client_sal },
+                { id : "com.servicemax.client.sal.sfmconsole.model",    version : "1.0.0" , codebase : client_sal_sfmconsole_model},
+                { id : "com.servicemax.client.ui.components.bubble",    version : "1.0.0" , codebase : ui_components_bubble },
+                { id : "com.servicemax.client.ui.themes",               version : "1.0.0" , codebase : client_themes },
+
+                { "id" : "com.servicemax.client.ui.themes2",                "version" : "1.0.0" , "codebase" : client_themes2 },                
+                { id : "com.servicemax.client.sfmconsole.ui.web",       version : "1.0.0" , codebase : sfmconsole_ui_web },
+                { id : "com.servicemax.client.sal.timesheet.model",         version : "1.0.0" , codebase : client_timesheet_model },
+                { id : "com.servicemax.client.timesheet",               version : "1.0.0" , codebase : client_timesheet },
+                { id : "com.servicemax.client.timesheet.ui.desktop",    version : "1.0.0" , codebase : client_timesheet_ui_desktop },
+
+                { id : "com.servicemax.client.ui.desktop.themes.orange",version : "1.0.0" , codebase : ui_themes_orange }
+            ],
+            
+            
+            "app-config" : {
+                "application-id"             : "console",
+                "theme"                      : "ORANGE",
+                "sal-service-runtime-mode"   : "VISUAL_FORCE",
+                "org-name-space"             : "SVMXC",
+                "enable-cache"               : true,
+                "enable-log"                 : true
+            },
+            
+            "platform-config" : {}
+        }
+        
+        var client = new com.servicemax.client.lib.core.Client();
+        
+        // set up the session id
+
+        client.addApplicationParameter("session-id", "{!GETSESSIONID()}");
+        client.addApplicationParameter("svmx-timesheet-userinfo", "{!JSENCODE(UserInfo)}");
+    
+        client.run({configType : "local", data : config, loadVersion : __SVMX_LOAD_VERSION__ });
+    
+    });
+  </script>
+  
+  <body>
+    <div id="client_app_root"></div>
+  </body>
+
+</apex:page>

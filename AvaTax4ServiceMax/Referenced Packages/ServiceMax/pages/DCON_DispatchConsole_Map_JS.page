@@ -1,0 +1,31 @@
+<apex:page controller="SVMXC.DCON_DispatchConsole"  title=" " standardStylesheets="false">
+<script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+    <style>  
+     html, body { height:100%; }  
+            .outer, .oRight{ height:100%;}
+            body { margin:0; padding:0; overflow:auto;
+                   background-color: #ffffff; }   
+            object:focus { outline:none; }
+    </style>
+   
+   <script>
+       //Refer bootstrap.js for why BOOTSTRAP_PARAMS is required
+       window.BOOTSTRAP_PARAMS = "standAloneMap,includeChannel";
+       var SET071 = "{!SET071}";
+       
+       function setCSSParam()
+        {
+            var urlParams = location.search;
+            if(urlParams && urlParams.search("new") != -1)
+            {
+                window.BOOTSTRAP_PARAMS += ",new";
+            }
+        }
+        
+        //Set window.BOOTSTRAP_PARAMS with "new" param to load appropriate css for map. Used in bootstrap.js
+        setCSSParam();
+   </script>
+   <script type="text/javascript" src="{!URLFOR($Resource.DCON_Dispatch_Console,'app/bootstrap.js')}"></script>
+   
+    <div id="DCMap" style="position:absolute;left:0px;right:0px;top:0px;bottom:0px"></div>
+</apex:page>

@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>SVMX_LaunchHelp</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Installed products, part numbers, or groups of products entitled by this service contract.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <description>End date of service contract/warranty at the time of entitlement</description>
+        <externalId>false</externalId>
+        <inlineHelpText>End date of service contract/warranty at the time of entitlement</inlineHelpText>
+        <label>End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Exchange_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Type of exchange allowed as per the service contract line. This overrides the exchange type set in the Service Contract</description>
+        <externalId>false</externalId>
+        <label>Exchange Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Advance Exchange</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Return Exchange</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Installed_Product__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Name of the installed product covered by the service contract. Is a lookup to an existing installed product record in ServiceMax</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Name of the installed product covered by the service contract. Is a lookup to an existing installed product record in ServiceMax</inlineHelpText>
+        <label>Installed Product</label>
+        <referenceTo>Installed_Product__c</referenceTo>
+        <relationshipName>R00N70000001hzdkEAA</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Is_Billable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Is Billable</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Line_Price__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Line Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Notes__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Additional information about entitlement by this product/group of products.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Additional information about entitlement by this product/group of products.</inlineHelpText>
+        <label>Notes</label>
+        <length>32000</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Number_Of_PMs_Delivered__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Number of preventive maintenance work orders completed for this product so far. Calculated automatically when PM work orders are closed</description>
+        <externalId>false</externalId>
+        <label>Number Of PMs Delivered</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Product_Family__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Product Family covered by this service contract.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Product Family covered by this service contract.</inlineHelpText>
+        <label>Product Family</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Accessory</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Bundle</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dimension</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Latitude</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>OptiPlex</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>PowerConnect</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>PowerEdge</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>PowerVault</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Precision</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Vostro</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>XPS</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Antivirus</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Recovery</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Productivity</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Operating System</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Performance</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Database</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Desktop</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Product_Line__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Product Line covered by this service contract.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Product Line covered by this service contract.</inlineHelpText>
+        <label>Product Line</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Accessory</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Desktop</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Laptop</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Network</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Server</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Solution</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Storage</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Software</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Product__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Name of the product covered by the service contract. Is a lookup to an existing salesforce product record</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Name of the product covered by the service contract. Is a lookup to an existing salesforce product record</inlineHelpText>
+        <label>Product</label>
+        <referenceTo>Product2</referenceTo>
+        <relationshipName>R00N70000001hzcyEAA</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>SLA_Terms__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Service level the customer is entitled to by this contract. Is a lookup to an existing service level record</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Service level the customer is entitled to by this contract. Is a lookup to an existing service level record</inlineHelpText>
+        <label>SLA Terms</label>
+        <referenceTo>Service_Level__c</referenceTo>
+        <relationshipName>Covered_Products</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Service_Contract__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Name of the service contract. Is a lookup to an existing service contract in ServiceMax</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Name of the service contract. Is a lookup to an existing service contract in ServiceMax</inlineHelpText>
+        <label>Service/Maintenance Contract</label>
+        <referenceTo>Service_Contract__c</referenceTo>
+        <relationshipName>R00N70000001hzdaEAA</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Start date of service contract/warranty at the time of entitlement</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Start date of service contract/warranty at the time of entitlement</inlineHelpText>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <label>Covered Product</label>
+    <nameField>
+        <displayFormat>SCPN-{000000}</displayFormat>
+        <label>Record Number</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Covered Products</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Service_Contract__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Installed_Product__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Product__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Product_Family__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Product_Line__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Service_Contract__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Installed_Product__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Product__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Product_Family__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Product_Line__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>CREATEDBY_USER</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Service_Contract__c</searchFilterFields>
+        <searchFilterFields>Installed_Product__c</searchFilterFields>
+        <searchFilterFields>Product__c</searchFilterFields>
+        <searchFilterFields>Product_Family__c</searchFilterFields>
+        <searchFilterFields>Product_Line__c</searchFilterFields>
+        <searchFilterFields>CREATEDBY_USER</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

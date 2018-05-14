@@ -1,0 +1,2 @@
+<apex:page standardController="Avalara__c" extensions="AVA_TestConnect" action="{!AVATestConnection}" >
+</apex:page>

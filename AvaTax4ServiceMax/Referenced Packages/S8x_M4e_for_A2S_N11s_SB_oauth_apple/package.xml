@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>S8x_M4e_for_A2S_N11s_SB_oauth_apple</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <modules>
+        <module>
+            <label>S8x_M4e_for_A2S_N11s_SB_oauth_apple</label>
+            <moduleType>ApplePushApplicationSetup</moduleType>
+            <name>S8x_M4e_for_A2S_N11s_SB_oauth_apple</name>
+            <types>
+                <members>S8x_M4e_for_A2S_N11s_SB_oauth_appleApplePushApplicationSetup</members>
+                <name>ApplePushApplicationSetup</name>
+            </types>
+            <types>
+                <members>SVMXC__S8x_M4e_for_A2S_N11s_SB_oauth_apple</members>
+                <name>Module</name>
+            </types>
+            <version>82.0</version>
+        </module>
+    </modules>
+    <namespacePrefix>SVMXC</namespacePrefix>
+    <version>31.0</version>
+</Package>

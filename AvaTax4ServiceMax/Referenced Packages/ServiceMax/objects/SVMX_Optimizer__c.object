@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>The purpose of this object is to store the additional optimizer specific attributes, statuses. The object is designed to be generic in nature to be extended to support any object. For now it will be used for non-work order events but can be applied to technician, Skill or event Work Order.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Optimizer_Change_Token__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The change happened on the object. Is used for retry mechanism</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The change happened on the object. Is used for retry mechanism</inlineHelpText>
+        <label>Optimizer Change Token</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Optimizer_Error_Text__c</fullName>
+        <deprecated>false</deprecated>
+        <description>ServicePower specific message</description>
+        <externalId>false</externalId>
+        <inlineHelpText>ServicePower specific message</inlineHelpText>
+        <label>Optimizer Error Text</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Optimizer_External_ID__c</fullName>
+        <deprecated>false</deprecated>
+        <description>ServicePower specific external ID</description>
+        <externalId>true</externalId>
+        <inlineHelpText>ServicePower specific external ID</inlineHelpText>
+        <label>Optimizer External Identifier</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Optimizer_Retry_Count__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Number of times this API is invoked</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Number of times this API is invoked</inlineHelpText>
+        <label>Optimizer Retry Count</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Optimizer_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Current status of the record with respect to the scheduling optimizer</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Current status of the record with respect to the scheduling optimizer</inlineHelpText>
+        <label>Optimizer Status</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SM_Work_Order__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Work Order</label>
+        <referenceTo>Service_Order__c</referenceTo>
+        <relationshipLabel>Optimizer Transactions</relationshipLabel>
+        <relationshipName>Optimizer_Transactions</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>WhatId__c</fullName>
+        <deprecated>false</deprecated>
+        <description>SalesForce Id of the object</description>
+        <externalId>false</externalId>
+        <inlineHelpText>SalesForce Id of the object</inlineHelpText>
+        <label>WhatId</label>
+        <length>20</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WhatType__c</fullName>
+        <deprecated>false</deprecated>
+        <description>What is the object type (Event, SVMX Event, Work Order, Technician or Skill)</description>
+        <externalId>false</externalId>
+        <inlineHelpText>What is the object type (Event, SVMX Event, Work Order, Technician or Skill)</inlineHelpText>
+        <label>WhatType</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Work Order</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Event</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>SVMX Event</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Technician</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Skill</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Optimizer Transaction</label>
+    <nameField>
+        <displayFormat>O-{00000000}</displayFormat>
+        <label>Record Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Optimizer Transactions</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

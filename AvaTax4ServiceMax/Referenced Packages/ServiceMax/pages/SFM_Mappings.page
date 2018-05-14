@@ -1,0 +1,43 @@
+<apex:page controller="SVMXC.SFM_Mappings" title=" " standardStylesheets="false">
+    <script src="https://servicemax.secure.force.com/NPS/services/apexrest/NPS?user-name={!$User.FirstName}&user-id={!UserID}&org-id={!UserOrgID}&user-locale={!UserLocaleKey}"></script>
+    <apex:form style="height:100%">
+    <script type="text/javascript">
+    var __sfdcSessionId = '{!JSENCODE(GETSESSIONID())}';
+    var usrTimeFormat = UserContext.timeFormat;
+    </script>
+    
+    <script type="text/javascript">
+        function changeTitle(title) {document.title = title; }
+    </script>
+    
+    <script src="../../soap/ajax/21.0/connection.js" type="text/javascript"></script>
+    <script type="text/javascript"> var x = screen.height;</script>
+    <script type="text/javascript">
+        function checksession() {
+          //function contains all code to execute after page is rendered
+          var state = {output : document.getElementById("output"), startTime : new Date().getTime()};
+          var callback = {onSuccess: SuccessResult, onFailure: queryFailed, source: state};
+          sforce.connection.query("Select Id from User Limit 1",callback);
+        }
+        function queryFailed(error, source) {
+            window.close();
+        }
+        function SuccessResult(queryResult, source){
+        }
+      
+    </script>
+    <div id="flashContent"> 
+        <object id="SFMExpressionBuilderSWF" width="100%" height="680Px" align="middle" >
+            <param name="wmode" value="window"/>
+            <param name="allowScriptAccess" value="always" />
+            <param name="movie" value="{!URLFOR($Resource.SFM_Mappings,'SFMMappingBuilder/SFMMapBuilder.swf')}" />
+            <param name="quality" value="high" />
+            <param name="bgcolor" value="#ffffff" />
+            <param name="FlashVars" value="sessionID={!$Api.Session_ID}&serverURL={!$Api.Partner_Server_URL_190}&SVMX_retURL={!returnURL}&ns=SVMXC"/>
+            <embed id="SFMExpressionBuilderSWF1" src="{!URLFOR($Resource.SFM_Mappings,'SFMMappingBuilder/SFMMapBuilder.swf')}" width="100%" height="680Px" autostart="false" quality="high" bgcolor="#ffffff" FlashVars="sessionID={!$Api.Session_ID}&serverURL={!$Api.Partner_Server_URL_190}&SVMX_retURL={!returnURL}&userAuthTag={!userAuthTag}&loadingTag={!loadingTag}&ns=SVMXC"/>
+        </object>
+    </div>
+    
+    </apex:form>
+ 
+</apex:page>

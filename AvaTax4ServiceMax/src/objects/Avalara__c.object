@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Object to store Avalara Credentials and Avalara options</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_ID__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Avalara Account ID</inlineHelpText>
+        <label>Account ID</label>
+        <length>10</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Active_Avalara_Setting__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This field shows the status of this account. If the field is checked, the account is enabled. Only one account can be enabled at a time.</inlineHelpText>
+        <label>Active Avalara Setting</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Automatic_Tax_Calculation__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>UnChecked by default. If this Box is checked AND Tax Calculations are Enabled, Tax may be recalculated upon Saving the Quote or Work Order(recalculation will only be done if a value which might affect the tax calculation has changed)</inlineHelpText>
+        <label>Re-calculate Tax upon Invoice Editing</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Commit_On_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>If Re-calculate Tax upon Invoice Editing is Checked, and the Order Status (Work Order ) is set to correspond to the value set in Post WorkOrder Status , the Invoice will be Committed to Avalara upon Save, provided Disable Document Commit is unchecked.</inlineHelpText>
+        <label>Post WorkOrder on Status</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Company_Code__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Default Company Code for Avalara Tax Calcs - may be overridden at WorkOrder or ServiceQuote</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Dashboard Company Code that will be referenced in Tax Calculations for this TaxNowSetting Object.</inlineHelpText>
+        <label>Company Code</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Country__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Country for Origin Address used in Avalara Tax Calcs. Enter 2 or 3 character ISO country code.</inlineHelpText>
+        <label>Country</label>
+        <length>3</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer_Code_Field__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the field from which the Tax Calculation will pull the Avalara Customer Code.</inlineHelpText>
+        <label>Customer Code Field</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Account Name</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Account Number</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Disable_Document_Commit__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If checked then tax gets calculated on Work Order, however transaction is not saved on Avalara Dashboard.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked then tax gets calculated on Work Order, however transaction is not saved on Avalara Dashboard.</inlineHelpText>
+        <label>Disable Document Commit</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Enable_AvaTax_Tax_Calculation__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Enables Tax Calcs for Avalara</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Checked by default. If unchecked, Sales Tax Calculation is disabled.</inlineHelpText>
+        <label>Enable AvaTax Tax Calculation</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Enable_AvaTax_address_validation__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Checked by default. If unchecked, Address Validations are disabled.</inlineHelpText>
+        <label>Enable AvaTax Address Validation</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>License_Key__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Avalara License Key</inlineHelpText>
+        <label>License Key</label>
+        <length>120</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Origin_City__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>City for Origin Address to be used in Avalara Tax Calculations</inlineHelpText>
+        <label>City</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Origin_County__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>County</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Origin_Postal_Code__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Postal or Zip Code for Origin Address to be used in tax Calculations. For US Zip Codes can be Zip5 or Zip9 (Zip + 4)</inlineHelpText>
+        <label>Zip/Postal Code</label>
+        <length>10</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Origin_State__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>State or Province for Origin Address to be used in Avalara Tax Calcs. Use 2 character abbreviations as specified by US or Canada Postal Service.</inlineHelpText>
+        <label>State/Province</label>
+        <length>2</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Origin_Street__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter up to 3 Street Address lines for the Origin Address to be used in the Avalara Tax Calcs. More lines can be entered, but only the first 3 will be used in tax Calculations.</inlineHelpText>
+        <label>Street</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Return_address_in_upper_case__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>If checked then validated address result showcase would be in upper case.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If checked then address validation result  would be in upper case.</inlineHelpText>
+        <label>Return Address in Upper Case</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Service_URL__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>URL to use when calling the Avalara Service. Example: https://avatax.avalara.net</inlineHelpText>
+        <label>Service URL</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>https://avatax.avalara.net</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>https://development.avalara.net</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Trigger_Limit__c</fullName>
+        <defaultValue>1</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Trigger Limit</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is the Max # of Records that Can be processed by a TaxNow Trigger in a single Update or Insert Operation.   Bulk Update or Insert Ops that Exceed this limit will not fire any Triggered Ops (such as autocalc).  Reccomended Setting is 1.</inlineHelpText>
+        <label>Trigger Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Verify_Validated_Addresses__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>If Checked, The user has the opportunity to say yes or no to replacing an address with its validated version before the replacement occurs. If not checked, the replacement happens without intervention.</inlineHelpText>
+        <label>Verify Validated Addresses</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <label>Avalara Account</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <label>Avalara Account Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Avalara</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>NOBlank</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISPICKVAL( Customer_Code_Field__c ,&quot;&quot;)</errorConditionFormula>
+        <errorDisplayField>Customer_Code_Field__c</errorDisplayField>
+        <errorMessage>Blank Value Not Allowed</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Admin_Console_Production_Link</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Admin Console Production Link</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>https://admin-avatax.avalara.net/login.aspx?ReturnUrl=%2f</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Avalara_Community</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Avalara Community</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>https://community.avalara.com/avalara</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Help_Center</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Help Center</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>https://help.avalara.com</url>
+    </webLinks>
+    <webLinks>
+        <fullName>TestConnection</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Test Connection</masterLabel>
+        <openType>sidebar</openType>
+        <page>AVA_TestConnection</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Validate_Origin_Address</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Validate Origin Address</masterLabel>
+        <openType>sidebar</openType>
+        <page>AVA_OriginAddressValidation</page>
+        <protected>false</protected>
+    </webLinks>
+</CustomObject>

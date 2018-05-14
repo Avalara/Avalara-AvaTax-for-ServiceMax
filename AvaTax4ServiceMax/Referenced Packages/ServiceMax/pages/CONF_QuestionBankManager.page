@@ -1,0 +1,184 @@
+<apex:page standardStylesheets="true" showHeader="true" sidebar="true" controller="SVMXC.CONF_QuestionBankManager">  
+
+<script>
+    function processResourceURL(url){
+        var ret = url, index;
+        if((index = url.indexOf("?")) != -1){
+            ret = url.substring(0, index);
+        }
+        return ret;
+    }
+	
+	var svmx_display_tags ={
+	  "CQL": {
+		"TAG001": "{!$Label.CONF041_TAG001}",
+		"TAG002": "{!$Label.CONF041_TAG002}",
+		"TAG003": "{!$Label.CONF041_TAG003}",
+		"TAG004": "{!$Label.CONF041_TAG004}",
+		"TAG005": "{!$Label.CONF041_TAG005}",
+		"TAG006": "{!$Label.CONF041_TAG006}",
+		"TAG007": "{!$Label.CONF041_TAG007}",
+		"TAG008": "{!$Label.CONF041_TAG008}",
+		"TAG009": "{!$Label.CONF041_TAG009}",
+		"TAG010": "{!$Label.CONF041_TAG010}",
+		"TAG011": "{!$Label.CONF041_TAG011}",
+		"TAG012": "{!$Label.CONF041_TAG012}",
+		"TAG013": "{!$Label.CONF041_TAG013}",
+		"TAG014": "{!$Label.CONF041_TAG014}",
+		"TAG015": "{!$Label.CONF041_TAG015}",
+		"TAG016": "{!$Label.CONF041_TAG016}",
+		"TAG017": "{!$Label.CONF041_TAG017}",
+		"TAG018": "{!$Label.CONF041_TAG018}",
+		"TAG019": "{!$Label.CONF041_TAG019}",
+		"TAG020": "{!$Label.CONF041_TAG020}",
+		"TAG021": "{!$Label.CONF041_TAG021}",
+		"TAG022": "{!$Label.CONF041_TAG022}",
+		"TAG023": "{!$Label.CONF041_TAG023}",
+		"TAG024": "{!$Label.CONF041_TAG024}",
+		"TAG025": "{!$Label.CONF041_TAG025}",
+		"TAG026": "{!$Label.CONF041_TAG026}",
+		"TAG027": "{!$Label.CONF041_TAG027}",
+		"TAG028": "{!$Label.CONF041_TAG028}",
+		"TAG029": "{!$Label.CONF041_TAG029}",
+		"TAG030": "{!$Label.CONF041_TAG030}",
+		"TAG031": "{!$Label.CONF041_TAG031}",
+		"TAG032": "{!$Label.CONF041_TAG032}",
+		"TAG033": "{!$Label.CONF041_TAG033}",
+		"TAG034": "{!$Label.CONF041_TAG034}",
+		"TAG035": "{!$Label.CONF041_TAG035}",
+		"TAG036": "{!$Label.CONF041_TAG036}",
+		"TAG037": "{!$Label.CONF041_TAG037}",
+		"TAG038": "{!$Label.CONF041_TAG038}",
+		"TAG039": "{!$Label.CONF041_TAG039}",
+		"TAG040": "{!$Label.CONF041_TAG040}"
+	  }
+	}
+	
+    var __SVMX_LOAD_VERSION__ = "debug";
+    var __SVMX_CLIENT_LIB_PATH__ = processResourceURL("{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib')}");
+
+    var SVMXJsr = {
+        JsrGetQuestionList : function(request, callback, context){
+            this.getQuestionListCallback=callback;
+            this.getQuestionListContext=context;
+            resetSetConroller();
+        },
+        JsrGetResponseSetList : function(request, callback, context) {
+            var requestStr = SVMX.toJSON(request);
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CONF_QuestionBankManager.JsrGetResponseSetList}', requestStr, 
+                function(result, event){ callback && callback.call(context, result); }, {escape: false});
+        },
+        JsrSaveQuestion : function(request, callback, context) {
+            var requestStr = SVMX.toJSON(request);
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CONF_QuestionBankManager.JsrSaveQuestion}', requestStr, 
+                function(result, event){ callback && callback.call(context, result); }, {escape: false});
+        },
+        JsrDeleteQuestion : function(request, callback, context) {
+            var requestStr = SVMX.toJSON(request);
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CONF_QuestionBankManager.JsrDeleteQuestion}', requestStr, 
+                function(result, event){ callback && callback.call(context, result); }, {escape: false});
+        },
+        JsrEditQuestion : function(request, callback, context) {
+            var requestStr = SVMX.toJSON(request);
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.CONF_QuestionBankManager.JsrEditQuestionInfo}', requestStr, 
+                function(result, event){ callback && callback.call(context, result); }, {escape: false}
+            );
+        },
+        JsrNextQuestionList : function(request, callback, context) {
+            this.nextQnListCallback=callback;
+            this.nextQnListContext=context;
+            nextRecords();
+        },
+        JsrPreviousQuestionList : function(request, callback, context) {
+            this.prevQnListCallback=callback;
+            this.prevQnListContext=context;
+            previousRecords();
+        }
+    };  
+    function fetchNextQuestionList(){
+        var tempListOfQuestion = document.getElementById("{!$Component.form.NEXTlistOfQuestion}").value;
+        SVMXJsr.nextQnListCallback && SVMXJsr.nextQnListCallback.call(SVMXJsr.nextQnListContext, tempListOfQuestion);
+    }
+    function fetchPrevQuestionList(){
+        var tempListOfQuestion = document.getElementById("{!$Component.form.PREVlistOfQuestion}").value;
+        SVMXJsr.prevQnListCallback && SVMXJsr.prevQnListCallback.call(SVMXJsr.prevQnListContext, tempListOfQuestion);
+    }
+    function fetchUpdatedList(){
+        var tempListOfQuestion = document.getElementById("{!$Component.form.listOfQuestion}").value;
+        SVMXJsr.getQuestionListCallback && SVMXJsr.getQuestionListCallback.call(SVMXJsr.getQuestionListContext, tempListOfQuestion);
+    }
+</script>
+<script type='text/javascript' src="{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib/src/bootstrap.js')}"></script>
+<apex:form id="form">
+    <apex:inputHidden id="listOfQuestion" value="{!listOfQuestion}"/>
+    <apex:actionFunction name="nextRecords" action="{!nextRecords}" reRender="tempDiv1" oncomplete="fetchNextQuestionList()"/> 
+    <apex:actionFunction name="previousRecords" action="{!previousRecords}" reRender="tempDiv2"  oncomplete="fetchPrevQuestionList()"/> 
+    <apex:outputPanel id="tempDiv1">
+        <apex:inputHidden id="NEXTlistOfQuestion" value="{!NEXTlistOfQuestion}"/>
+    </apex:outputPanel>
+    <apex:outputPanel id="tempDiv2">
+        <apex:inputHidden id="PREVlistOfQuestion" value="{!PREVlistOfQuestion}"/>
+    </apex:outputPanel>
+    <apex:actionFunction name="resetSetConroller" action="{!resetSetConroller}" oncomplete="fetchUpdatedList()" reRender="listOfQuestion,tempDiv1,tempDiv2"/>
+    <script>
+    jQuery(document).ready(function() {
+        var client_runtime                  = processResourceURL("{!URLFOR($Resource.com_servicemax_client_runtime, '')}");
+        var client_mvc                      = processResourceURL("{!URLFOR($Resource.com_servicemax_client_mvc, '')}");
+        var client_components               = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_components, '')}");
+        var client_sfmconsole               = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmconsole, '')}");
+        var ui_components_bubble            = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_components_bubble, '')}");
+        var client_themes                   = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_themes, '')}");
+        var client_themes2                  = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_themes2, '')}");
+        var client_sal_sfmconsole_model     = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_sfmconsole_model, '')}");
+        var sfmconsole_ui_web               = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sfmconsole_ui_web, '')}");
+        
+        var client_qbm                      = processResourceURL("{!URLFOR($Resource.com_servicemax_client_qbm, '')}");
+        var client_qbm_ui_desktop           = processResourceURL("{!URLFOR($Resource.com_servicemax_client_qbm_ui_desktop, '')}");
+        var client_sal_qbm_model            = processResourceURL("{!URLFOR($Resource.com_servicemax_client_sal_qbm_model, '')}");
+        var ui_themes_orange                = processResourceURL("{!URLFOR($Resource.com_servicemax_client_ui_desktop_themes_orange, '')}");
+
+        var config = {
+            "title" : "{!$Label.CONF041_TAG003}", "version" : "1.0.0",
+
+            "modules" : [
+                { "id" : "com.servicemax.client.runtime",                   "version" : "1.0.0" , "codebase" : client_runtime },
+                { "id" : "com.servicemax.client.mvc",                       "version" : "1.0.0" , "codebase" : client_mvc },
+                { "id" : "com.servicemax.client.ui.components",             "version" : "1.0.0" , "codebase" : client_components },
+                { "id" : "com.servicemax.client.sfmconsole",                "version" : "1.0.0" , "codebase" : client_sfmconsole },
+                { "id" : "com.servicemax.client.sal.sfmconsole.model",      "version" : "1.0.0" , "codebase" : client_sal_sfmconsole_model },
+                { "id" : "com.servicemax.client.ui.components.bubble",      "version" : "1.0.0" , "codebase" : ui_components_bubble },
+                { "id" : "com.servicemax.client.ui.themes",                 "version" : "1.0.0" , "codebase" : client_themes },
+                { "id" : "com.servicemax.client.ui.themes2",                "version" : "1.0.0" , "codebase" : client_themes2 },
+                { "id" : "com.servicemax.client.sfmconsole.ui.web",         "version" : "1.0.0" , "codebase" : sfmconsole_ui_web },
+
+                { "id" : "com.servicemax.client.sal.qbm.model",             "version" : "1.0.0" , "codebase" : client_sal_qbm_model },
+                { "id" : "com.servicemax.client.qbm",                       "version" : "1.0.0" , "codebase" : client_qbm },
+                { "id" : "com.servicemax.client.qbm.ui.desktop",            "version" : "1.0.0" , "codebase" : client_qbm_ui_desktop },
+                { "id" : "com.servicemax.client.ui.desktop.themes.orange",  "version" : "1.0.0" , "codebase" : ui_themes_orange}
+            ],
+
+            "app-config" : {
+                "org-name-space"    : "SVMXC",
+                "application-id"    : "console",
+                "theme"             : "ORANGE",
+                "svmx-api-version"  : "9.0",
+                "sal-service-runtime-mode" : "VISUAL_FORCE",
+                "enable-cache"      : true,
+                "enable-log"        : true,
+                "svmx-sfm-sal-model-use-jsr" : true,
+                "svmx-base-url"     : "{!$Site.Prefix}"
+            },
+
+            "platform-config" : {}
+        };
+        var client = new com.servicemax.client.lib.core.Client();       
+        // set up the session id
+        client.addApplicationParameter("session-id", "{!GETSESSIONID()}");
+        client.run({configType : "local", data : config, loadVersion : __SVMX_LOAD_VERSION__ });
+    });
+</script>
+<body>
+    <div id="client_display_root"></div>
+</body>
+</apex:form>
+</apex:page>

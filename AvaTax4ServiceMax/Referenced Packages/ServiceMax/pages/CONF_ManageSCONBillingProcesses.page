@@ -1,0 +1,93 @@
+<apex:page controller="SVMXC.CONF_ManageSCONBillingProcesses" id="manageSCONBillingProcesses">
+    <apex:form id="SVMX_FORM">
+        <apex:pageMessages id="SVMX_PgMsg"/>
+        <apex:pageBlock id="BLOCK1" title="{!TAG001}" helptitle="{!HLPTITLE}" helpurl="{!HLPURL}">
+            <apex:actionStatus id="SVMX_Processing" startText="{!TAG017}"/>
+            <apex:pageBlockButtons id="pgBlckBtns1" location="TOP">
+                <apex:commandButton value="{!TAG002}" action="{!StdView}" id="SVMX_View" disabled="{!DisableStdBtn}" status="SVMX_Processing" reRender="BLOCK1"/>
+                <apex:commandButton value="{!TAG003}" action="{!CONF_CL_SCBillingProcess}" id="SVMX_CloneStnd" disabled="{!DisableStdBtn}" status="SVMX_Processing" reRender="BLOCK1"/>
+                <apex:commandButton value="{!TAG004}" action="{!backToSetupHome}" id="SVMX_bckSetuphome" status="SVMX_Processing"/>
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection columns="1" id="blck1Sec1">
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable id="blck1Table" value="{!stndProcessLst}" var="stdProcess">
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG005}</apex:facet>
+                            <apex:inputField value="{!stdProcess.SVMXC__Select__c}" id="stdselected"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!TAG006}</apex:facet>
+                            <apex:outputText value="{!stdProcess.SVMXC__ProcessID__c}" id="stdName"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG007}</apex:facet>
+                            <apex:outputText value="{!stdProcess.SVMXC__Name__c}" id="stddesc"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG008}</apex:facet>
+                            <apex:outputText value="{!stdProcess.SVMXC__Description__c}" id="stdprocessid"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG021}</apex:facet>
+                            <apex:outputfield value="{!stdProcess.SVMXC__Active__c}" id="stdlstactive"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG009}</apex:facet>
+                            <apex:outputText value="{!stdProcess.LastModifiedBy.Name}" id="stdlstmodifyOn"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG020}</apex:facet>
+                            <apex:outputfield value="{!stdProcess.LastModifiedDate}" id="stdlstmodifiedOn"/>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+        <apex:pageBlock id="BLOCK2" title="{!TAG010}" helptitle="{!HLPTITLE}" helpurl="{!HLPURL}">
+            <apex:actionStatus id="SVMX_Processing" startText="{!TAG017}"/>
+            <apex:pageBlockButtons id="pgBlckBtns2" location="TOP">
+                <apex:commandButton value="{!TAG011}" action="{!CONF_NW_SCBillingProcess}" id="SVMX_New" status="SVMX_Processing" reRender="BLOCK2"/>
+                <apex:commandButton value="{!TAG012}" action="{!CONF_ED_SCBillingProcess}" id="SVMX_Edit" disabled="{!DisableCusBtn}" status="SVMX_Processing" reRender="BLOCK2,SVMX_PgMsg"/>
+                <apex:commandButton value="{!TAG003}" action="{!CONF_CL_SCBillingProcessCustm}" id="SVMX_CloneCustm" disabled="{!DisableCusBtn}" status="SVMX_Processing" reRender="BLOCK2,SVMX_PgMsg"/>
+                <apex:commandButton value="{!TAG013}" action="{!CONF_DL_SCBillingProcess}" Disabled="{!DisableCusBtn}"  onClick="{if(!confirm('{!TAG014}')){return false}}" status="SVMX_Processing" reRender="BLOCK2,SVMX_PgMsg"/> 
+            </apex:pageBlockButtons>
+            
+            <apex:pageBlockSection columns="1" id="blck2Sec1">
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable id="blck2Table" value="{!custmProcessLst}" var="custmProcess">
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG005}</apex:facet>
+                            <apex:inputField value="{!custmProcess.SVMXC__Select__c}" id="cusselected"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">{!TAG006}</apex:facet>
+                            <apex:outputText value="{!custmProcess.SVMXC__ProcessID__c}" id="cusName"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG007}</apex:facet>
+                            <apex:outputText value="{!custmProcess.SVMXC__Name__c}" id="cusdesc"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG008}</apex:facet>
+                            <apex:outputText value="{!custmProcess.SVMXC__Description__c}" id="cusprocessid"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG021}</apex:facet>
+                            <apex:outputfield value="{!custmProcess.SVMXC__Active__c}" id="cusactive" />
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG009}</apex:facet>
+                            <apex:outputText value="{!custmProcess.LastModifiedBy.Name}" id="cuslstmodifyOn"/>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header" >{!TAG020}</apex:facet>
+                            <apex:outputfield value="{!custmProcess.LastModifiedDate}" id="cusmodifyOn"/>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

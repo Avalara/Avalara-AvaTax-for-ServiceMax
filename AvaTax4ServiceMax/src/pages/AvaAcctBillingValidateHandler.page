@@ -1,0 +1,2 @@
+<apex:page standardController="Account" extensions="AvaAcctBillingValidate" action="{!Validate}" >
+</apex:page>

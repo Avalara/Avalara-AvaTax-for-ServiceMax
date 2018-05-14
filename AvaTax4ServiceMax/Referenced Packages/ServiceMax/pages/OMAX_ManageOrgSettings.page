@@ -1,0 +1,371 @@
+<apex:page Controller="SVMXC.OMAX_ManageOrgSettings" id="OMAX_ManageOrgSettingsPage" action="{!loadOMAX_ManageOrgSettings}">
+    <style>
+        .boldText {color: black; font-weight: bold; font-size:12px; overflow: auto;}
+        .boldHeader {color: black; font-weight: bold; font-size:14px; float:initial}
+        .sectionHeaderStyle{color: black; font-weight: bold; font-size:18px; float: left;}
+        .inputCheckBox{}
+    </style>
+    <script type="text/javascript" charset="utf-8">
+    /*This function sets the value of components to null*/
+    function setToNull(comp){
+        var index;
+        for(index=0; index < comp.length; index++){
+            if(comp[index] != null){
+                if(comp[index].type == 'text' || comp[index].type == 'password'){
+                    comp[index].value = '';
+                }else if(comp[index].type == 'checkbox'){
+                    comp[index].value = false;
+                }
+                    else{
+                        comp[index].value = '--None--';
+                    }
+            }
+        }
+    }
+    function resetSPFields(){
+        var spComp = [];
+        spComp[0] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pblockSecOptSP:pblockSecSP:endPntURLItem:SPEndPntURL}');
+        spComp[1] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pblockSecOptSP:pblockSecSP:usernamedbSPItem:usernamedbSP}');
+        spComp[2] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pblockSecOptSP:pblockSecSP:usernameSPItem:usernameSP}');
+        spComp[3] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pblockSecOptSP:pblockSecSP:passworddbSPItem:passworddbSP}');
+        spComp[4] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pBlockAPIList:pBlockSecAPIList:getApptListItem:getApptList}');
+        spComp[5] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pBlockAPIList:pBlockSecAPIList:bookApptItem:bookApptList}');
+        spComp[6] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pBlockAPIList:pBlockSecAPIList:bookJobItem:bookJobList}');
+        spComp[7] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pBlockAPIList:pBlockSecAPIList:jobUpdateItem:jobUpdateList}');
+        
+        setToNull(spComp);
+        
+        var oMaxComp = [];
+        oMaxComp[0] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pblockSecOptSP:pblockSecOptimax:oMxUserItem:username}');
+        oMaxComp[1] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pblockSecOptSP:pblockSecOptimax:oMxPassItem:password}');
+        oMaxComp[2] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pblockSecOptSP:pblockSecOptimax:oMxTokenItem:SecurityToken}');
+        oMaxComp[3] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pblockSecOptSP:pblockSecOptimax:oMxSeMailItem:Successemail}');
+        oMaxComp[4] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pblockSecOptSP:pblockSecOptimax:oMxEeMailItem:Erroremail}');
+        oMaxComp[5] = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:pblockSecOptSP:pblockSecOptimax:oMxSanBoxItem:SorP}');    
+        setToNull(oMaxComp);
+        
+        //var subButton = document.getElementById('{!$Component.OMAX_ManageOrgSettingsPage:Optimizerform:OptimizerSetting:OptimizerButtons:SubmitCredentials}');
+        //subButton.style.display  = 'none';
+    }
+    function selectOnlyThis(id) {
+        var allChkBoxName = document.getElementsByClassName("inputCheckBox");
+        for (i = 0; i < allChkBoxName.length; i++) {
+            if(allChkBoxName[i] != null){
+                allChkBoxName[i].checked = null;
+                allChkBoxName[i].value = "false";
+            }
+        }
+        var chkBoxName1 = document.getElementById(id);
+        if(chkBoxName1 != null){
+            chkBoxName1.checked = "checked";
+            chkBoxName1.value = chkBoxName1.checked;
+        }
+    }
+    
+    </script>
+    <apex:sectionHeader title="{!$Label.svmxc__OMAX001_TAG017}"/>
+    <apex:form id="Optimizerform">
+        
+        <apex:actionFunction name="onChangeOfOptimizer" reRender="OptimizerSetting,pblockSecOptSP,SubmitCredentials,SVMXPagemsg" action="{!onChangeOfOptimizer}"  status="processing"/>
+        <apex:pageBlock mode="edit"  id="OptimizerSetting" helpTitle="{!$Label.svmxc__OMAX001_TAG016}" helpUrl="{!$Label.svmxc__OMAX001_HLPURL}" >
+            
+            <apex:pageMessages id="SVMXPagemsg" escape="false"/>
+            <apex:actionStatus id="processing" startText="{!ProcessingText}"/>
+            
+            <apex:pageBlockSection columns="1"  >
+                <apex:pageBlockSection columns="1" id="OptimizerPicklist"  >
+                    <apex:pageBlockSectionItem >
+                        <apex:outputText value="{!$Label.svmxc__OMAX001_TAG028}" styleClass="boldText"/>
+                        
+                        <apex:selectList value="{!strSelectedOptimizer}" onchange="onChangeOfOptimizer();" size="1" disabled="{!Not(isOptiMaxSPEnabled)}" >
+                            <apex:selectOptions value="{!lstOptimizer}" />
+                        </apex:selectList>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlockSection>
+            
+            
+            <apex:pageBlockSection columns="1" id="pblockSecOptSP" >
+                <apex:pageBlockSection columns="1" id="pblockSecOptimax" rendered="{!isOptimaxEnabled}">
+                    
+                    
+                    <apex:pageBlockSectionItem id="oMxUserItem">
+                        <apex:outputText value="{!$Label.svmxc__OMAX001_TAG001}"/>
+                        <apex:outputPanel layout="block" styleClass="requiredInput" id="oMxUserPanel" >
+                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>    
+                            <apex:inputText id="username" value="{!User}"/>
+                        </apex:outputPanel>  
+                    </apex:pageBlockSectionItem>
+                    
+                    <apex:pageBlockSectionItem id="oMxPassItem" >
+                        <apex:outputText value="{!$Label.svmxc__OMAX001_TAG002}"/>
+                        <apex:outputPanel layout="block" styleClass="requiredInput" id="oMxPassPanel" >
+                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                            <apex:inputSecret id="password" value="{!pass}" redisplay="true"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                    
+                    <apex:pageBlockSectionItem id="oMxTokenItem" >
+                        <apex:outputText value="{!$Label.svmxc__OMAX001_TAG003}"/>
+                        <apex:outputPanel layout="block" styleClass="requiredInput" id="oMxTokenPanel" >
+                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                            <apex:inputSecret id="SecurityToken" value="{!Stoken}" redisplay="true"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                    
+                    <apex:pageBlockSectionItem id="oMxSeMailItem" >
+                        <apex:outputText value="{!$Label.svmxc__OMAX001_TAG004}" />
+                        <apex:outputPanel layout="block" styleClass="requiredInput" id="oMxSeMailPanel"  >
+                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                            <apex:inputText id="Successemail" value="{!SEmail}" />
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                    
+                    <apex:pageBlockSectionItem id="oMxEeMailItem" >
+                        <apex:outputText value="{!$Label.svmxc__OMAX001_TAG005}"/>
+                        <apex:outputPanel layout="block" styleClass="requiredInput" id="oMxEeMailPanel" >
+                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                            <apex:inputText id="Erroremail" value="{!EEmail}" />
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                    
+                    <apex:pageBlockSectionItem id="oMxSanBoxItem">
+                        <apex:outputText value="{!$Label.svmxc__OMAX001_TAG009}"/>
+                        <apex:outputPanel layout="block"  id="oMxSanBoxPanel">
+                            <apex:inputCheckbox id="SorP" value="{!sanorpro}"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    
+                    
+                </apex:pageBlockSection>
+                <!--@Multiple Instance Begin-->
+                <!--apex:pageBlockSection columns="1" id="pblockSecSP"  rendered="{!isSPEnabled}">
+
+<apex:pageBlockSectionItem id="endPntURLItem">
+<apex:outputText value="{!$Label.svmxc__OMAX001_TAG034}" styleClass="boldText"/>
+<apex:outputPanel layout="block" styleClass="requiredInput" id="endPntURLPanel">
+<apex:outputPanel layout="block" styleClass="requiredBlock"/>
+<apex:inputText id="SPEndPntURL" value="{!SPEndPointURL}" style="width: 65%;"/>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem id="usernamedbSPItem">
+<apex:outputText value="{!$Label.svmxc__OMAX001_TAG029}" styleClass="boldText"/>
+<apex:outputPanel layout="block" styleClass="requiredInput" id="usernamedbSPPanel" >
+<apex:outputPanel layout="block" styleClass="requiredBlock"/>    
+<apex:inputText id="usernamedbSP" value="{!SPUsernameDatabase}"/>
+</apex:outputPanel>  
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem id="usernameSPItem" >
+<apex:outputText value="{!$Label.svmxc__DCON003_TAG075}" styleClass="boldText"/>
+<apex:outputPanel layout="block" styleClass="requiredInput" id="usernameSPPanel" >
+<apex:outputPanel layout="block" styleClass="requiredBlock"/>    
+<apex:inputText id="usernameSP" value="{!SPUserName}"/>
+</apex:outputPanel>  
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem id="passworddbSPItem" >
+<apex:outputText value="{!$Label.svmxc__DCON003_TAG076}" styleClass="boldText"/>
+<apex:outputPanel layout="block" styleClass="requiredInput" id="passworddbSPPanel" >
+<apex:outputPanel layout="block" styleClass="requiredBlock"/>
+<apex:inputSecret id="passworddbSP" value="{!SPPassDatabase}" redisplay="true"/>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+</apex:pageBlockSection-->
+                <apex:pageBlockSection id="spInstPageBlckSec_01" columns="1" rendered="{!isNewSPEnabled}">
+                    <apex:pageBlockTable id="spInstPageBlckTbl01" value="{!lstSpInstanceSetting}" var="spSetting" rendered="{!showListSPInst}">
+                        <apex:column rendered="true" style="font-Size:12px;width:5px" id="spInstSelCol" >
+                            <apex:facet name="header">{!$Label.svmxc__DCON003_TAG002}</apex:facet>
+                            <apex:inputCheckbox id="spInstSelect" value="{!spSetting.selected}" disabled="{!IF((boolIsEdit || boolShowOk), true,false)}" />
+                        </apex:column>
+                        <apex:column style="font-Size:12px;width:92px" id="spInstNameCol">
+                            <apex:facet name="header">{!$Label.svmxc__SFM001_TAG020}</apex:facet>
+                            <apex:outputText id="spInstNameDisp" />
+                            <apex:inputText id="spInstNameInput" value="{!spSetting.instName}" style="font-Size:12px;width:80%" disabled="{!IF (((isNewRecord && spSetting.selected) || (isMigrated)), false, true)}"/>
+                        </apex:column>
+                        <apex:column style="font-Size:12px;width:92px" id="spInstActvCol">
+                            <apex:facet name="header">{!$Label.svmxc__CONF018_TAG040}</apex:facet>
+                            <!--apex:inputCheckbox id="spInstIsActive" value="{!spSetting.isActive}" disabled="{!IF (((isNewRecord && spSetting.selected) || (boolIsEdit && spSetting.selected) || (!boolShowOk)), false, true)}"/-->
+                            <apex:inputCheckbox id="spInstIsActive" value="{!spSetting.isActive}" disabled="{!IF(((isNewRecord && spSetting.selected) ||(boolIsEdit && spSetting.selected) || (isMigrated && spSetting.selected) ),false,true)}"/>
+                        </apex:column>
+                        <apex:column style="font-Size:12px;width:92px" id="spInstDefaultCol">
+                            <apex:facet name="header">{!$Label.svmxc__CONF028_TAG076}</apex:facet>
+                            <!--apex:inputCheckbox id="spInstIsDefault" value="{!spSetting.isDefault}" styleClass="inputCheckBox" disabled="{!IF ((isNewRecord || showEditSPInst), false, true)}" onclick="selectOnlyThis(this.id);"/-->
+                            <!--apex:inputCheckbox id="spInstIsDefault" value="{!spSetting.isDefault}" styleClass="inputCheckBox" disabled="{!IF (((isFirstRecord) ||(isNewRecord && spSetting.selected) || (boolIsEdit && spSetting.selected) || (spSetting.isDefault) || (!boolShowOk) ), false, true)}" onclick="selectOnlyThis(this.id);"/-->
+                            <apex:inputCheckbox id="spInstIsDefault" value="{!spSetting.isDefault}" styleClass="inputCheckBox" disabled="{!IF (((isMigrated && spSetting.selected) ||(isNewRecord && spSetting.selected) || (boolIsEdit && spSetting.selected) || (spSetting.isDefault) ), false, true)}" onclick="selectOnlyThis(this.id);"/>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+                <!--apex:pageBlockSection columns="1" id="spInstPageBlckSec_02" rendered="{!showEditSPInst}"-->
+                <apex:pageBlockSection columns="1" id="spInstPageBlckSec_02" rendered="{!IF((((boolIsEdit) || (isMigrated) || (isNewRecord)) && (strSelectedOptimizer == 'Linx for Service Power')), true,false)}">
+                    <apex:pageBlockSectionItem id="instDescSPItem">
+                        <apex:outputText value="{!$Label.svmxc__COMM001_TAG017}" styleClass="boldText"/>
+                        <apex:outputPanel layout="block" id="spInstDescPanel">
+                        <!--apex:outputPanel layout="block" styleClass="requiredInput" id="spInstDescPanel">
+                            <apex:outputPanel layout="block" styleClass="requiredBlock"/-->
+                            <apex:inputText id="SPInstDesc" value="{!strInstDesc}" style="width: 65%;"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="endPntURLItem">
+                        <apex:outputText value="{!$Label.svmxc__OMAX001_TAG034}" styleClass="boldText"/>
+                        <apex:outputPanel layout="block" styleClass="requiredInput" id="endPntURLPanel">
+                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                            <apex:inputText id="SPEndPntURL" value="{!strInstURL}" style="width: 65%;"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="usernamedbSPItem">
+                        <apex:outputText value="{!$Label.svmxc__OMAX001_TAG029}" styleClass="boldText"/>
+                        <apex:outputPanel layout="block" styleClass="requiredInput" id="usernamedbSPPanel" >
+                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>    
+                            <apex:inputText id="usernamedbSP" value="{!strInstDBUserName}"/>
+                        </apex:outputPanel>  
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="usernameSPItem" >
+                        <apex:outputText value="{!$Label.svmxc__DCON003_TAG075}" styleClass="boldText"/>
+                        <apex:outputPanel layout="block" styleClass="requiredInput" id="usernameSPPanel" >
+                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>    
+                            <apex:inputText id="usernameSP" value="{!strInstUserName}"/>
+                        </apex:outputPanel>  
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem id="passworddbSPItem" >
+                        <apex:outputText value="{!$Label.svmxc__DCON003_TAG076}" styleClass="boldText"/>
+                        <apex:outputPanel layout="block" styleClass="requiredInput" id="passworddbSPPanel" >
+                            <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                            <apex:inputSecret id="passworddbSP" redisplay="true" value="{!strInstPwd}"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlockSection>  
+            
+            <!--apex:pageBlock rendered="{!isSPEnabled}" id="pBlockAPIList"-->
+            <!--apex:pageBlock rendered="{!IF ((isSPEnabled && showEditSPInst), true, false)}" id="pBlockAPIList">
+<apex:pageBlockSection columns="1" id="pBlockSecAPIHeader">
+<apex:pageBlockSectionItem >
+<apex:outputText value="{!TAG026}" styleClass="sectionHeaderStyle"/>
+</apex:pageBlockSectionItem>
+</apex:pageBlockSection>
+
+<apex:pageBlockSection columns="1" id="pBlockSecAPIList">
+<apex:pageBlockSectionItem >
+<apex:outputtext value="{!TAG027}" styleClass="boldHeader"/>
+<apex:outputtext value="{!TAG028}" styleClass="boldHeader"/>
+</apex:pageBlockSectionItem>
+<br></br>
+<apex:pageBlockSectionItem id="getApptListItem">
+<apex:outputtext value="{!TAG029}" styleClass="boldText"/>
+<apex:outputPanel layout="block" id="getApptListPanel">
+<apex:selectList value="{!slctdGetAppointment}" size="1" style="width:25%" id="getApptList">
+<apex:selectOptions value="{!lstSOGetAppointment}"/>
+</apex:selectList>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem id="bookApptItem">
+<apex:outputText value="{!TAG030}" styleClass="boldText"/>
+<apex:outputPanel layout="block" id="bookApptPanel">
+<apex:selectList value="{!slctdBookAppointment}" size="1" style="width:25%" id="bookApptList">
+<apex:selectOptions value="{!lstSOBookAppointment}"/>
+</apex:selectList>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem id="bookJobItem">
+<apex:outputText value="{!TAG031}" styleClass="boldText"/>
+<apex:outputPanel layout="block" id="bookJobPanel">
+<apex:selectList value="{!slctdBookJob}" size="1" style="width:25%" id="bookJobList">
+<apex:selectOptions value="{!lstSOBookJob}"/>
+</apex:selectList>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+<apex:pageBlockSectionItem id="jobUpdateItem">
+<apex:outputText value="{!TAG032}" styleClass="boldText"/>
+<apex:outputPanel layout="block" id="jobUpdatePanel">
+<apex:selectList value="{!slctdUpdateWO}" size="1" style="width:25%" id="jobUpdateList">
+<apex:selectOptions value="{!lstSOUpdateWO}"/>
+</apex:selectList>
+</apex:outputPanel>
+</apex:pageBlockSectionItem>
+
+</apex:pageBlockSection>
+</apex:pageBlock-->
+            <!--apex:pageBlock rendered="{!IF ((isNewSPEnabled && showEditSPInst), true, false)}" id="pBlockAPIList"-->
+            <apex:pageBlock rendered="{!IF((((boolIsEdit) || (isMigrated) || (isNewRecord)) && (strSelectedOptimizer == 'Linx for Service Power')), true,false)}" id="pBlockAPIList">
+                <apex:pageBlockSection columns="1" id="pBlockSecAPIHeader">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputText value="{!TAG026}" styleClass="sectionHeaderStyle"/>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                
+                <apex:pageBlockSection columns="1" id="pBlockSecAPIList">
+                    <apex:pageBlockSectionItem id="pBlockAPIListItem">
+                        <apex:outputPanel layout="block" id="pBlockAPIListPanel1">
+                            <apex:outputtext value="{!TAG027}" styleClass="boldHeader"/>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" id="pBlockAPIListPanel2">
+                            <apex:outputtext value="{!TAG028}" styleClass="boldHeader"/>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+                    <br></br>
+                <apex:pageBlockSectionItem id="getApptListItem">
+                    <apex:outputtext value="{!TAG029}" styleClass="boldText"/>
+                    <apex:outputPanel layout="block" id="getApptListPanel">
+                        <apex:selectList value="{!strInstGetAppt}" size="1" style="width:25%" id="getApptList">
+                            <apex:selectOptions value="{!lstSOGetAppointment}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="bookApptItem">
+                    <apex:outputText value="{!TAG030}" styleClass="boldText"/>
+                    <apex:outputPanel layout="block" id="bookApptPanel">
+                        <apex:selectList value="{!strInstBookAppt}" size="1" style="width:25%" id="bookApptList">
+                            <apex:selectOptions value="{!lstSOBookAppointment}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="bookJobItem">
+                    <apex:outputText value="{!TAG031}" styleClass="boldText"/>
+                    <apex:outputPanel layout="block" id="bookJobPanel">
+                        <apex:selectList value="{!strInstBookJob}" size="1" style="width:25%" id="bookJobList">
+                            <apex:selectOptions value="{!lstSOBookJob}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem id="jobUpdateItem">
+                    <apex:outputText value="{!TAG032}" styleClass="boldText"/>
+                    <apex:outputPanel layout="block" id="jobUpdatePanel">
+                        <apex:selectList value="{!strInstUpdWO}" size="1" style="width:25%" id="jobUpdateList">
+                            <apex:selectOptions value="{!lstSOUpdateWO}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlockButtons id="OptimizerButtons">
+            <!--apex:commandButton value="{!$Label.svmxc__OMAX001_TAG007}" id="SubmitCredentials" Action="{!Submit}"  status="processing" rendered="{!enablesubmitCancel}"/>
+<apex:commandButton value="{!$Label.svmxc__OMAX001_TAG008}" id="Cancel" Action="{!Cancel}" rerender="form1" status="processing" />
+<apex:commandButton value="{!$Label.svmxc__DCON001_TAG159}" onclick="resetSPFields();" rendered="{!(isSPEnabled || isOptimaxEnabled)}"/-->
+            
+            <!--apex:commandButton value="{!$Label.svmxc__COMM001_TAG047}" id="spInstNewBtn" Action="{!newSpInstSetting}"  status="processing" rendered="{!isSPEnabled}"/-->
+            <!--apex:commandButton value="{!$Label.svmxc__COMM001_TAG047}" id="spInstNewBtn" Action="{!newSpInstSetting}"  status="processing" rendered="{!IF (((isNewSPEnabled || isSPEnabled || isOptiMaxSPEnabled) && (!boolShowOk)), true, false)}"/-->
+            <apex:commandButton value="{!$Label.svmxc__COMM001_TAG047}" id="spInstNewBtn" Action="{!newSpInstSetting}"  status="processing" rendered="{!IF (((strSelectedOptimizer == 'Linx for Service Power') && (!boolShowOk) &&(!isMigrated) && (!isNewRecord) && (!boolIsEdit)), true, false)}"/>
+            <apex:commandButton value="{!$Label.svmxc__COMM001_TAG048}" id="spInstEditBtn"  Action="{!editSpInstSetting}"  status="processing" rendered="{!IF((isNewSPEnabled && (lstSpInstanceSetting.size>0)  && (!boolIsEdit) && (!isNewRecord) && (!isMigrated) && (!boolShowOk)),true,false)}"/>
+            <apex:commandButton value="{!$Label.svmxc__COMM001_TAG049}" id="spInstDelBtn" Action="{!deleteSpInstSetting}"  status="processing" rendered="{!IF((isNewSPEnabled && (lstSpInstanceSetting.size>0) && (!boolIsEdit) && (!isNewRecord) && (!boolShowOk)),true,false)}" />
+            <apex:commandButton value="{!$Label.svmxc__COMM001_TAG039}" id="spInstSaveBtn" Action="{!saveSpInstSetting}"  status="processing" rendered="{!IF (((isNewSPEnabled && (isNewRecord || boolIsEdit || isMigrated))  && (!boolShowOk)), true, false)}"/>
+            <apex:commandButton value="{!$Label.svmxc__DCON001_TAG069}" id="spInstOkBtn" Action="{!confirmDelete}"  status="processing" rendered="{!IF ((boolShowOk), true, false)}"/>
+            <apex:commandButton value="{!$Label.svmxc__COMM001_TAG040}" id="spInstCancelBtn" Action="{!cancelSpInstSetting}"  status="processing" rendered="{!IF (((isNewSPEnabled && (isNewRecord || boolIsEdit || boolIsDelete)) || (boolShowOk)) && (!isMigrated), true, false)}"/>
+            
+            <apex:commandButton value="{!$Label.svmxc__OMAX001_TAG007}" id="SubmitCredentials" Action="{!Submit}"  status="processing" rendered="{!isOptimaxEnabled}"/>
+            <apex:commandButton value="{!$Label.svmxc__OMAX001_TAG008}" id="Cancel" Action="{!Cancel}" rerender="form1" status="processing" />
+            <apex:commandButton value="{!$Label.svmxc__DCON001_TAG159}" onclick="resetSPFields();" rendered="{!isOptimaxEnabled}"/>
+            
+            <!--@Multiple Instance END-->
+        </apex:pageBlockButtons>
+        
+    </apex:pageBlock>
+    
+</apex:form>
+
+</apex:page>

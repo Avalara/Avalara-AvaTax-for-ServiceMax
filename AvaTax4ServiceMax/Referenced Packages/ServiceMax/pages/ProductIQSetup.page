@@ -1,0 +1,137 @@
+<apex:page title="ProductIQ Setup" sidebar="true" showHeader="true" standardStylesheets="false" controller="SVMXC.ProductIQSetup">
+
+<link rel='stylesheet' href="{!URLFOR($Resource.com_servicemax_client_installigence_ui_components, 'com.servicemax.client.installigence.ui.components/resources/extjsthemes/installigence/Installigence-all_01.css')}" type='text/css'/>
+<link rel='stylesheet' href="{!URLFOR($Resource.com_servicemax_client_installigence_ui_components, 'com.servicemax.client.installigence.ui.components/resources/extjsthemes/installigence/Installigence-all_02.css')}" type='text/css'/>
+<link rel='stylesheet' href="{!URLFOR($Resource.com_servicemax_client_installigence_ui_components, 'com.servicemax.client.installigence.ui.components/resources/css/common.css')}" type='text/css'/>
+
+<script>
+   
+    var __SVMX_LOAD_VERSION__ = "debug";
+    var __SVMX_CLIENT_LIB_PATH__ = "{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib')}";
+    var InstalligenceSetupJsr = {
+         
+        JsrGetSetupMetadata : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ProductIQSetup.JsrGetSetupMetadata}', requestStr,  
+                function(result, event){ 
+                    me.processResult(result, event, callback, context); 
+                }, {escape: false}
+            );
+        },
+        
+        JsrSaveSetupData : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ProductIQSetup.JsrSaveSetupData}', requestStr,  
+                function(result, event){ 
+                    me.processResult(result, event, callback, context); 
+                }, {escape: false}
+            );
+        },
+        
+        JsrGetTemplateFromIB : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ProductIQSetup.JsrGetTemplateFromIB}', requestStr,  
+                function(result, event){ 
+                    me.processResult(result, event, callback, context); 
+                }, {escape: false}
+            );
+        },
+        
+        JsrBackToSetupHome : function(request, callback, context){
+            var requestStr = SVMX.toJSON(request), me = this;
+            Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ProductIQSetup.JsrBackToSetupHome}', requestStr,  
+                function(result, event){
+                    if (event.status) {
+                        window.location = encodeURI(result) ; 
+                    } else {
+                        /*j$('#error').show();  
+                        j$('#error').html(event.message);*/
+                        alert(event.message);
+                    }    
+                }, {escape: false}
+            );
+        },
+        
+        processResult : function(result, event, callback, context){
+            var ret = {success : false};
+            if(event.status == true){
+                ret = SVMX.toObject(result);
+            }
+            callback.call(context, ret, event);
+        }
+    }
+    
+</script>
+
+<script type="text/javascript" src="{!URLFOR($Resource.com_servicemax_client_installigence_ui_components, 'com.servicemax.client.installigence.ui.components/src/ext501/ext-all.js')}"></script>
+<script type="text/javascript" src="{!URLFOR($Resource.com_servicemax_client_lib, 'com.servicemax.client.lib/src/bootstrap.js')}"></script>
+
+<script>
+
+jQuery(document).ready(function(){
+        
+    var client_mvc                    = "{!URLFOR($Resource.com_servicemax_client_mvc, '')}";
+    var client_sal                    = "{!URLFOR($Resource.com_servicemax_client_sal, '')}";
+    var client_runtime                = "{!URLFOR($Resource.com_servicemax_client_runtime, '')}";
+    var client_ui_components          = "{!URLFOR($Resource.com_servicemax_client_installigence_ui_components, '')}";
+    var client_installigence          = "{!URLFOR($Resource.com_servicemax_client_installigence_admin, '')}";
+    
+    
+    var config = {title : "Installigence Setup", version : "1.0.0",
+        modules : [                                  
+            { id : "com.servicemax.client.mvc",                         version : "1.0.0" , codebase : client_mvc },
+            { id : "com.servicemax.client.runtime",                     version : "1.0.0" , codebase : client_runtime },            
+            { id : "com.servicemax.client.sal",                         version : "1.0.0" , codebase : client_sal },
+            { id : "com.servicemax.client.installigence.ui.components", version : "1.0.0" , codebase : client_ui_components },
+            { id : "com.servicemax.client.installigence.admin",         version : "1.0.0" , codebase : client_installigence }                       
+        ],
+    
+        "app-config" : {
+            "application-id"   : "installigence_admin",
+            "enable-cache" : true,
+            "enable-log" : true,
+            "sal-service-runtime-mode" : "REMOTE_PROXY",
+            "svmx-logging-preferences": {
+                "targets": {
+                    "Browser": {
+                        "class-name": "com.servicemax.client.lib.services.BrowserConsoleLogTarget",
+                        "options": {}
+                    }
+                },
+                "loggers": {
+                    "DEFAULT": {
+                        "Browser": "INFO"
+                    },
+                    "SVMXCONSOLECORE": {
+                        "Browser": "INFO"
+                    },
+                    "MODULE-LOADER": {
+                        "Browser": "INFO"
+                    }
+                }
+            },
+            "org-name-space" : "SVMXC",
+            "allow-draft" : true,
+            "allow-signatures" : false,
+            "svmx-base-url" : "{!$Site.Prefix}"
+        },
+    
+        "platform-config" : {
+    
+        }
+    };    
+
+    // create the client instance
+    var client = new com.servicemax.client.lib.core.Client();
+        
+    // set up the session id
+    client.addApplicationParameter("session-id", "{!GETSESSIONID()}");
+    
+    client.run({configType : "local", data : config, loadVersion : __SVMX_LOAD_VERSION__ });
+});
+
+</script>
+<body>
+<div id="client_display_root"></div>
+</body>
+</apex:page>

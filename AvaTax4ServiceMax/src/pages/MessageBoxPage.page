@@ -1,0 +1,41 @@
+<apex:page controller="MessageBox" sidebar="false" standardStylesheets="false">
+<apex:stylesheet value="{!$Resource.LightningCSS}"/>
+
+   <div class="slds-page-header s1FixedFullWidth s1FixedTop forceHighlightsStencilDesktop" data-aura-rendered-by="135:957;a" data-aura-class="forceHighlightsStencilDesktop" >
+    <div class="slds-grid primaryFieldRow" data-aura-rendered-by="136:957;a"><div class="slds-grid slds-col slds-has-flexi-truncate slds-media--center" data-aura-rendered-by="137:957;a">
+<div class="slds-media__body" data-aura-rendered-by="142:957;a">
+    <h1 class="slds-page-header__title slds-m-right--small slds-truncate slds-align-middle" data-aura-rendered-by="145:957;a"><span data-aura-rendered-by="6:957;a" class="uiOutputText" data-aura-class="uiOutputText">{!m_oUserMessage.Title__c}</span></h1>
+</div></div></div></div> 
+
+        <!-- <apex:pageBlock title="{!m_oUserMessage.Title__c}"> -->
+        <p>&nbsp;</p>
+        <apex:form >
+            <h1>
+                <apex:outputText value="{!m_oUserMessage.MsgLine1__c}"/><br />
+                <apex:outputText value="{!m_oUserMessage.MsgLine2__c}"/><br />
+                <apex:outputText value="{!m_oUserMessage.MsgLine3__c}"/><br />
+                <apex:outputText value="{!m_oUserMessage.MsgLine4__c}"/><br />
+                <apex:outputText value="{!m_oUserMessage.MsgLine5__c}"/><br />
+            </h1>
+            <hr />
+
+    <apex:variable value="{!CONTAINS($CurrentPage.URL, 'lightning.force.com')}" var="isLightningMode"/>
+    <!-- $CurrentPage.URL = {!$CurrentPage.URL} <br/>
+    isLightningMode = {!isLightningMode} <br/> -->
+    <apex:outputpanel layout="none" rendered="{!isLightningMode = false}">
+        <!-- Classic UI - Code to display ui in Classic UI mode -->
+        <!-- this is classic ui -->
+
+        <apex:commandButton action="{!DismissPage}" value="  OK  " />
+    </apex:outputpanel>
+
+    <apex:outputpanel layout="none" rendered="{!isLightningMode = true}">
+        <!-- Lightning mode  - Code to display ui in Lightning mode -->
+        <!-- this is lighting mode -->
+
+        <apex:commandButton action="{!DismissPage}" value="  OK  " styleClass="slds-button slds-button--neutral uiButton--brand uiButton" />
+    </apex:outputpanel> 
+
+     </apex:form>
+    <!-- </apex:pageBlock> -->
+</apex:page>

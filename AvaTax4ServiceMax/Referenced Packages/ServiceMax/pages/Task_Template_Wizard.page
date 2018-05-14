@@ -1,0 +1,3 @@
+<apex:page standardController="SVMXC__Task_Template__c" sidebar="false">
+   <c:SFM_Wizard recordId="{!SVMXC__Task_Template__c.Id}" />
+</apex:page>

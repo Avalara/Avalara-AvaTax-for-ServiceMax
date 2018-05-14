@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ServiceMax_Laptop_oauth</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <modules>
+        <module>
+            <label>ServiceMax_Laptop_oauth</label>
+            <moduleType>connected</moduleType>
+            <name>ServiceMax_Laptop_oauth</name>
+            <types>
+                <members>ServiceMax_Laptop_oauth_devConfig</members>
+                <name>ConnectivityDevConfigMetadata</name>
+            </types>
+            <types>
+                <members>SVMXC__ServiceMax_Laptop_oauth</members>
+                <name>Module</name>
+            </types>
+            <version>169.0</version>
+        </module>
+    </modules>
+    <namespacePrefix>SVMXC</namespacePrefix>
+    <version>31.0</version>
+</Package>

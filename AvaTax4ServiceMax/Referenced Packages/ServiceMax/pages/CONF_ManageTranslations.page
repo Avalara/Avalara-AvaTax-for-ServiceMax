@@ -1,0 +1,206 @@
+<apex:page controller="SVMXC.CONF_ManageTranslations" id="page1" tabStyle="SVMXC__ServiceMax_Tags__c" action="{!UpdateKeysBeforeConstructor}">
+    <apex:form id="form1">
+        <apex:stylesheet value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/APL/css/dataTables2.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/css/flexselect.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/APL/js/jquery-1.6.2.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/Translation/js/jquery.dataTables.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/Translation/js/jquery.flexselect.js')}"/>
+        <style>         
+            .activeTab {background-color: #1797C0; color:white; background-image:none; font-size:12px}   
+            .inactiveTab {background-color: #1797C0; color:black; background-image:none; font-size:12px}  
+            .customPopup
+            {
+                background-color: #B0BFD2;
+                border-style: solid;
+                border-width: 1px;
+                left: 45%;
+                padding:4px;
+                position: absolute;
+                z-index: 9999;
+                width: 20%;
+                //margin-left: -250px;
+                //top:20%;
+                opacity:10;
+            }
+            
+            .dwrap:after {
+                content:url("{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/images/SearchIcon.png')}");
+                    position: relative;
+                    margin-left: -28px;
+                    pointer-events: none;
+                    top: 5px;
+            }
+        </style>
+        <script type="text/javascript">
+            function dummeyMethod()
+            {
+                 performSearch();
+                return;
+            }
+        
+            function loadJSComponents()
+            {
+                oTable = $('.testing').dataTable({                  
+                    "sPaginationType": "full_numbers", "bRetrieve": true,
+                    "aoColumns": [{ "bSortable": false }, { "bSortable": true }, { "bSortable": false }]
+                });
+                oTable.fnSort( [ [1,'asc'] ] );
+                var applyTxt = "{!TAG019}";
+                $(".dataTables_filter label input:text").attr("id", "myelect");
+                var inputTxtVal = $(".dataTables_filter label input:text").attr("value", applyTxt);
+                var inputBoxVal = inputTxtVal.val();
+                searchInput = $('.dataTables_filter label input:text');
+                searchDefault = inputBoxVal;
+                searchInput.click(function () {
+                    if($(this).val() == searchDefault)
+                        $(this).val('');
+                });
+                searchInput.blur(function () {
+                    if($(this).val() == '')
+                        $(this).val(searchDefault);
+                });
+                $("select.flexselect").flexselect();
+                
+                $("select[name='page1:form1:pgBlock:j_id9:j_id28:j_id31:lstProcess']").nextUntil("div[id='page1:form1:pgBlock:pgBlckSecTags']").wrapAll('<div class="dwrap" />'); 
+            }
+            function loadTags()
+            {
+                var txtt = "{!$Label.svmxc__COMM001_TAG031}";
+                var showingTxt = "{!$Label.svmxc__COMM001_TAG032}";
+                var toTxt = "-";
+                var ofTxt = "/";
+                var entriesTxt = "{!$Label.svmxc__COMM001_TAG033}";
+                var noDataTable = "";
+                $("#showLang").text(txtt);
+                $("#showingTxt").text(showingTxt);
+                $("#toTxt").text(toTxt);
+                $("#ofTxt").text(ofTxt);
+                $("#entriesTxt").text(entriesTxt);
+                $("#entries2").text(entriesTxt);
+                $(".first.paginate_button.paginate_button_disabled").text("{!$Label.svmxc__COMM001_TAG024}");
+                $(".previous.paginate_button.paginate_button_disabled").text("{!$Label.svmxc__COMM001_TAG026}");
+                $(".next.paginate_button").text("{!$Label.svmxc__COMM001_TAG025}");
+                $(".last.paginate_button").text("{!$Label.svmxc__COMM001_TAG027}");
+                $("span#noMatchingRecords").text("");
+                $("span#noDataTable").text(noDataTable);
+            }
+            loadJSComponents();
+        </script>
+        <apex:pageBlock mode="edit" title="{!TAG001}" id="pgBlock" helptitle="{!HLPTITLE}" helpurl="{!HLPURL}">
+            <apex:actionStatus id="LodingStatus" startText="{!TAG012}"/>
+            <apex:actionFunction id="onChngProcessType" name="onChngProcessType" reRender="pgBlock" action="{!onChngProcessType}" status="LodingStatus"/>
+            <apex:actionFunction id="onChngLanguage" name="onChngLanguage" reRender="pgBlock" action="{!onChngLanguage}" status="LodingStatus"/>
+            <apex:actionFunction id="onChngProcess" name="onChngProcess" reRender="pgBlock" action="{!onChngProcess}" status="LodingStatus"/>
+            <apex:actionFunction id="performSearch" name="performSearch" reRender="pgBlock" action="{!performSearch}" status="LodingStatus"/>
+           <apex:pageBlockButtons Location="Top">
+                <apex:commandButton action="{!performSearch}" value="{!TAG021}" reRender="pgBlock" status="LodingStatus"/>
+                <apex:commandButton value="{!TAG002}" action="{!BackToSetupHome}" status="LodingStatus"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem dataStyle="text-align:left;">
+                    <apex:pageBlockSection columns="1">
+                        <apex:outputtext value="{!TAG006}" style="font-Size:12px;"/>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection columns="1">
+                        <apex:outputPanel layout="block" styleClass="requiredInput">
+                        <apex:outputPanel layout="block" styleClass="requiredBlock"/>
+                        <apex:selectList value="{!selectedLanguage}" size="1" onChange="onChngLanguage()" style="width:250px">
+                            <apex:selectOptions value="{!lstSOLanguage}"/>
+                        </apex:selectList>
+                         </apex:outputPanel>
+                    </apex:pageBlockSection>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem dataStyle="text-align:left;">
+                    <apex:pageBlockSection columns="1">
+                        <apex:outputtext value="{!TAG020}" style="font-Size:12px;"/>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection columns="1">
+                        <apex:inputText id="searchId" value="{!strSearchKeyword}" style="width: 250px;" onkeydown="if(event.keyCode==13){this.blur(); dummeyMethod()}"/>
+                    </apex:pageBlockSection> 
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem dataStyle="text-align:left;">
+                    <apex:pageBlockSection columns="1">
+                        <apex:outputtext value="{!TAG003}" style="font-Size:12px;"/>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection columns="1">
+                        <apex:selectList value="{!selectedProType}" size="1" onChange="onChngProcessType()" style="width:250px">
+                            <apex:selectOptions value="{!lstSOProcessType}"/>
+                        </apex:selectList>
+                    </apex:pageBlockSection>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem dataStyle="text-align:left;"  rendered="{!isRenderProcesses}">
+                    <apex:pageBlockSection columns="1">
+                        <apex:outputtext value="{!TAG018}" style="font-Size:12px;"/>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockSection columns="1">
+                        <apex:selectList id="lstProcess" styleClass="flexselect" value="{!selectedProcess}" size="1" onChange="onChngProcess()" style="width:250px">
+                            <apex:selectOptions value="{!lstSOProcesses}"/>
+                        </apex:selectList>
+                    </apex:pageBlockSection>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection id="pgBlckSecTags" dir="LTR" columns="1" collapsible="false">
+                <apex:pageMessages rendered="true" id="pgMsg"></apex:pageMessages>
+                <apex:outputPanel id="ServicesPopUp" styleClass="customPopup" rendered="{!isRenderPOPUP}">
+                    <apex:pageBlock >
+                        <apex:actionStatus id="LodingStatusPopUp" startText="{!TAG012}"/>
+                        <div style="text-align: center;">
+                            <apex:outputText value="{!TAG022}" style="font-size: 12px;font-weight: bold;"/> <br/><br/>
+                            <apex:commandButton value="{!TAG023}" action="{!POPUP_YES}" status="LodingStatusPopUp" reRender="form1"/>&nbsp;&nbsp;
+                            <apex:commandButton value="{!TAG024}" action="{!POPUP_NO}" status="LodingStatusPopUp" reRender="form1"/>&nbsp;&nbsp;
+                            <apex:commandButton value="{!TAG025}" action="{!POPUP_CANCEL}" status="LodingStatusPopUp" reRender="form1"/>
+                        </div>
+                    </apex:pageBlock>
+                </apex:outputPanel>
+                
+                <apex:pageBlock id="pgBlckTag" mode="edit" rendered="true">
+                    <apex:pageBlockButtons Location="Top">
+                        <apex:commandButton value="{!TAG014}" action="{!saveTranslations}" status="LodingStatus" reRender="pgBlckSecTags"/>
+                        <apex:commandButton value="{!TAG015}" action="{!copyMaster}" status="LodingStatus" reRender="form1"/>
+                        <apex:commandButton value="{!TAG016}" action="{!resetText}" status="LodingStatus" reRender="pgBlckSecTags"/>
+                    </apex:pageBlockButtons>
+                    
+                    <script type="text/javascript">
+                        loadJSComponents();
+                        var selectInstance = $( "select[name='page1:form1:pgBlock:pgBlckSecTags:pgBlckTag:table11_length']" );
+                        selectInstance.bind('click', function(event){loadTags();});
+                        $("span").bind('click', function(event){loadTags();});
+                        loadTags();
+                    </script>
+                    <apex:pageblockTable value="{!lstTagsWrapper}" id="table11" var="SVMXTag" styleClass="testing">
+                        
+                        <apex:column style="width:15%" >
+                            <apex:facet name="header">{!TAG026}</apex:facet>
+                            <apex:outputText value="{!SVMXTag.SVMXMasterTag.SVMXC__Tag_Context__c}" escape="false"> 
+                            </apex:outputText>
+                        </apex:column>
+                        <apex:column style="width:45%">
+                            <apex:facet name="header">{!TAG004}</apex:facet>
+                            <apex:outputText value="{!SVMXTag.SVMXMasterTag.SVMXC__Tag_Value__c}" style="width:96%"/>
+                        </apex:column>
+                        <apex:column style="width:45%">
+                            <apex:facet name="header">{!TAG005}</apex:facet>
+                            <apex:inputTextArea rows="3" value="{!SVMXTag.TranslatedTag.SVMXC__Tag_Value__c}" style="width:96%"/>
+                        </apex:column>
+                    </apex:pageblockTable>
+                </apex:pageBlock>
+            </apex:pageBlockSection>
+            
+            <script type="text/javascript">
+                var selectInstance = $( "select[name='page1:form1:pgBlock:pgBlckSecTags:pgBlckTag:table11_length']" );
+                selectInstance.bind('click', function(event){loadTags();});
+                $("span").bind('click', function(event){loadTags();});
+                loadTags();
+            </script>
+        </apex:pageBlock>
+        <script type="text/javascript">
+            loadJSComponents();
+            var selectInstance = $( "select[name='page1:form1:pgBlock:pgBlckSecTags:pgBlckTag:table11_length']" );
+            selectInstance.bind('click', function(event){loadTags();});
+            $("span").bind('click', function(event){loadTags();});
+            loadTags();
+        </script>
+    </apex:form>
+</apex:page>

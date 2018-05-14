@@ -1,0 +1,3 @@
+<apex:page standardController="SVMXC__Site__c" sidebar="false">
+   <c:SFM_Wizard recordId="{!SVMXC__Site__c.Id}" />
+</apex:page>

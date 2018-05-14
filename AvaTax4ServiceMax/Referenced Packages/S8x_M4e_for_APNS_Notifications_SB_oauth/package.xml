@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>S8x_M4e_for_APNS_Notifications_SB_oauth</fullName>
+    <apiAccessLevel>Unrestricted</apiAccessLevel>
+    <modules>
+        <module>
+            <label>S8x_M4e_for_APNS_Notifications_SB_oauth</label>
+            <moduleDependencies>
+                <moduleRef>
+                    <name>S8x_M4e_for_A2S_N11s_SB_o3h_m4e_app_d4l</name>
+                    <namespacePrefix>SVMXC</namespacePrefix>
+                    <version>82.0</version>
+                </moduleRef>
+                <moduleRef>
+                    <name>S8x_M4e_for_A2S_N11s_SB_oauth_apple</name>
+                    <namespacePrefix>SVMXC</namespacePrefix>
+                    <version>82.0</version>
+                </moduleRef>
+            </moduleDependencies>
+            <moduleType>connected</moduleType>
+            <name>S8x_M4e_for_APNS_Notifications_SB_oauth</name>
+            <types>
+                <members>S8x_M4e_for_APNS_Notifications_SB_oauth_devConfig</members>
+                <name>ConnectivityDevConfigMetadata</name>
+            </types>
+            <types>
+                <members>SVMXC__S8x_M4e_for_APNS_Notifications_SB_oauth</members>
+                <name>Module</name>
+            </types>
+            <version>82.0</version>
+        </module>
+    </modules>
+    <namespacePrefix>SVMXC</namespacePrefix>
+    <version>31.0</version>
+</Package>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ReportType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <baseObject>SVMX_Job_Logs__c</baseObject>
+    <category>other</category>
+    <deployed>true</deployed>
+    <description>Allows you to create mobile app synchronization status and performance reports with information from ServiceMax Job Log object.</description>
+    <label>Sync Reports</label>
+    <sections>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Code Execution Time</displayNameOverride>
+            <field>Apex_CPU_Time__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Sync Status</displayNameOverride>
+            <field>Call_Status__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Client_Response_Processing_Timestamp__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Client_Response_Receive_Timestamp__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Mobile Client Version</displayNameOverride>
+            <field>Client_Version__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>CreatedBy</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>CreatedDate</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Server Processing Time</displayNameOverride>
+            <field>Event_Name__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Network Latency</displayNameOverride>
+            <field>Event_Type__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>User Name</displayNameOverride>
+            <field>Group_Id__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>LastActivityDate</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>LastModifiedBy</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>LastModifiedDate</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Sync Type</displayNameOverride>
+            <field>Log_Category__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Client Processing Time</displayNameOverride>
+            <field>Log_Context__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Database Operation Time</displayNameOverride>
+            <field>Log_level__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>true</checkedByDefault>
+            <field>Name</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Sync Start Time</displayNameOverride>
+            <field>Log_Timestamp__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Total Sync Time (sec)</displayNameOverride>
+            <field>Message__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Sync Request Id</displayNameOverride>
+            <field>Operation__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Owner</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>ServiceMax Group Profile</displayNameOverride>
+            <field>Profile_Id__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Request_Received_Timestamp__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Response_Returned_Timestamp__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Id</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <displayNameOverride>Device</displayNameOverride>
+            <field>Type__c</field>
+            <table>SVMX_Job_Logs__c</table>
+        </columns>
+        <masterLabel>ServiceMax Job Logs</masterLabel>
+    </sections>
+</ReportType>

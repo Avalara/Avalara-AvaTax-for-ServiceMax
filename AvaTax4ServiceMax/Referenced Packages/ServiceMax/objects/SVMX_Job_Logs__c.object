@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>ServiceMax Job Logs</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Apex_CPU_Time__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For sync time log records, this field stores the CPU time for executing Apex code, and any processes that are called from the code, such as package code and workflows. This excludes the time spent in database for SOQL and DML operations. It is in seconds if Type is MASTER_*; milliseconds otherwise.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For sync time log records: CPU time for executing Apex code, and any processes that are called from the code like package code and workflows. This excludes the time spent in DB for SOQL &amp; DML. It is in seconds if Type is MASTER_*; milliseconds otherwise.</inlineHelpText>
+        <label>Apex CPU Time</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Call_Status__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For sync time log records, this field stores the status of the sync request: InProgress - Indicates receipt of sync request by the server; Completed / Failed - Indicates end of processing of sync request by the server.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For sync time log records, this field stores the status of the sync request: InProgress - Indicates receipt of sync request by the server; Completed / Failed - Indicates end of processing of sync request by the server.</inlineHelpText>
+        <label>Call Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>InProgress</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Completed</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Failed</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Client_Response_Processing_Timestamp__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For sync time log records, this field stores the date time at which the processing of sync response from server was completed by the client app.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For sync time log records, this field stores the date time at which the processing of sync response from server was completed by the client app.</inlineHelpText>
+        <label>Client Response Processing Timestamp</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Client_Response_Receive_Timestamp__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For sync time log records, this field stores the date time at which sync response from server was received by the client app.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For sync time log records, this field stores the date time at which sync response from server was received by the client app.</inlineHelpText>
+        <label>Client Response Receive Timestamp</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Client_Version__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For sync time log records, this field stores the version number of mobile client application that initiated the sync request.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For sync time log records, this field stores the version number of mobile client application that initiated the sync request.</inlineHelpText>
+        <label>Client Version</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Event_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For master records (Type = MASTER_*), server processing time in seconds, with the value calculated using this formula: Response Returned Timestamp - Request Received Timestamp. For other sync time log records, it identifies the sync request purpose (for example,  VALIDATE_PROFILE, MOBILE_DEVICE_TAGS, and so on).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For master records (Type = MASTER_*), server processing time in seconds: Response Returned Timestamp - Request Received Timestamp. For other sync time log records, it identifies the sync request purpose (e.g.:  VALIDATE_PROFILE, MOBILE_DEVICE_TAGS).</inlineHelpText>
+        <label>Event Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Event_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For master records (Type = MASTER_*) total network latency in seconds, with the value calculated using this formula: (Request Received Timestamp - Log Timestamp) + (Client Response Receive Timestamp - Response Returned Timestamp). For other sync time log records, it identifies the sync request type (SYNC / META_SYNC).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If Type = MASTER_*, network latency in seconds: (Request Received Timestamp - Log Timestamp) + (Client Response Receive Timestamp - Response Returned Timestamp). For other sync time log records, it identifies the sync request type (SYNC / META_SYNC).</inlineHelpText>
+        <label>Event Type</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Group_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For master records (Type = MASTER_*):  Full Name of the mobile client user who initiated the sync request from the client app. For other sync time log records: User&apos;s Salesforce Record Id.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For master records (Type = MASTER_*):  Full Name of the mobile client user who initiated the sync request from the client app. For other sync time log records: User&apos;s Salesforce Record Id.</inlineHelpText>
+        <label>Group Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Log_Category__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For sync time log records, it indicates the type of sync operation initiated by the mobile user (INITIAL SYNC, INCREMENTAL DATA SYNC, CONFIG SYNC, SFM SEARCH). For logs pushed by client app, it is the log category (Application Level/Performance Level).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For sync time log records, it indicates the type of sync operation initiated by the mobile user (INITIAL SYNC, INCREMENTAL DATA SYNC, CONFIG SYNC, SFM SEARCH). For logs pushed by client app, it is the log category (Application Level/Performance Level).</inlineHelpText>
+        <label>Log Category</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Application Level</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Performance Level</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>GET PRICE SYNC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>CONFIG SYNC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>INITIAL SYNC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>INCREMENTAL DATA SYNC</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>SFM SEARCH</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Log_Context__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For sync time log records, it is the time taken by the client app to process sync response, with the value calculated using this formula: Client Response Processing Timestamp - Client Response Receive Timestamp.  It is in seconds if Type is MASTER_*; milliseconds otherwise.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For sync time log records, it is the time taken by the client app to process sync response: Client Response Processing Timestamp - Client Response Receive Timestamp.  It is in seconds if Type is MASTER_*; milliseconds otherwise.</inlineHelpText>
+        <label>Log Context</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Log_Timestamp__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For sync time log records, it is the date and time at which sync request  was initiated by the client app.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For sync time log records, it is the date and time at which sync request  was initiated by the client app.</inlineHelpText>
+        <label>Log Timestamp</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Log_level__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For master records (Type = MASTER_*), it is the time taken in seconds for database operations in server, with the value calculated using this formula: Server Processing Time - Code Execution Time.  For logs pushed by client app, it is the the level (1/2/3) of log message. Messages with level 3 are logged when the client app log level is Verbose. Level 2 messages are logged for the log level Warning. Level 1 messages are logged for the log level Error.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For master records (Type = MASTER_*), it is the time taken in seconds for DB operations in server: Server Processing Time - Code Execution Time.  For logs pushed by client app, it is the the level (1/2/3) of log message (3 logged when level is verbose).</inlineHelpText>
+        <label>Log level</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Message__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For master records (Type = MASTER_*), it is the total time taken in seconds for a sync request (e.g. for INITIAL SYNC, CONFIG SYNC, and so on), with the value calculated using this formula: Client Response Processing Timestamp of the last web service call for the sync request - Sync Start Time of the first web service call for the sync request. This value gets updated when the sync is in progress, with every web service call. For logs pushed by client app, this is the log message. This is technical and is meant for troubleshooting by ServiceMax.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For master records (Type = MASTER_*), time taken in seconds for a sync request (e.g. INITIAL SYNC, CONFIG SYNC): Client Response Processing Timestamp of last WS call - Log Timestamp of first WS call. For logs pushed by client app, this is the log message.</inlineHelpText>
+        <label>Message</label>
+        <length>32000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Operation__c</fullName>
+        <deprecated>false</deprecated>
+        <description>For sync time log records, it is the unique request id for a specific sync call (such as INITIAL SYNC, INCREMENTAL DATA SYNC, or CONFIG SYNC) made by a client app.
+For logs pushed by client app, it is a string which indicates the operation executed by the client code. This is technical and is meant for troubleshooting by ServiceMax.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>For sync time log records, it is the unique request id for a specific sync call (such as INITIAL SYNC, INCREMENTAL DATA SYNC, or CONFIG SYNC) made by a client app.
+For logs pushed by client app, it indicates the operation executed by the client code.</inlineHelpText>
+        <label>Operation</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Profile_Id__c</fullName>
+        <deprecated>false</deprecated>
+        <description>If Type = MASTER_*:  Profile Name of the ServiceMax Group Profile of mobile user. For other sync time log records: Salesforce Record Id of the ServiceMax Group Profile of mobile user. For logs pushed by client app: Mobile user&apos;s Salesforce Record Id.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If Type = MASTER_*:  Profile Name of the ServiceMax Group Profile of mobile user. For other sync time log records: Salesforce Record Id of the ServiceMax Group Profile of mobile user. For logs pushed by client app: Mobile user&apos;s Salesforce Record Id.</inlineHelpText>
+        <label>Profile Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Request_Received_Timestamp__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Date time at which a sync request from a client app is received by the server.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date time at which a sync request from a client app is received by the server.</inlineHelpText>
+        <label>Request Received Timestamp</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Response_Returned_Timestamp__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Date time at which server initiates the response to a sync request from the client app.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date time at which server initiates the response to a sync request from the client app.</inlineHelpText>
+        <label>Response Returned Timestamp</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Stores the name of the device that initiated the sync request. In master sync time log records which store cumulative durations, the device name is stored with the prefix MASTER_.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Stores the name of the device that initiated the sync request. In master sync time log records which store cumulative durations, the device name is stored with the prefix MASTER_.</inlineHelpText>
+        <label>Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>OptiMax</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>iPhone</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>iPad</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>ServicePower</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MASTER_IPAD</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MASTER_IPHONE</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MASTER_MFL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MASTER_ANDROID</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>MFL</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>ANDROID</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>ServiceMax Job Log</label>
+    <nameField>
+        <label>Log Name</label>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>ServiceMax Job Logs</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Log_level__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Log_Timestamp__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Operation__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Message__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Log_level__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Operation__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Log_Timestamp__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Message__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Log_level__c</searchFilterFields>
+        <searchFilterFields>Operation__c</searchFilterFields>
+        <searchFilterFields>Log_Timestamp__c</searchFilterFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

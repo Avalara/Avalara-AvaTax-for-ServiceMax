@@ -1,0 +1,2 @@
+<apex:page standardController="AvaTaxConfiguration__c" extensions="AvaTestConnect" action="{!TestConnection}" >
+</apex:page>

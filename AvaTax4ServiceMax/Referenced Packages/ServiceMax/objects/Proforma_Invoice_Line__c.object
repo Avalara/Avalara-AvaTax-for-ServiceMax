@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>SVMX_LaunchHelp</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Service contract/work order line billing details</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Applied_Rate_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Labor Rate type applied to this line</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Labor Rate type applied to this line</inlineHelpText>
+        <label>Applied Rate Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Flat Rate</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Per Hour</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Markup %</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Billable_Line_Price__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Billable price computed for this line item.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Billable price computed for this line item.</inlineHelpText>
+        <label>Billable Line Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Billable_Quantity__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Billable Qty computed for this line item. UOM is hours for Labor and Travel if applicable.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Billable Qty computed for this line item. UOM is hours for Labor and Travel if applicable.</inlineHelpText>
+        <label>Billable Qty</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>4</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Case__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Case for which this invoice is generated. This is a lookup to an existing salesforce case record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Case for which this invoice is generated. This is a lookup to an existing salesforce case record.</inlineHelpText>
+        <label>Case</label>
+        <referenceTo>Case</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Lines</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Covered_Locations__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Location covered under the contract being billed. This is applicable to invoices generated for Service Contracts only &amp; is a lookup to a Covered Location record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Location covered under the contract being billed. This is applicable to invoices generated for Service Contracts only &amp; is a lookup to a Covered Location record.</inlineHelpText>
+        <label>Covered Locations</label>
+        <referenceTo>Service_Contract_Sites__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Lines</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Covered_Products__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Product covered under the contract being billed. This is applicable to invoices generated for Service Contracts only &amp; is a lookup to a Covered Product record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Product covered under the contract being billed. This is applicable to invoices generated for Service Contracts only &amp; is a lookup to a Covered Product record.</inlineHelpText>
+        <label>Covered Products</label>
+        <referenceTo>Service_Contract_Products__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Lines</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Discount__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Percentage of discount applied to this line item.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Percentage of discount applied to this line item.</inlineHelpText>
+        <label>Discount %</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Expense_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>List of Expenses commonly incurred.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>List of Expenses commonly incurred.</inlineHelpText>
+        <label>Expense Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Airfare</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Entertainment</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Food - Breakfast</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Food - Dinner</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Food - Lunch</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Gas</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Lodging</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Mileage</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Miscellaneous</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Parking</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Parts</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Phone</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Rental Car</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Tolls</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Included_Services__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Services covered under the contract being billed. This is applicable to invoices generated for Service Contracts only &amp; is a lookup to a Included Service record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Services covered under the contract being billed. This is applicable to invoices generated for Service Contracts only &amp; is a lookup to a Included Service record.</inlineHelpText>
+        <label>Included Services</label>
+        <referenceTo>Service_Contract_Services__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Lines</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Installed_Product__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Installed Product</label>
+        <referenceTo>Installed_Product__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Lines</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Is_Billable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Billable indicator. This will be false if this line item is not being billed to customer.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Billable indicator. This will be false if this line item is not being billed to customer.</inlineHelpText>
+        <label>Is Billable</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Line_Notes__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Information about the pricing rules applied to this line. This is updated by the Billing Engine.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Information about the pricing rules applied to this line. This is updated by the Billing Engine.</inlineHelpText>
+        <label>Line Notes</label>
+        <length>32000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Line_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Parts</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Labor</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Expenses</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Travel</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Covered Product</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Covered Location</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Included Service</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Location__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Location</label>
+        <referenceTo>Site__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Lines</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>PM_Offering__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>PM&apos;s offered under the contract being billed. This is applicable to invoices generated for Service Contracts only &amp; is a lookup to a PM Offering record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>PM&apos;s offered under the contract being billed. This is applicable to invoices generated for Service Contracts only &amp; is a lookup to a PM Offering record.</inlineHelpText>
+        <label>PM Offering</label>
+        <referenceTo>PM_Offering__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Lines</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Price__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Price per unit of Part, Labor, Travel or Expense.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Price per unit of Part, Labor, Travel or Expense.</inlineHelpText>
+        <label>Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Product__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Part used in this Work order. This is a lookup to an existing product record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Part used in this Work order. This is a lookup to an existing product record.</inlineHelpText>
+        <label>Product</label>
+        <referenceTo>Product2</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Line</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Proforma_Invoice_Detail__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Invoice under which this line is billed. This is a lookup to an existing Proforma Invoice Detail record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Invoice under which this line is billed. This is a lookup to an existing Proforma Invoice Detail record.</inlineHelpText>
+        <label>Invoice Detail</label>
+        <referenceTo>Proforma_Invoice_Detail__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Line</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Proforma_Invoice__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Document under which this invoice is consolidated. This is a lookup to an existing Proforma Invoice record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Document under which this invoice is consolidated. This is a lookup to an existing Proforma Invoice record.</inlineHelpText>
+        <label>Proforma Invoice</label>
+        <referenceTo>Proforma_Invoice__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Lines</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Quantity__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Actual quantity of Parts, Labor, Travel or Expense incurred for this line. UOM for Labor and Travel (if applicable) will be in hours.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Actual quantity of Parts, Labor, Travel or Expense incurred for this line. UOM for Labor and Travel (if applicable) will be in hours.</inlineHelpText>
+        <label>Quantity</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>4</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Service_Contract__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Service Contract</label>
+        <referenceTo>Service_Contract__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Line</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Time_Tracker__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Link to labor line recorded on Case.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Link to labor line recorded on Case.</inlineHelpText>
+        <label>Time Tracker</label>
+        <referenceTo>Time_Tracker__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Lines</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Total_Line_Price__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Total price for this line before any contract adjustments/discounts are applied.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Total price for this line before any contract adjustments/discounts are applied.</inlineHelpText>
+        <label>Total Line Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Work_Details__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Work Detail corresponding to this Line entry. This is a lookup to an existing Work detail record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Work Detail corresponding to this Line entry. This is a lookup to an existing Work detail record.</inlineHelpText>
+        <label>Work Details</label>
+        <referenceTo>Service_Order_Line__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Lines</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Work_Order__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Work order for which this invoice is generated. This is a lookup to an existing Work order record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Work order for which this invoice is generated. This is a lookup to an existing Work order record.</inlineHelpText>
+        <label>Work Order</label>
+        <referenceTo>Service_Order__c</referenceTo>
+        <relationshipLabel>Proforma Invoice Lines</relationshipLabel>
+        <relationshipName>Proforma_Invoice_Line</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>Proforma Invoice Line</label>
+    <nameField>
+        <displayFormat>{0000000000}</displayFormat>
+        <label>Record Number</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Proforma Invoice Lines</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

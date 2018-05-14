@@ -1,0 +1,267 @@
+<apex:page id="IBTREE" standardcontroller="SVMXC__Installed_Product__c" extensions="SVMXC.IPRD_IBTree" showHeader="false" sidebar="false">
+    
+    <link rel="STYLESHEET" type="text/css" href="{!URLFOR($Resource.SVMX_GridTree, 'ext-4.2.1.883/ext-all.css')}"/> 
+    <link rel="STYLESHEET" type="text/css" href="{!URLFOR($Resource.SVMX_GridTree, 'ext-4.2.1.883/ext-theme-classic/ext-theme-classic-all.css')}"/> 
+    <script src="{!URLFOR($Resource.SVMX_GridTree, 'ext-4.2.1.883/ext-all.js')}" type="text/javascript"></script>   
+    
+    <style type="text/css">
+        .customPopup{
+            background-color: white;
+            border-style: solid;
+            border-width: 2px;
+            left: 30%;
+            padding:10px;
+            position: absolute;
+            z-index: 999;
+            /* These are the 3 css properties you will need to tweak so the popup displays in the center of the screen. First set the width. Then set            margin-left to negative half of what the width is. You can also add            the height property for a fixed size pop up.*/
+            width: 630px;
+            margin-left: -250px;
+            top:0px;
+        }
+    </style> 
+    
+    <script>
+        var isSet = 'false';
+        var IBID = '{!JSENCODE(IBID)}';
+    </script>
+    
+    <apex:form >
+        <apex:outputPanel id="treeGrid">
+            <apex:pageMessages rendered="{!NOT(isDisplayPopup)}" showDetail="false" /> 
+            <apex:inputHidden id="SelectedFields" value="{!strSelectedFields}"/>
+            <apex:actionFunction name="LoadCookie" action="{!loadCookie}" reRender="treeGrid"/>
+            
+            <div id="IBTreeGrid"></div>
+            <br/>
+            <input type="button" value="{!TAG017}" style="height:22px;width:120px;" onclick="ShowPopUp();"/>    
+
+            <script>
+                var columnNames = '{!JSENCODE(strColumnNames)}';
+                var columnLabels = '{!JSENCODE(strColumnLabels)}';
+                var JSONString = '{!JSENCODE(strTreeData)}';
+                var errorMessage = '{!JSENCODE(strErrorMessage)}';
+                var strCommunityName = '{!JSENCODE(strCommunityName)}';
+                var selectedFields = document.getElementById("{!$Component.SelectedFields}");
+
+                function loadTree(){
+
+                    var treeFields = [];
+                    var treeColumns = [];
+                    
+                    var lstColumnName = JSON.parse(columnNames);
+                    var lstColumnLabel = JSON.parse(columnLabels);
+                    
+                    treeFields.push("Installed_Product");
+                    treeColumns.push({
+                        xtype: 'treecolumn',
+                        text: "{!$ObjectType.SVMXC__Installed_Product__c.Label}",
+                        dataIndex: 'Installed_Product',
+                        width: 300,
+                        renderer: renderIcon,
+                        hideable: false,
+                        draggable: false,
+                        //sortable:false
+                    });
+                    
+                    for(var ind=0; lstColumnName[ind] != undefined; ind++){
+                        
+                        treeFields.push(lstColumnName[ind]);
+                        treeColumns.push({
+                            text: lstColumnLabel[ind],
+                            dataIndex: lstColumnName[ind],
+                            width: 100,
+                            hideable: false,
+                            draggable: false,
+                            //sortable:false
+                        });
+                    }
+                    
+                    if(strCommunityName != ''){
+                        strCommunityName += '/';
+                    }
+
+                    function renderIcon(val) {
+                    
+                        var res = val.split("^");
+                        return '<a href="'+ strCommunityName + res[1]+'" target="_blank"> '+res[0]+'</a>';
+                    }
+
+                    buildTree(JSON.parse(JSONString));
+                    
+                    Ext.require([
+                        'Ext.data.*',
+                        'Ext.grid.*',
+                        'Ext.tree.*'
+                    ]);
+                            
+                    Ext.onReady(function() {
+
+                        var tree = Ext.create('Ext.tree.Panel', {
+                            renderTo: 'IBTreeGrid',
+                            height: 280,
+                            fields: treeFields,
+                            columns: treeColumns,
+                            root: treeData,
+                            rootVisible: true,
+                        });
+                    });
+                }
+            
+                var treeData = {};
+                var mapInstalledBase = {};
+                var mapParrentChild = {};
+
+                function buildTree(lstInstalledBase){
+
+                    var topLevelId = "";
+                    for(var key in lstInstalledBase){
+                        
+                        var objIB = lstInstalledBase[key];
+                        if(!objIB.SVMXC__Parent__c){
+                            topLevelId = objIB.Id;
+                        }
+                        if(!mapParrentChild[objIB.SVMXC__Parent__c]){
+                            mapParrentChild[objIB.SVMXC__Parent__c] = [];
+                        }
+                        mapParrentChild[objIB.SVMXC__Parent__c].push(objIB.Id);
+                        mapInstalledBase[objIB.Id] = objIB;
+                    }
+                    treeData = getXMLResult(topLevelId);
+                }
+
+                function getXMLResult(parentID){
+                
+                    var objIB = mapInstalledBase[parentID];
+                    var lstChild = mapParrentChild[parentID];
+
+                    objIB["children"] =[];
+                    objIB["expanded"] = true;
+                    objIB["Installed_Product"] = objIB.Name.replace(/\^/g,'&#94;') + "^/" + objIB.Id;
+
+                    if(objIB.Id.match(IBID)){
+                        objIB["iconCls"] = "x-tree-icon-currentrecord"; 
+                    }
+
+                    if(lstChild != undefined){
+                    
+                        for(ind in lstChild){
+        
+                            var childIB = getXMLResult(lstChild[ind]);
+                            objIB["children"].push(childIB);
+                        }
+                    }
+                    else{
+                        objIB["leaf"] = true;
+                    }
+                    return objIB;
+                }
+                
+                function setCookie( cookieName, cookieValue, lifeTime, path, domain, isSecure ){
+                
+                    var date = new Date();
+                    date.setTime(date.getTime()+(lifeTime*24*60*60*1000));
+                    var expires = "; expires=" + date.toGMTString();
+                    document.cookie = cookieName + "=" + cookieValue+expires+"; path=/";
+                }
+                
+                function retrieveCookie( cookieName ){
+                
+                    var cookieJar = document.cookie.split( "; " );
+                    for( var x = 0; x < cookieJar.length; x++ ){
+                    
+                        var oneCookie = cookieJar[x].split( "=" );
+                        if( oneCookie[0] == escape( cookieName ) ){
+                        
+                            if(oneCookie[1]!=""){
+                                selectedFields.value = oneCookie[1];
+                                break;
+                            }
+                        }
+                    }
+                    LoadCookie();
+                }   
+                
+                if(isSet == true){
+                
+                    if(errorMessage == ''){
+                    
+                        setCookie( 'SVMXIBTree', selectedFields.value, 50, '', false);
+                        loadTree();
+                    }
+                    else{
+                        document.getElementById('IBTreeGrid').style.display="none";
+                        alert(errorMessage);
+                    }
+                }
+                
+                window.onload = function(){
+                    
+                    if(errorMessage == ''){
+
+                        isSet = true;
+                        retrieveCookie('SVMXIBTree');
+                    }
+                    else{
+                        document.getElementById('IBTreeGrid').style.display="none";
+                        alert(errorMessage);
+                    }
+                }
+            </script>
+        </apex:outputPanel>
+    </apex:form>
+
+    <apex:form id="IBList">
+        <apex:outputPanel styleClass="customPopup" layout="block" rendered="{!isDisplayPopup}"> 
+        <apex:pageBlock id="IBFieldList">
+                <apex:pageMessages rendered="true" showDetail="false" /> 
+                <apex:pageBlockSection title="{!TAG001}" columns="1" collapsible="false">
+                <apex:actionStatus id="LodingPPStatus"  startText="{!TAG008}" />
+                    <apex:pageBlockSectionItem dataStyleClass="centerTA"   labelStyleClass="centerTA" >
+                            <apex:panelGrid cellpadding="0" cellspacing="0" columns="2" border="0" rowClasses="line" >
+                                <apex:outputText > 
+                                   <td> 
+                                   <div><b>{!TAG005}</b></div>
+                                   <apex:selectList title="{!TAG005}" value="{!AFields}" size="8" id="AFields" multiselect="true" style="width:250px" >
+                                   <apex:selectOptions value="{!AvailFields}" />
+                                   </apex:selectList>
+                                   </td> 
+                                      <td style="width:17px;height:100%;vertical-align:middle">
+                                      <apex:panelGrid cellspacing="7" cellpadding="0" width="40%" columns="1" style="text-align: center;">
+                                          <div>
+                                              <apex:commandButton action="{!OnAddFields}" id="Add" rerender="IBFieldList" style="width:18px;height:18px;background:white" image="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/images/Arrow_Right_Bttn.JPG')}" alt="{!TAG003}" title="{!TAG003}" status="LodingPPStatus"/>
+                                              <apex:commandButton action="{!onRemFields}" id="remove" rerender="IBFieldList" style="width:18px;height:18px;background:white" image="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/images/Arrow_Left_Bttn.JPG')}" alt="{!TAG004}" title="{!TAG004}" status="LodingPPStatus"/>
+                                          </div>
+                                      </apex:panelGrid> 
+                                      </td>
+                                   <td>
+                                   <div><b>{!TAG006}</b></div>
+                                   <apex:selectList title="{!TAG006}" value="{!SFields}" size="8" id="SFields" multiselect="true" style="width:250px">
+                                   <apex:selectOptions value="{!SelectedFields}" />
+                                   </apex:selectList>
+                                   </td>
+                                   <td style="width:17px;height:100%;vertical-align:middle"> 
+                                     <apex:panelGrid cellspacing="7" cellpadding="0" width="40%" columns="1" style="text-align: center;">
+                                    
+                                        <div>
+                                        <apex:commandButton action="{!Top}" id="top" rerender="IBFieldList" style="width:18px;height:18px;background:white" image="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/images/Top_Bttn.JPG')}" alt="TOP" title="top" status="LodingPPStatus"/>
+                                        <apex:commandButton action="{!Up}" id="up" rerender="IBFieldList" style="width:18px;height:18px;background:white" image="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/images/Up_Bttn.JPG')}" alt="UP" title="up" status="LodingPPStatus"/>
+                                        <apex:commandButton action="{!Down}" id="down" rerender="IBFieldList" style="width:18px;height:18px;background:white" image="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/images/Down_Bttn.JPG')}" alt="DOWN" title="down" status="LodingPPStatus"/>
+                                        <apex:commandButton action="{!Bottom}" id="Bottom" rerender="IBFieldList" style="width:18px;height:18px;background:white" image="{!URLFOR($Resource.SVMXC__SVMXC_resources, 'SVMXC_resources/images/Bottom_Bttn.JPG')}" alt="BOTTOM" title="bottom" status="LodingPPStatus"/>
+                                        </div>
+                                    </apex:panelGrid>
+                                   </td>
+                                </apex:outputText> 
+                            </apex:panelGrid>
+                    </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                    <apex:pageBlockButtons location="bottom">
+                    <apex:commandButton title="{!TAG007}"  value="{!TAG007}"  action="{!SaveListPP}" reRender="treeGrid,IBList" status="LodingPPStatus"/>
+                    <apex:commandButton title="{!TAG009}"  value="{!TAG009}"  action="{!ClosePP}" reRender="IBList" status="LodingPPStatus"/>
+                    </apex:pageBlockButtons>
+        </apex:pageBlock>
+        </apex:outputPanel>
+
+        <apex:actionFunction name="ShowPopUp" action="{!ShowPopUp}" rerender="IBList" status="LodingStdStatus"/>
+        <apex:actionStatus id="LodingStdStatus"  startText="{!TAG008}" />
+    </apex:form>
+</apex:page>

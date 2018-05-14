@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Enable_Serialized_Tracking__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Flag indicates if stock information for this product is tracked at the serial number level. If this flag is checked, serial number information will be captured in all ServiceMax inventory transactions.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Flag indicates if stock information for this product is tracked at the serial number level. If this flag is checked, serial number information will be captured in all ServiceMax inventory transactions.</inlineHelpText>
+        <label>Enable Serialized Tracking of Stock</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Inherit_Parent_Warranty__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Indicates if installed products of this product inherit the parent&apos;s warranty automatically. If not, this product should be linked to a warranty template.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates if installed products of this product inherit the parent&apos;s warranty automatically. If not, this product should be linked to a warranty template.</inlineHelpText>
+        <label>Inherit Parent Warranty</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Product_Cost__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Product cost in the default currency for your organization. Used for computing inventory value in ServiceMax.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Product cost in the default currency for your organization. Used for computing inventory value in ServiceMax.</inlineHelpText>
+        <label>Product Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Product_Line__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Product Line is another way to classify your products (similar to product family). Typically Product Line applies to a broader group and product family to a specific set of products within a product line.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Product Line is another way to classify your products (similar to product family).</inlineHelpText>
+        <label>Product Line</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Accessory</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Desktop</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Laptop</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Network</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Server</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Solution</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Storage</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Software</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Product_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Picklist values here will be matched with similar field in Custom Coverage object to find applicable coverage</description>
+        <externalId>false</externalId>
+        <label>Product Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Wearable</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Consumable</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Replacement_Available__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Flag indicates if there are any replacement products defined for this product. Set automatically by Manage Replacements feature</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Flag indicates if there are any replacement products defined for this product. Set automatically by Manage Replacements feature</inlineHelpText>
+        <label>Replacement Available?</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Select__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <label>Select</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Stockable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <description>Flag indicates if this product is stockable. ServiceMax does not maintain inventory of non-stockable products.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Flag indicates if this product is stockable. ServiceMax does not maintain inventory of non-stockable products.</inlineHelpText>
+        <label>Stockable</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Tracking__c</fullName>
+        <deprecated>false</deprecated>
+        <description>If and how this product is tracked when sold to customers. Serialized products are tracked by unique serial numbers. Lot/Batch tracked items are identified by the batch or lot numbers. Non-tracked items do not have a lot or serial number.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If and how this product is tracked when sold to customers. Serialized products are tracked by unique serial numbers. Lot/Batch tracked items are identified by the batch or lot numbers. Non-tracked items do not have a lot or serial number.</inlineHelpText>
+        <label>Tracking</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Serialized</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Lot/Batch Tracked</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Non-Tracked</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Unit_Of_Measure__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Unit of measure for this product</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Unit of measure for this product</inlineHelpText>
+        <label>Unit of Measure</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Each</fullName>
+                    <default>true</default>
+                </value>
+                <value>
+                    <fullName>Gallon</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Box</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Pounds</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Liter</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Dozen</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Kilogram</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Ton</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+</CustomObject>

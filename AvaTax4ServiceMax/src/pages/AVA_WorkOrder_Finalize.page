@@ -1,0 +1,2 @@
+<apex:page standardController="SVMXC__Service_Order__c" extensions="AVA_GetTaxWorkOrder" action="{!Finalize}" >
+</apex:page>

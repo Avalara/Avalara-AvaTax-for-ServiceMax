@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CHILD_NAME</field>
+    </columns>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>Installed_Product__c.Product_Name__c</field>
+    </columns>
+    <columns>
+        <field>Installed_Product__c.Company__c</field>
+    </columns>
+    <columns>
+        <field>Installed_Product__c.Contact__c</field>
+    </columns>
+    <columns>
+        <field>Warranty__c.End_Date__c</field>
+    </columns>
+    <columns>
+        <field>CUST_OWNER_NAME</field>
+    </columns>
+    <columns>
+        <field>CHILD_LAST_UPDATE_NAME</field>
+    </columns>
+    <columns>
+        <field>CHILD_LAST_UPDATE</field>
+    </columns>
+    <crossFilters>
+        <operation>without</operation>
+        <primaryTableColumn>CUST_ID</primaryTableColumn>
+        <relatedTable>Service_Contract_Products__c</relatedTable>
+        <relatedTableJoinColumn>Installed_Product__c</relatedTableJoinColumn>
+    </crossFilters>
+    <description>Lists all product warranties that have expired in the last 4 weeks or are expiring in the next 8 weeks and have no service contract associated with them.</description>
+    <format>Tabular</format>
+    <name>Warranty Expiration Report</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntityCustomEntity$Installed_Product__c$Warranty__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Warranty__c.End_Date__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Warranty__c.End_Date__c</dateColumn>
+        <interval>INTERVAL_THISNEXTMONTH</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,658 @@
+<apex:page docType="html-5.0" controller="SVMXC.WSCH_Provider_SP_Appointments_Calendar" action="{!buildResponseData}" tabStyle="Contact">
+    <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMX_Scheduler, 'dhtmlxScheduler/codebase/dhtmlxscheduler.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SVMXC__SVMX_Scheduler, 'dhtmlxScheduler/codebase/dhtmlxscheduler.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMX_Scheduler, 'dhtmlxScheduler/codebase/ext/dhtmlxscheduler_minical.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMX_Scheduler, 'dhtmlxScheduler/codebase/ext/dhtmlxscheduler_readonly.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMX_Scheduler, 'dhtmlxScheduler/codebase/ext/dhtmlxscheduler_editors.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMX_Scheduler, 'dhtmlxScheduler/standard_codebase/dhtmlx.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SVMXC__SVMX_Scheduler, 'dhtmlxScheduler/standard_codebase/dhtmlx.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SVMXC__SVMX_Scheduler, 'dhtmlxScheduler/skins/terrace/dhtmlx.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SVMXC__SVMX_Calendar, 'dhtmlxCalendar/codebase/dhtmlxcalendar.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.SVMXC__SVMX_Calendar, 'dhtmlxCalendar/sources/dhtmlxCalendar/codebase/skins/dhtmlxcalendar_dhx_skyblue.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMX_Calendar, 'dhtmlxCalendar/codebase/dhtmlxcalendar.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.SVMXC__SVMX_Scheduler, 'dhtmlxScheduler/codebase/ext/dhtmlxscheduler_tooltip.js')}"/>
+    <!--<apex:includeScript value="{!URLFOR($Resource.SVMX_Calendar, 'dhtmlxCalendar/codebase/dhtmlxCalLang.js')}"/>-->
+    <!--<apex:includeScript value="{!URLFOR($Resource.SchedulerTranslation, 'schedulerLabels.js')}"/>-->
+    <!--<apex:includeScript value="{!URLFOR($Resource.SchedulerTranslation)}"/>-->
+    
+<apex:form id="formId">
+<style type="text/css">
+.dhx_cal_ltitle{padding-left: 150px; font-weight: bold; font-size: 17px !important;}
+.dhx_cal_ltext, .dhx_cal_template{font-size: 12px !important; overflow-x: auto; !important; overflow-y: auto; !important;}
+<!--.dhx_cal_light {height: 200px !important; width: 400px !important;}
+.dhx_cal_template{width: 400px !important;}-->
+.dhx_cal_prev_button{background-image: url({!URLFOR($Resource.SVMX_Scheduler,'dhtmlxScheduler/codebase/imgs/ar_left_dis.gif')}); !important;}
+.dhx_cal_next_button{background-image: url({!URLFOR($Resource.SVMX_Scheduler,'dhtmlxScheduler/codebase/imgs/ar_right_dis.gif')}); !important;}
+.dhx_cal_navline {background: #646466; color: #fff;}
+.dhx_cal_navline .dhx_cal_date, .dhx_cal_today_button {color: #fff !important;}
+.dhx_cal_container {background-color: #949599 !important; border-radius: 4px 4px 0 0; -moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; padding-bottom: 18px;}
+.dhx_scale_hour {display: none;}
+.dhx_scale_holder {background-image: none; border-right: 1px solid #b6b7bb;}
+.dhx_scale_bar {color: #fff; background-color: transparent; border-left: 1px solid #b6b7bb; height: 20px !important; font-size: 14px;}
+.dhx_cal_header {border: none; top: 80px !important;}
+.dhx_cal_data, .dhx_multi_day {border-top: none !important;}
+.dhx_cal_data {top: 100px !important;}
+.dhx_cal_event .dhx_body {/*border-radius: 4px;height: 162px !important;*/}
+.dhx_cal_event .dhx_title{border-width: 1px; font-size: 0px; height:10px}
+.cla-table .detailList .data2Col {padding-left: 0 !important; padding-bottom: 0 !important; padding-right: 0 !important;}
+.agreement-block .secondaryPalette {border-color: #bcbdbf !important; border-top: 1px solid #949599 !important;}
+.agreement-block .bPageBlock {background-color: #949599 !important; border-radius: 0 0 4px 4px !important; -moz-border-radius: 0 0 4px 4px !important; -webkit-border-radius: 0 0 4px 4px !important; 
+ border-bottom: 1px solid #949599 !important; border-left: 1px solid #949599 !important; border-right: 1px solid #949599 !important;}
+.agreement-block .bPageBlock .pbBody label, .dhx_mini_calendar .dhx_year_month {color: #fff}
+.agreement-block .pbBody {border-top: 1px solid #bcbdbf !important; padding-top: 10px !important;}
+.dhx_mini_calendar .dhx_year_body {padding-top: 0px; background: #fff;}
+.dhx_cal_navline div.dhx_minical_icon {left: 10px;}
+.dhx_scale_holder_now {background-image: none !important; background-color: #F6C882 !important;}
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_month_cont {background-color: #646466 !important;
+background: #646466 !important; border: 1px solid #646466 !important;}
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_month_cont ul.dhtmlxcalendar_line li.dhtmlxcalendar_cell.dhtmlxcalendar_month_hdr span.dhtmlxcalendar_month_label_month, .dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_month_cont ul.dhtmlxcalendar_line li.dhtmlxcalendar_cell.dhtmlxcalendar_month_hdr span.dhtmlxcalendar_month_label_year { color: #fff !important; }
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_days_cont ul.dhtmlxcalendar_line li,
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_dates_cont ul.dhtmlxcalendar_line li.dhtmlxcalendar_cell.dhtmlxcalendar_cell_dis,
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_dates_cont ul.dhtmlxcalendar_line li.dhtmlxcalendar_cell.dhtmlxcalendar_cell_month_weekend_dis,
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_dates_cont ul.dhtmlxcalendar_line li.dhtmlxcalendar_cell.dhtmlxcalendar_cell_month_dis,
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_dates_cont ul.dhtmlxcalendar_line li.dhtmlxcalendar_cell.dhtmlxcalendar_cell_month {background-color: #fff !important;}
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_dates_cont ul.dhtmlxcalendar_line li.dhtmlxcalendar_cell.dhtmlxcalendar_cell_month_dis {color: #000 !important}
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_dates_cont ul.dhtmlxcalendar_line li {border: 1px solid #fff !important}
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_dates_cont ul.dhtmlxcalendar_line li.dhtmlxcalendar_cell.dhtmlxcalendar_cell_month_date_hover, .dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_dates_cont ul.dhtmlxcalendar_line li.dhtmlxcalendar_cell.dhtmlxcalendar_cell_month_date {background-color: #949599 !important; border-color: #949599 !important;}
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_dates_cont ul.dhtmlxcalendar_line li.dhtmlxcalendar_cell.dhtmlxcalendar_cell_month_hover {background-color: #F1F1F1 !important;}
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_days_cont,
+.dhtmlxcalendar_dhx_skyblue div.dhtmlxcalendar_dates_cont {border-left: 1px solid #646466 !important; border-right: 1px solid #646466 !important; border-bottom: 1px solid #646466 !important;}
+</style>
+<script type="text/javascript" charset="utf-8">
+    //Load Javascript based on language of End-User
+    function loadSchedulerTranslation()
+    {
+        scheduler.locale = {
+            date:{
+            month_full: ["{!JSENCODE($Label.IPAD006_TAG006)}", "{!JSENCODE($Label.IPAD006_TAG017)}", "{!JSENCODE($Label.IPAD006_TAG018)}", "{!JSENCODE($Label.IPAD006_TAG019)}", "{!JSENCODE($Label.IPAD006_TAG020)}", "{!JSENCODE($Label.IPAD006_TAG021)}", "{!JSENCODE($Label.IPAD006_TAG022)}", "{!JSENCODE($Label.IPAD006_TAG023)}", "{!JSENCODE($Label.IPAD006_TAG024)}", "{!JSENCODE($Label.IPAD006_TAG025)}", "{!JSENCODE($Label.IPAD006_TAG026)}", "{!JSENCODE($Label.IPAD006_TAG027)}"],
+            month_short: ["{!JSENCODE($Label.IPAD006_TAG043)}", "{!JSENCODE($Label.IPAD006_TAG044)}", "{!JSENCODE($Label.IPAD006_TAG045)}", "{!JSENCODE($Label.IPAD006_TAG046)}", "{!JSENCODE($Label.IPAD006_TAG020)}", "{!JSENCODE($Label.IPAD006_TAG047)}", "{!JSENCODE($Label.IPAD006_TAG048)}", "{!JSENCODE($Label.IPAD006_TAG049)}", "{!JSENCODE($Label.IPAD006_TAG050)}", "{!JSENCODE($Label.IPAD006_TAG051)}", "{!JSENCODE($Label.IPAD006_TAG052)}", "{!JSENCODE($Label.IPAD006_TAG053)}"],
+            day_full: ["{!JSENCODE($Label.DCON003_TAG022)}", "{!JSENCODE($Label.DCON003_TAG013)}", "{!JSENCODE($Label.DCON003_TAG014)}", "{!JSENCODE($Label.DCON003_TAG015)}", "{!JSENCODE($Label.DCON003_TAG016)}", "{!JSENCODE($Label.DCON003_TAG017)}", "{!JSENCODE($Label.DCON003_TAG018)}"],
+            day_short: ["{!JSENCODE($Label.IPAD006_TAG035)}", "{!JSENCODE($Label.IPAD006_TAG029)}", "{!JSENCODE($Label.IPAD006_TAG030)}", "{!JSENCODE($Label.IPAD006_TAG031)}", "{!JSENCODE($Label.IPAD006_TAG032)}", "{!JSENCODE($Label.IPAD006_TAG033)}", "{!JSENCODE($Label.IPAD006_TAG034)}"]
+            },
+            labels:{
+                dhx_cal_today_button:"{!JSENCODE($Label.COMM001_TAG018)}",//Today
+                day_tab:"{!JSENCODE($Label.DCON003_TAG019)}",//Day
+                week_tab:"{!JSENCODE($Label.IPAD006_TAG004)}",//Week
+                month_tab:"{!JSENCODE($Label.IPAD006_TAG092)}",//Month
+                new_event:"{!JSENCODE($Label.DCON001_TAG155)}",// New Event
+                icon_save:"{!JSENCODE($Label.COMM001_TAG039)}",//Save
+                icon_cancel:"{!JSENCODE($Label.COMM001_TAG040)}",//Cancel
+                icon_details:"{!JSENCODE($Label.IPAD014_TAG036)}",//Details
+                icon_edit:"{!JSENCODE($Label.COMM001_TAG048)}",//Edit
+                icon_delete:"{!JSENCODE($Label.COMM001_TAG049)}",//Delete
+                confirm_closing:"Your changes will be lost, are your sure ?",//Your changes will be lost, are your sure ?   *#*#*#*#*#
+                confirm_deleting:"{!JSENCODE($Label.DCON001_TAG113)}",//Are you sure you want to delete this event?
+                section_description:"{!JSENCODE($Label.COMM001_TAG017)}",//Description
+                section_time:"Time Period",//Time Period *#*#*#*#*#
+                full_day:"Full Day",//Full Day *#*#*#*#*#
+
+                /*recurring events*/
+                confirm_recurring:"Do you want to edit the whole set of repeated events?",//Do you want to edit the whole set of repeated events?   *#*#*#*#*#
+                section_recurring:"Repeat event",//Repeat event *#*#*#*#*#
+                button_recurring:"{!JSENCODE($Label.DCON001_TAG209)}",//Disabled
+                button_recurring_open:"{!JSENCODE($Label.DCON001_TAG208)}",//Enabled
+                button_edit_series: "Edit series",//Edit series *#*#*#*#*#
+                button_edit_occurrence: "Edit occurrence",//Edit occurrence *#*#*#*#*#
+
+                /*agenda view extension*/
+                agenda_tab:"{!JSENCODE($Label.IPAD006_TAG041)}",//Agenda
+                date:"{!JSENCODE($Label.IPAD004_TAG018)}",//Date
+                description:"{!JSENCODE($Label.COMM001_TAG017)}",//Description
+
+                /*year view extension*/
+                year_tab:"{!JSENCODE($Label.IPAD006_TAG042)}",//Year
+
+                /* week agenda extension */
+                week_agenda_tab: "{!JSENCODE($Label.IPAD006_TAG041)}",//Agenda
+
+                /*grid view extension*/
+                grid_tab: "{!JSENCODE($Label.SLKPSC1_LAB023)}",//Grid
+
+                /* touch tooltip*/
+                drag_to_create:"Drag to create",//Drag to create    *#*#*#*#*#
+                drag_to_move:"Drag to move",//Drag to move  *#*#*#*#*#
+
+                /* dhtmlx message default buttons */
+                message_ok:"{!JSENCODE($Label.DCON001_TAG069)}",//OK
+                message_cancel:"{!JSENCODE($Label.COMM001_TAG040)}"//Cancel
+            }
+        };
+    }
+
+    //Invoke the method to add dynamic translations
+    loadSchedulerTranslation();
+</script>
+<script type="text/javascript" charset="utf-8">
+    var settingsPop;
+    var settingsForm;
+    var cancelPop;
+    var cancelForm;
+    var escalatePop;
+    var escalateForm;
+    var settings_noOfWeeks = 1;
+    var settings_hideweekends = "yes";//2015-07-15 Changed to Yes by Rejeesh
+    var settings_weekstartday = "monday";
+
+    //Method to show pop ups on button click.
+    function show_pops(button_element) {
+
+        var x = window.dhx4.absLeft(button_element);
+        var y = window.dhx4.absTop(button_element);
+        var width = button_element.offsetWidth;
+        var height = button_element.offsetHeight;
+        if(button_element.value == "{!TAG038}") {
+            settingsPop.show(x,y,width,height);
+        }
+        if(button_element.value == "{!TAG039}") {
+            cancelForm.setItemLabel("bookedTimings","{!TAG040} "+document.getElementById("{!$Component.MessagePageBlockId.bookedTimings}").value);
+            cancelForm.setItemLabel("bookedTechnician","{!TAG041} "+document.getElementById("{!$Component.MessagePageBlockId.bookedTechnician}").value);
+            cancelPop.show(x,y,width,height);
+        }
+        if(button_element.value == "{!TAG024}") {
+            escalatePop.show(x,y,width,height);
+        }
+        return false;
+    }
+
+    //Function to initialize the popups used in the page.
+    function popup_init(){
+
+        settingsPop = new dhtmlXPopup();
+        cancelPop = new dhtmlXPopup();
+        escalatePop = new dhtmlXPopup();
+
+        settingsPop.setSkin("dhx_terrace");
+        cancelPop.setSkin("dhx_terrace");
+        escalatePop.setSkin("dhx_terrace");
+
+        /*settingsForm = settingsPop.attachForm([
+            {type: "settings", position: "label-left", labelWidth: 110, inputWidth: 130},
+            {type: "label", label: "{!TAG042}", offsetLeft: 100},
+            {type: "select", label: "{!TAG043}",name: "noOfWeek", className: "settings_label", options:[
+                {value: "1", text: "{!TAG044}"},
+                {value: "2", text: "{!TAG045}"},
+                {value: "3", text: "{!TAG046}"}
+            ]},
+            {type: "label", label: "{!TAG047}", list:[
+                {type: "radio", name: "hide_weekend", value: "yes", label:"{!TAG048}"},
+                {type: "radio", name: "hide_weekend", value: "no", label:"{!TAG049}",checked:true,list:[
+                    {type: "label", label: "{!TAG050}", list:[
+                        {type: "radio", name: "weekstartday", value: "sunday", label:"{!TAG051}"},
+                        {type: "radio", name: "weekstartday", value: "monday", label:"{!TAG052}",checked:true}]}
+                ]}
+            ]},
+            {type: "button", value: "{!TAG053}", offsetLeft: 149}
+        ]);*/
+        
+        settingsForm = settingsPop.attachForm([
+            {type: "settings", position: "label-left", labelWidth: 110, inputWidth: 130},
+            {type: "label", label: "{!TAG042}", offsetLeft: 30},            
+            {type: "label", label: "{!TAG047}", list:[
+                {type: "radio", name: "hide_weekend", value: "yes", label:"{!TAG048}",checked:true},
+                {type: "radio", name: "hide_weekend", value: "no", label:"{!TAG049}"}
+            ]},
+            {type: "button", value: "{!TAG053}", offsetLeft: 149}
+        ]);
+
+        escalateForm = escalatePop.attachForm([
+            {type: "settings", position: "label-left"},
+            {type: "label", label: "{!TAG054}", offsetLeft: 60},
+            {type: "label", label: "{!TAG055}"},
+            {type: "block", width: 490, list:[
+                {type: "button",name: "cancel", value: "{!TAG056}"},
+                {type:"newcolumn"},
+                {type: "button",name: "escalate", value: "{!TAG057}",offsetLeft: 20}
+            ]}
+        ]);
+        
+        cancelForm = cancelPop.attachForm([
+           {type: "settings", position: "label-left"},
+           {type: "label", label: "{!TAG039}", offsetLeft: 120},
+           {type: "label",name: "bookedTimings"},
+           {type: "label",name: "bookedTechnician"},
+           {type: "block", width: 470, list:[
+               {type: "button",name: "keep", value: "{!TAG058}"},
+               {type:"newcolumn"},
+               {type: "button",name: "cancel", value: "{!TAG039}",offsetLeft: 20}
+           ]}
+         ]);
+                  
+        settingsForm.attachEvent("onButtonClick", function(){
+
+            //settings_noOfWeeks = parseInt(settingsForm.getItemValue("noOfWeek")); //commented as this setting is hidden from UI
+            settings_hideweekends = settingsForm.getItemValue("hide_weekend");
+            //settings_weekstartday = settingsForm.getItemValue("weekstartday");    //commented as this setting is hidden from UI
+            settingsPop.hide();
+            reset_init_settings();
+        });
+
+        escalateForm.attachEvent("onButtonClick", function(name){
+
+           if(name == "cancel") {
+               escalatePop.hide();
+           }
+
+           if(name == "escalate") {
+               escalateAppointment();
+           }
+        });
+
+        cancelForm.attachEvent("onButtonClick", function(name){
+           if(name == "keep") {
+               cancelPop.hide();
+           }
+           if(name == "cancel") {
+               cancelAppointment();
+           }
+        });
+    }
+
+   function scheduler_init() {
+       //scheduler.config.separate_short_events = false;
+       //scheduler.config.cascade_event_display = true
+       //scheduler.config.hour_size_px = 42;
+        
+        //
+        scheduler.config.multi_day = true;
+        scheduler.config.xml_date= "%Y-%m-%d %H:%i"; //"%Y-%m-%d %H:%i" 2015-02-05 AM8:00
+        scheduler.config.wide_form = false;
+        //Disable CASCADED view for Overlapping Events
+        scheduler.config.cascade_event_display = false;
+        scheduler.config.cascade_event_margin = 30;
+        scheduler.attachEvent("onBeforeDrag",function(){return false;})
+        scheduler.attachEvent("onClick",function(){return false;})
+        scheduler.config.details_on_dblclick = true;
+        scheduler.config.dblclick_create = false;
+        scheduler.templates.event_header = function(){ return ""; }
+        scheduler.attachEvent("onClick",function(id,e){
+          scheduler._on_dbl_click(e);
+          return false;
+        });
+        scheduler.attachEvent("onDblClick",function(id,e){
+          var ev = scheduler.getEvent(id);
+          if(ev.color != 'orange') {     //previous value - red
+              return true;
+          }
+          return false;
+        });
+        scheduler.locale.labels.section_message = '';
+        scheduler.locale.labels.grid_tab = 'List';
+        scheduler.locale.labels.workweek_tab = 'Calendar';
+        scheduler.locale.labels.section_arriveearly = "{!TAG059}";
+        scheduler.locale.labels.section_warning = '';
+        
+        //scheduler.config.wide_form = true;  
+        //scheduler.showCover=function(B){if(B){B.style.display="block";var A=window.pageYOffset||document.body.scrollTop||document.documentElement.scrollTop;var C=window.pageXOffset||document.body.scrollLeft||document.documentElement.scrollLeft;if(document.documentElement.scrollHeight>document.body.offsetHeight){B.style.top=Math.round(A+Math.max((document.body.offsetHeight-B.offsetHeight)/2,50))+"px"}else{B.style.top=Math.round(Math.max(((document.body.offsetHeight-B.offsetHeight)/2),50)+9)+"px"}if(document.documentElement.scrollWidth>document.body.offsetWidth){B.style.left=Math.round(C+(document.body.offsetWidth-B.offsetWidth)/2)+"px"}else{B.style.left=Math.round((document.body.offsetWidth-B.offsetWidth)/2)+"px"}}this.show_cover()};      
+        //scheduler.config.container_autoresize = False;
+        /*if({!isEarlyArrival}) {
+            scheduler.config.lightbox.sections = [
+                { name:"message", height:100, map_to:"message", type:"template"},
+                { name:"arriveearly", type:"checkbox", checked_value: "bookjobWithEarlyArrival",unchecked_value: "bookjobWithoutEarlyArrival", height:30, default_value: "bookjobWithEarlyArrival"}
+            ];
+        } else {
+            scheduler.config.lightbox.sections = [
+                { name:"message", height:100, map_to:"message", type:"template"}
+            ];
+        }*/
+        if({!isOutsideSLA} && {!isEarlyArrival}) {
+            scheduler.config.lightbox.sections = [
+                { name:"message", height:100, map_to:"message", type:"template"},
+                { name:"warning", height:20, map_to:"warnmessage", type:"template"},
+                { name:"arriveearly", type:"checkbox", checked_value: "bookjobWithEarlyArrival",unchecked_value: "bookjobWithoutEarlyArrival", height:30, default_value: "bookjobWithEarlyArrival"}
+            ];
+        }
+        else if({!isEarlyArrival}) {
+            scheduler.config.lightbox.sections = [
+                { name:"message", height:100, map_to:"message", type:"template"},
+                { name:"arriveearly", type:"checkbox", checked_value: "bookjobWithEarlyArrival",unchecked_value: "bookjobWithoutEarlyArrival", height:30, default_value: "bookjobWithEarlyArrival"}
+            ];
+        }
+        else if({!isOutsideSLA}) {
+            scheduler.config.lightbox.sections = [
+                { name:"message", height:100, map_to:"message", type:"template"},
+                { name:"warning", height:20, map_to:"warnmessage", type:"template"}
+            ];
+        }
+        else {
+            scheduler.config.lightbox.sections = [
+                { name:"message", height:100, map_to:"message", type:"template"}
+            ];
+        }
+        
+        //scheduler.config.buttons_left = ["dhx_cancel_btn"];
+        scheduler.config.buttons_left = ["cancel_btn"];
+        scheduler.locale.labels["cancel_btn"] = "{!TAG056}";
+        scheduler.config.buttons_right = ["book_button"];
+        scheduler.locale.labels["book_button"] = "{!TAG060}";
+        scheduler.attachEvent("onLightboxButton", function(button_id, node, e){
+            if(button_id == "book_button"){
+                if({!isEarlyArrival} == false) {                    
+                    <!--if("{!strApiToUse}" == "SLA JOB") {-->
+                    <!-- -XSS Reflected -->
+                    if("{!JSENCODE( strApiToUse )}" == "SLA JOB"){
+                        bookJob(scheduler.getState().lightbox_id);
+                    } 
+                    <!--else if("{!strApiToUse}" == "APPOINTMENT") {-->
+                    else if("{!JSENCODE( strApiToUse )}" == "APPOINTMENT") {
+                    <!-- -XSS Reflected -->
+                        bookAppointment(scheduler.getState().lightbox_id);
+                    }                   
+                }
+                else if(scheduler.formSection('arriveearly').getValue() == "bookjobWithEarlyArrival"){                  
+                    bookJob(scheduler.getState().lightbox_id, 'true');
+                } else if(scheduler.formSection('arriveearly').getValue() == "bookjobWithoutEarlyArrival") {                    
+                    bookJob(scheduler.getState().lightbox_id, 'false');
+                }
+                scheduler.endLightbox(false,scheduler.getLightbox());
+            } else if(button_id == "cancel_btn") {
+                scheduler.endLightbox(false,scheduler.getLightbox());
+            }
+        });
+        
+        scheduler.config.first_hour = {!minEventStartTime};
+        scheduler.config.last_hour = {!maxEventEndTime };
+        document.getElementById("scheduler_here").style.height = ((({!maxEventEndTime } - {!minEventStartTime})*44)+100)+'px';
+        scheduler.templates.lightbox_header = function(start,end,ev){
+
+            return "{!TAG010}";
+        };
+                
+        scheduler.templates.tooltip_text = function(start,end,ev){            
+            var strSplitStartDate = String(ev.start_date).split(" ");
+            var strSplitEndDate = String(ev.end_date).split(" ");
+            
+            //input string for split function: Fri Dec 05 2014 08:30:00 GMT+0530 (India Standard Time)
+            
+            var timeSlot;
+            if(strSplitStartDate != null && strSplitStartDate.length > 4 && strSplitEndDate != null && strSplitEndDate.length > 4) {
+                timeSlot = strSplitStartDate[4].substring(0,5) + " - " + strSplitEndDate[4].substring(0,5);
+            }
+            //var strEventText = String(ev.text);
+            //if(strEventText != null && strEventText.search("Select")) {
+            //    strEventText = strEventText.replace("Select","");
+            //}
+            //return "<center>" + timeSlot + "</center>" + "\n" + strEventText;            
+            return ev.text;
+        };
+      
+        reset_init_settings();
+    }
+
+    function reset_init_settings(){
+
+        if(settings_hideweekends == "yes") {
+            scheduler.ignore_workweek = function(date){
+                if (date.getDay() == 0 || date.getDay() == 6)
+                    return true;
+            };
+        } else {
+            scheduler.ignore_workweek = function(date){
+                return false;
+            };
+        }
+
+       /* Kamal:Commented
+        if(settings_weekstartday == "monday") {
+            scheduler.config.start_on_monday = true;
+        } else {
+            scheduler.config.start_on_monday = false;
+        }
+        */
+        
+        var calendarStartDate = document.getElementById("{!$Component.MessagePageBlockId.calendarStartDate}").value;
+        //alert('calendarStartDate - ' + calendarStartDate);
+        calendarStartDate = calendarStartDate.replace(/-/g,"/");
+        
+        //To start the calendar week from first event date
+        scheduler.date.week_start=function(date){
+                                return this.date_part(this.add(date,0,"day"));
+                                }
+        scheduler.init("scheduler_here",new Date(calendarStartDate),"workweek");
+        scheduler.parse(document.getElementById("{!$Component.MessagePageBlockId.eventJson}").value, "json");
+    }
+
+    scheduler.attachEvent("onTemplatesReady",function(){
+
+        var intNoOfCalDays = parseInt("{!strNoOfDaysInCalSetting}");
+        scheduler.date.workweek_start = scheduler.date.week_start;
+        //scheduler.date.workweek_start = function(date){
+        //    return this.date_part(this.add(date,0,"day"));
+        //};
+        scheduler.date.get_workweek_end=function(date){
+           //Kamal commented return scheduler.date.add(date,settings_noOfWeeks*7,"day");
+            return scheduler.date.add(date,intNoOfCalDays,"day");
+        };
+        scheduler.date.add_workweek=function(date,inc){
+           //Kamal commented: return scheduler.date.add(date,inc*(settings_noOfWeeks*7),"day");
+           return scheduler.date.add(date,inc*(intNoOfCalDays),"day");
+        };
+        scheduler.templates.workweek_date = scheduler.templates.week_date;
+        var format = scheduler.date.date_to_str("%D, %d");
+        var today = scheduler.date.date_part(new Date());
+        scheduler.templates.workweek_scale_date = function(date){
+            if(date.valueOf() == today.valueOf()) {
+                 return "<div style='height:22px;background-color:#F6C882;'>"+format(date)+"</div>"; //FFF3A1
+            }
+            return format(date);
+        }        
+    });
+
+    function show_minical(){
+
+        if (scheduler.isCalendarVisible())
+            scheduler.destroyCalendar();
+        else {
+            scheduler.renderCalendar({
+                position:"dhx_minical_icon",
+                date:scheduler._date,
+                navigation:true,
+                handler:function(date,calendar){
+                    scheduler.setCurrentView(date,scheduler._mode);                 
+                    scheduler.destroyCalendar();
+                }
+             });
+
+             //To hide the unneccessary disabled dates from min cal.
+             var elements = document.getElementsByClassName("dhx_after");
+             for (var index = 0;index < elements.length; index++){
+                 elements[index].innerHTML = '';
+             }
+        }
+    }
+    /*Method to Show Cursor of Pointer Type To Available Slots*/
+    function showPointer(){
+        var calEvent = document.getElementsByClassName("dhx_cal_event");
+        var calBody = document.getElementsByClassName("dhx_body");
+        var calTitle = document.getElementsByClassName("dhx_event_move dhx_title");
+        var n;
+        for (i = 0; i < calBody.length; i++) {
+            n= calBody[i].style.background.toLowerCase().indexOf("orange");
+            if(n == -1){
+                calEvent[i].style.cursor="pointer";
+                calBody[i].style.cursor="pointer";
+            }
+            else
+                calTitle[i].style.cursor="default";
+          }
+    }
+    /*TRANSALTION*/
+    dhtmlXCalendarObject.prototype.langData["{!strUserLanguage}"] = {
+        monthesFNames: ["{!JSENCODE($Label.IPAD006_TAG006)}", "{!JSENCODE($Label.IPAD006_TAG017)}", "{!JSENCODE($Label.IPAD006_TAG018)}", "{!JSENCODE($Label.IPAD006_TAG019)}", "{!JSENCODE($Label.IPAD006_TAG020)}", "{!JSENCODE($Label.IPAD006_TAG021)}", "{!JSENCODE($Label.IPAD006_TAG022)}", "{!JSENCODE($Label.IPAD006_TAG023)}", "{!JSENCODE($Label.IPAD006_TAG024)}", "{!JSENCODE($Label.IPAD006_TAG025)}", "{!JSENCODE($Label.IPAD006_TAG026)}", "{!JSENCODE($Label.IPAD006_TAG027)}"],
+        monthesSNames: ["{!JSENCODE($Label.IPAD006_TAG043)}", "{!JSENCODE($Label.IPAD006_TAG044)}", "{!JSENCODE($Label.IPAD006_TAG045)}", "{!JSENCODE($Label.IPAD006_TAG046)}", "{!JSENCODE($Label.IPAD006_TAG020)}", "{!JSENCODE($Label.IPAD006_TAG047)}", "{!JSENCODE($Label.IPAD006_TAG048)}", "{!JSENCODE($Label.IPAD006_TAG049)}", "{!JSENCODE($Label.IPAD006_TAG050)}", "{!JSENCODE($Label.IPAD006_TAG051)}", "{!JSENCODE($Label.IPAD006_TAG052)}", "{!JSENCODE($Label.IPAD006_TAG053)}"],
+        daysFNames: ["{!JSENCODE($Label.DCON003_TAG022)}", "{!JSENCODE($Label.DCON003_TAG013)}", "{!JSENCODE($Label.DCON003_TAG014)}", "{!JSENCODE($Label.DCON003_TAG015)}", "{!JSENCODE($Label.DCON003_TAG016)}", "{!JSENCODE($Label.DCON003_TAG017)}", "{!JSENCODE($Label.DCON003_TAG018)}"],
+        daysSNames: ["{!JSENCODE($Label.IPAD006_TAG035)}", "{!JSENCODE($Label.IPAD006_TAG029)}", "{!JSENCODE($Label.IPAD006_TAG030)}", "{!JSENCODE($Label.IPAD006_TAG031)}", "{!JSENCODE($Label.IPAD006_TAG032)}", "{!JSENCODE($Label.IPAD006_TAG033)}", "{!JSENCODE($Label.IPAD006_TAG034)}"],
+        weekstart: 1
+    }
+    /*Function to translate MINI-CALENDAR COMPONENT and Set its Properties*/
+    function loadMiniCalendar() {
+        var calendarStartDate, calendarEndDate;
+        var calendarStartDate = new dhtmlXCalendarObject(["calendarStart"]);
+        var calendarEndDate = new dhtmlXCalendarObject(["calendarEnd"]);
+
+        /*Set properties for the Mini-Calendar*/
+        function modifyCalendar(calHandle){
+            calHandle.loadUserLanguage('{!strUserLanguage}');
+            calHandle.hideTime();
+            calHandle.setSensitiveRange("{!TEXT(TODAY())}", null);
+            <!--calHandle.setDateFormat("{!strLocaleDateFormat}");-->  
+            <!-- -XSS Reflected -->  
+            calHandle.setDateFormat("{!JSENCODE( strLocaleDateFormat)}");
+        }
+
+        modifyCalendar(calendarStartDate);
+        modifyCalendar(calendarEndDate);
+
+        calendarStartDate.attachEvent("onClick", function(date, state){
+            
+            document.getElementById('{!$Component.strStartDate}').value = document.getElementById('calendarStart').value;       
+        });
+        calendarEndDate.attachEvent("onClick", function(date, state){
+        
+            document.getElementById('{!$Component.strEndDate}').value = document.getElementById('calendarEnd').value;
+        });
+    }
+    function populateCalFields() {
+        <!--document.getElementById("calendarStart").value = "{!strCalStartDate}";-->
+        <!--document.getElementById("calendarEnd").value = "{!strCalEndDate}";-->
+        <!-- -XSS Stored -->
+        document.getElementById("calendarStart").value = "{!JSENCODE( strCalStartDate )}";
+        document.getElementById("calendarEnd").value = "{!JSENCODE( strCalEndDate )}" ;        
+    }
+    window.onload = function () {
+        popup_init();
+        if({!IsWOApptEmpty} != true) {
+            scheduler_init();
+            showPointer();
+            loadMiniCalendar();
+            <!--populateCalFields();-->
+        }
+    }
+</script>
+<style>
+    <!--table.detailList td {width:2%}-->
+    <!--table.detailList th {width:2%}-->
+    th.labelCol.vfLabelColTextWrap.first.last {width:2%;}
+    td.dataCol.first.last {width:2%;}
+</style>
+<apex:sectionHeader title=" {!TAG071}"/>
+
+<apex:pageBlock id="MessagePageBlockId" helptitle="{!HLPTITLE}" helpurl="{!HLPURL}">
+    <apex:PageBlocksection columns="1" rendered="{!isEnableHelpText}">
+        <apex:outputLabel style="font-Weight:bold;font-size:16px;color:Brown" value="{!TAG061}"/>
+    </apex:PageBlocksection>
+    <apex:PageBlocksection columns="1" rendered="{!isEnableHelpText}">
+        <apex:outputLabel style="font-Weight:bold;font-size:12px" value="{!TAG062}"/>
+    </apex:PageBlocksection>
+    <apex:PageBlocksection columns="2">
+        <apex:outputLabel style="font-Weight:bold;font-size: 15px" value="{!TAG063} {!strWorkOrderID}"/>
+        <apex:actionStatus startText="{!ProcessingText}" style="font-Weight:bold;font-size: 12px" id="bookingStatus">
+            <apex:facet name="stop"></apex:facet>
+        </apex:actionStatus>
+    </apex:PageBlocksection>
+    <apex:PageBlocksection columns="1" rendered="{!IsDisplayCurrentAppt}">
+        <apex:outputLabel style="font-Weight:bold;font-size: 12px" value="{!strCurrentApptMsg}"/>
+    </apex:PageBlocksection>
+    <apex:pageblockSection columns="1" rendered="{!IsWOApptEmpty}">
+        <apex:outputLabel style="font-Weight:bold;font-size: 12px" value="{!strOfferApptErrorMsg}"/>
+    </apex:pageblockSection>
+    <apex:pageBlockSection columns="1" rendered="{!Not(IsBookApptSuccess)}">
+       <apex:outputLabel style="font-Weight:bold;font-size: 12px" value="{!strBookApptErrorMsg}"/>
+    </apex:pageBlockSection>
+    <apex:pageBlockSection columns="1" rendered="{!IsBookApptSuccess}">
+       <apex:outputLabel style="font-Weight:bold;font-size: 12px" value="{!strBookApptSuccessMsg}"/>
+    </apex:pageBlockSection>
+
+    <apex:inputHidden value="{!bookedTimings}" id="bookedTimings"/>
+    <apex:inputHidden value="{!bookedTechnician}" id="bookedTechnician"/>
+    <apex:inputHidden value="{!eventsJson}" id="eventJson"/>
+    <apex:inputHidden value="{!calendarStartDate}" id="calendarStartDate"/>
+    
+    <center>
+        <apex:commandButton action="{!navigateToWorkOrder}" value="{!TAG012}"/>
+        <apex:commandButton value="{!TAG039}" id="cancel_appt" rendered="{!IF((IsEnableCancelAppt) && (IsDisplayCurrentAppt || IsBookApptSuccess),true,false)}" onclick="return show_pops(this);"/>
+        <apex:commandButton value="{!TAG024}" Disabled="{!Not(IsForceBookJob)}" onclick="return show_pops(this);" rendered="{!isEnableUnresourcedTray}"/>
+        <apex:commandButton value="{!TAG038}" id="cal_settings" rendered="{!Not(IsWOApptEmpty)}" onclick="return show_pops(this);"/>
+    </center>
+    <hr/>
+
+    <apex:pageBlockSection columns="3" rendered="{!IF(Not(IsWOApptEmpty) && (IsEnableFetchApptByStartEndDt),true,false)}">  <!--   {!IsEnableFetchApptByStartEndDt} -->          
+        <apex:pageBlockSectionItem dataStyle="text-align:left;">
+            <!--Start Date-->
+            <apex:outputText value="{!TAG351}"
+            style="font-weight:bold;font-Size:12px;color:#000000;text-align:center;"/>          
+            
+            <input type="text" readonly="true" value="{!strCalStartDate}" id="calendarStart"/>                        
+        </apex:pageBlockSectionItem>
+        
+        <apex:pageBlockSectionItem dataStyle="text-align:left;">
+            <!--End Date-->
+            <apex:outputText value="{!TAG352}"
+            style="font-weight:bold;font-Size:12px;color:#000000;text-align:center;"/>
+            
+            <input type="text" readonly="true" value="{!strCalEndDate}" id="calendarEnd"/>
+        </apex:pageBlockSectionItem>
+        
+        <!--<apex:inputHidden value="{!strCalStartDate}" id="strStartDate" />-->
+        <!--<apex:inputHidden value="{!strCalEndDate}" id="strEndDate" />-->
+        <apex:pageBlockSectionItem dataStyle="text-align:left;">
+            <apex:commandButton value="{!TAG064}" action="{!buildResponseData}" rendered="true"/>
+        </apex:pageBlockSectionItem>    
+    </apex:pageBlockSection>
+    
+</apex:pageBlock>
+<apex:inputHidden value="{!strCalStartDate}" id="strStartDate" />
+<apex:inputHidden value="{!strCalEndDate}" id="strEndDate" />
+<apex:inputHidden value="{!strLocaleDateFormat}" id="strDateFormat" />
+<apex:pageBlock id="pageBlockId" rendered="{!Not(IsWOApptEmpty)}">
+   <div class="cla-table">
+   <apex:pageBlockSection columns="1">
+       <div id="scheduler_here" class="dhx_cal_container">
+          <div class="dhx_cal_navline">
+             <div class="dhx_cal_prev_button">&nbsp;</div>
+             <div class="dhx_cal_next_button">&nbsp;</div>
+             <div class="dhx_cal_today_button"></div>
+             <!--<div class="dhx_minical_icon" id="dhx_minical_icon" onclick="show_minical()">&nbsp;</div>-->
+             <div class="dhx_cal_date"></div>
+          </div>
+          <div class="dhx_cal_header">
+          </div>
+          <div class="dhx_cal_data" onMouseOver="showPointer()">
+          </div>
+       </div>
+     <!--  <apex:commandButton action="{!viewMoreAppointments}" value="{!TAG023}" Disabled="{!DisplayViewMore}"/> -->
+   </apex:pageBlockSection>
+   </div>
+   
+   <div class="agreement-block">
+   <apex:pageBlock rendered="{!isEnableHelpText}">
+        <apex:outputLabel style="font-Weight:bold;font-size:12px" value="{!TAG065}" />
+        <br></br>   
+        <table width="100%">                
+            <tr>
+                <td>
+                    <div style="height:10px;width:40px;background:#CFCB4A;border-style: solid; border-color: black;">&nbsp;</div>
+                </td>                   
+                <td>
+                    <apex:outputLabel style="font-Weight:bold;font-size:12px" value="{!TAG066}"/>
+                </td>               
+            </tr>       
+        </table>
+    </apex:pageBlock>
+    </div>
+   <!--<apex:pageBlockSection columns="2">
+        <div style='height:10px;width:10px;background:#CFCB4A;border:black'>&nbsp;</div>
+        <apex:outputLabel style="font-Weight:bold;font-size:12px" value="*This appointment period is within your service level agreement. However feel free to choose any available appointment period that is most convenient to you."/>
+   </apex:pageBlockSection>-->
+</apex:pageBlock>
+
+<apex:actionFunction name="bookAppointment" action="{!bookAppointment}" rerender="MessagePageBlockId" status="bookingStatus" oncomplete="reset_init_settings()">
+    <apex:param name="eventId" value="" assignTo="{!selectedRowId}" />
+</apex:actionFunction>
+<apex:actionFunction name="bookJob" action="{!bookJob}" rerender="MessagePageBlockId" status="bookingStatus" oncomplete="reset_init_settings()">
+    <apex:param name="eventId" value="" assignTo="{!selectedRowId}" />
+    <apex:param name="isEarlyArrivalSelected" value="" assignTo="{!strIsEarlyArrivalSelected}" />
+</apex:actionFunction>
+<apex:actionFunction name="cancelAppointment" action="{!cancelAppointment}" status="bookingStatus"></apex:actionFunction>
+<apex:actionFunction name="escalateAppointment" action="{!forceSchedule}" status="bookingStatus"></apex:actionFunction>
+</apex:form>
+</apex:page>

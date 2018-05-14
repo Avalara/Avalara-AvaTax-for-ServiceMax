@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>SVMX_LaunchHelp</customHelpPage>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <deprecated>false</deprecated>
+    <description>Consolidated invoice header</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>Name of Customer Account to Invoice for Service or for Contract. This is a lookup to an existing salesforce account record.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Name of Customer Account to Invoice for Service or for Contract. This is a lookup to an existing salesforce account record.</inlineHelpText>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Proforma Invoices</relationshipLabel>
+        <relationshipName>Invoice_Account</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Billing_City__c</fullName>
+        <deprecated>false</deprecated>
+        <description>City part of billing address. Typically this will be the billing address on the Account.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>City part of billing address. Typically this will be the billing address on the Account.</inlineHelpText>
+        <label>Billing City</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Country__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Country part of billing address. Typically this will be the billing address on the Account.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Country part of billing address. Typically this will be the billing address on the Account.</inlineHelpText>
+        <label>Billing Country</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Postal_Code__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Postal Code part of billing address. Typically this will be the billing address on the Account.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Postal Code part of billing address. Typically this will be the billing address on the Account.</inlineHelpText>
+        <label>Billing Postal Code</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_State__c</fullName>
+        <deprecated>false</deprecated>
+        <description>State part of billing address. Typically this will be the billing address on the Account.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>State part of billing address. Typically this will be the billing address on the Account.</inlineHelpText>
+        <label>Billing State</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Billing_Street__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Street part of billing address. Typically this will be the billing address on the Account.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Street part of billing address. Typically this will be the billing address on the Account.</inlineHelpText>
+        <label>Billing Street</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Cancelation_Notes__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Input informational notes to keep track of reason for canceling proforma invoice.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Input informational notes to keep track of reason for canceling proforma invoice.</inlineHelpText>
+        <label>Cancelation Notes</label>
+        <length>32000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Canceled_By__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <deprecated>false</deprecated>
+        <description>User who canceled this proforma invoice</description>
+        <externalId>false</externalId>
+        <inlineHelpText>User who canceled this proforma invoice</inlineHelpText>
+        <label>Canceled By</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Proforma_Invoice</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Canceled_On__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Date/time this proforma invoice was canceled</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date/time this proforma invoice was canceled</inlineHelpText>
+        <label>Canceled On</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Indicates the status of this invoice. Will be Open when invoice is created and Cancel if this it is canceled. You can use additional values to manage integration process with backoffice systems.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates the status of this invoice. Will be Open when invoice is created and Cancel if this it is canceled. You can use additional values to manage integration process with backoffice systems.</inlineHelpText>
+        <label>Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Open</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Close</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Canceled</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Total_Invoice__c</fullName>
+        <deprecated>false</deprecated>
+        <description>Total sum of all invoices consolidated under this document.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Total sum of all invoices consolidated under this document.</inlineHelpText>
+        <label>Total Invoice</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>3</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <deprecated>false</deprecated>
+        <description>This is used to differentiate between invoices for services (Service) &amp; Service contracts (Contract).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This is used to differentiate between invoices for services (Service) &amp; Service contracts (Contract).</inlineHelpText>
+        <label>Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Service</fullName>
+                    <default>false</default>
+                </value>
+                <value>
+                    <fullName>Contract</fullName>
+                    <default>false</default>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <label>Proforma Invoice</label>
+    <listViews>
+        <fullName>All_Proforma_Invoices</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Billing_City__c</columns>
+        <columns>Billing_State__c</columns>
+        <columns>Billing_Postal_Code__c</columns>
+        <columns>Type__c</columns>
+        <columns>Status__c</columns>
+        <columns>Total_Invoice__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Proforma Invoices</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>{0000000000}</displayFormat>
+        <label>Invoice Number</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Proforma Invoices</pluralLabel>
+    <searchLayouts>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <excludedStandardButtons>New</excludedStandardButtons>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>
