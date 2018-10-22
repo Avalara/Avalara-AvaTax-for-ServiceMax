@@ -13,7 +13,7 @@ Learn about how to develop an Avalara AvaTax integration here: https://developer
 Learn about how to use Avalara AvaTax here: https://help.avalara.com
 </p>
 <h2>Folder Contents</h2>
-This includes the following folders, with contents as described below.
+AvaTax4ServiceMax includes the following folders, with contents as described below.
 
 <b>.settings</b> contains a PREFS file
 
