@@ -40,5 +40,5 @@ AvaTax4ServiceMax includes the following folders, with contents as described bel
 <b>Package.xml</b> contains the necessary information about metadata components that are used by AvaTax Tax Calculation Utility
 
 
-
+<p></p>
 Salesforce, Sales Cloud, and others are trademarks of salesforce.com, inc., and are used here with permission.
