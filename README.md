@@ -1,5 +1,5 @@
 # Avalara-AvaTax-for-ServiceMax
-The ServiceMax connector for AvaTax is a utility to perform Tax operations for ServiceMax after sales functionalities, wherein the end user can get appropriate tax calculated on their Word Order and quotes using the cloud computing sales tax service AvaTax, provided by Avalara, Inc. for the calculation, compliance and reporting of sales tax. ServiceMax is a leader in Field Service Management and the go-to app for 400+ companies globally. Built 100% on the Salesforce1™ Platform, find out why this complete field service solution helps perfect service delivery, delight customers and grow revenue.
+The ServiceMax connector for AvaTax is a utility to perform Tax operations for ServiceMax after sales functionalities, wherein the end user can get appropriate tax calculated on their Word Order and quotes using the cloud computing sales tax service AvaTax, provided by Avalara, Inc. for the calculation, compliance and reporting of sales tax. ServiceMax is a leader in Field Service Management and the go-to app for 400+ companies globally.
 <h2>Compatibility</h2>
 <b>Avalara AvaTax for ServiceMax Version 1.3 (1.8)</b> is compatible with ServiceMax. 
 
@@ -38,7 +38,3 @@ AvaTax4ServiceMax includes the following folders, with contents as described bel
 <b>Triggers</b> contains the triggers on Objects that are used by AvaTax Tax Calculation Utility
 
 <b>Package.xml</b> contains the necessary information about metadata components that are used by AvaTax Tax Calculation Utility
-<p></p>
-<p></p>
-<p></p>
-Salesforce, Sales Cloud, and others are trademarks of salesforce.com, inc., and are used here with permission.
